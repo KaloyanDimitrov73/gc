@@ -1,0 +1,11 @@
+export const NODE_RADIUS = 40;
+export const LITERAL_NODE_WIDTH = 70;
+export const LITERAL_NODE_HEIGHT = 35;
+export const MAX_NODE_LABEL_LENGTH = 26;
+export const MAX_EDGE_LABEL_LENGTH = 18;
+export const EDGE_HIGHLIGHT_COLOR = '#14b8a6';
+export const RESOURCE_NODE_COLOR = '#8556f6';
+export const LITERAL_NODE_COLOR = '#bf590c';
+export const DETAIL_PANEL_LAYOUT: 'overlay' | 'footer' = 'overlay';
+export const MIN_GRAPH_PADDING = 48;
+export const GRAPH_GROWTH_PER_NODE = 15;

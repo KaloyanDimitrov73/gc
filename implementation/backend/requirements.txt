@@ -1,0 +1,19 @@
+# FastAPI and server
+fastapi==0.115.0
+uvicorn[standard]==0.32.0
+
+# Pydantic - Match sqa-system versions to avoid conflicts
+pydantic==2.10.6
+pydantic-settings==2.6.0
+
+# Development tools
+pytest==8.3.4
+pytest-asyncio==0.24.0
+httpx==0.27.2
+
+# Guardrails for input/output validation
+guardrails-ai
+
+# Session persistence (SQLite via async SQLAlchemy)
+sqlalchemy>=2.0
+aiosqlite

@@ -1,0 +1,45 @@
+text,passed,reason
+In which venue has the paper with the title 'Availability-Driven Architectural Change Propagation Through Bidirectional Model Transformations Between UML and Petri Net Models' been published?,False,Validation failed for GibberishText
+Who are the authors of the paper with the title 'A Taxonomy of Blockchain-Based Systems for Architecture Design'?,True,
+How many papers have been published by the author Johannes Grohmann?,True,
+Which papers have the paper class personal experience paper? Rank the papers in descending order of their publication year.,False,Validation failed for GibberishText
+In which publication year was the paper with the title 'Continuous Architecture: Towards the Goldilocks Zone and Away from Vicious Circles' published in comparison to the publication year of the paper with the title 'Designing Robust Software Systems through Parametric Markov Chain Synthesis'?,True,
+How many papers did the author Konstantinos Plakidas publish per publication year?,True,
+Does the paper with the title 'Data-Driven Software Architecture for Analyzing Confidentiality' make its tool support available?,True,
+What are the evaluation methods applied in the paper with the title 'Continuous Analysis of Collaborative Design'?,True,
+How many threats to validity does the paper with the title 'DesignDiff: Continuously Modeling Software Design Difference from Code Revisions' discuss?,False,Validation failed for GibberishText
+Which properties were evaluated in the paper with the title 'Monolith Migration Complexity Tuning Through the Application of Microservices Patterns'? Rank the properties in descending alphabetical order.,False,Validation failed for GibberishText
+What are the evaluation methods used by the paper with the title 'Model-Based Analysis of Microservice Resiliency Patterns' compared to the evaluation methods applied in the paper with the title 'Supporting Architectural Decision Making on Data Management in Microservice Architectures'?,True,
+How many research objects did the author António Silva investigate in his papers per publication year?,True,
+Which paper investigates the property robustness?,False,Validation failed for GibberishText
+Which papers apply the evaluation method Field Experiment?,False,Validation failed for GibberishText
+How many papers evaluate the property Reliability?,True,
+Which papers apply the evaluation method Field Experiment? Rank the papers in descending order of their publication year.,False,Validation failed for GibberishText
+"Among papers that apply the evaluation method Data Science, how many have not used input data compared to those that have made their input data available?",True,
+Which papers investigate the research object Architecture Optimization Method and indicate that no input data was used?,True,
+What is the paper class that papers are most frequently classified as when they investigate the property Reliability?,True,
+How are the papers that investigate the research object Technical Debt distributed by their publication year?,False,Validation failed for GibberishText
+What are the research objects investigated in papers of the paper class philosophical paper?,False,Validation failed for GibberishText
+What are the research objects investigated in papers that apply the evaluation method Field Experiment?,True,
+How many different evaluation methods are used to evaluate the property Freedom from Risk?,True,
+"Among those papers that evaluate the property Reliability, what are the evaluation methods that have been applied? Rank the evaluation methods in descending alphabetical order.",True,
+How frequently is the property Satisfaction evaluated compared to the property Context Coverage in papers that investigate the research object Architecture Evolution?,False,Validation failed for GibberishText
+What are the properties that are evaluated in papers that investigate the research object Technical Debt without adhering to an evaluation guideline?,False,Validation failed for GibberishText
+What is the evaluation method that has been applied the most in papers that investigate the research object Technical Debt?,False,Validation failed for GibberishText
+How frequently is the research object Technical Debt investigated per publication year?,False,Validation failed for GibberishText
+What is the property that is evaluated for the research object Architecture Design Method in the paper with the title 'Enabling Continuous Software Engineering for Embedded Systems Architectures with Virtual Prototypes'?,True,
+What are the evaluation methods that the author Uwe Zdun applied in papers that investigate the research object Architecture Decision Making?,True,
+How many different evaluation methods did the author David Monschein apply in papers that evaluate the property Efficiency?,True,
+What are the evaluation methods that the author Anne Koziolek applied in papers that investigate the research object Architecture Evolution? Rank the evaluation methods in descending alphabetical order.,True,
+How often is the research object Architecture Extraction investigated in papers published in the publication year 2018 in comparison to the publication year 2020?,False,Validation failed for GibberishText
+What are the research objects that have been investigated in papers by the author Uwe Zdun to which no evaluation method has been applied?,True,
+"In the publication year 2021, what is the evaluation method that has been applied the most in papers that investigate the research object Architecture Evolution?",True,
+"From the publication years 2019 to 2021, how frequently per publication year have the research objects of papers been evaluated using the evaluation method Data Science?",True,
+What is the title of the paper that investigates the research object Architecture Decision Making and has the paper class philosophical paper?,False,Validation failed for GibberishText
+Which papers investigate the research object Technical Debt in the publication year 2017?,False,Validation failed for GibberishText
+How many papers applied the evaluation method Controlled Experiment in the publication year 2018?,False,Validation failed for GibberishText
+Which papers have Ingo Weber as an author and apply the evaluation method Argumentation? Rank the papers in descending order of their publication year.,True,
+What is the number of papers investigating the research object Architecture Evolution in the publication year 2020 versus the publication year 2021?,False,Validation failed for GibberishText
+Which papers published in the publication year 2017 investigate the research object Architecture Design Method and have not used input data?,True,
+"Among papers that apply the evaluation method Benchmark, what is the paper class that is most frequently applied to papers published in the publication year 2020?",True,
+How are the papers that investigate the research object Architecture Extraction distributed between the publication years 2018 and 2020?,False,Validation failed for GibberishText

@@ -1,0 +1,41 @@
+[
+    {
+        "additional_params": {
+            "llm": {
+                "additional_params": {},
+                "endpoint": "OpenAI",
+                "name_model": "gpt-4o-mini",
+                "temperature": 0.0,
+                "max_tokens": -1
+            },
+            "embedding_model": {
+                "additional_params": {},
+                "endpoint": "OpenAI",
+                "name_model": "text-embedding-3-small"
+            },
+            "metrics": [
+                "faithfulness",
+                "factual_correctness_f1",
+                "factual_correctness_precision",
+                "factual_correctness_recall",
+                "response_relevancy",
+                "semantic_similarity",
+                "non_llm_string_similarity"
+            ]
+        },
+        "evaluator_type": "ragas"
+    },
+    {
+        "additional_params": {
+            "llm_config": {
+                "additional_params": {},
+                "endpoint": "OpenAI",
+                "name_model": "o3-mini",
+                "temperature": null,
+                "max_tokens": -1,
+                "reasoning_effort": "low"
+            }
+        },
+        "evaluator_type": "instruction_following"
+    }
+]

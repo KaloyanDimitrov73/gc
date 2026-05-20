@@ -1,0 +1,121 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# PyInstaller
+#  Usually these files are written by a python script from a template
+#  before PyInstaller builds the exe, so as to inject date/other infos into it.
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+
+# Translations
+*.mo
+*.pot
+
+# Sphinx documentation
+docs/_build/
+
+# PyBuilder
+target/
+
+# DotEnv configuration
+.env
+
+# Database
+*.db
+*.rdb
+
+# Pycharm
+.idea
+
+# VS Code
+.vscode/
+
+# Spyder
+.spyproject/
+
+# Jupyter NB Checkpoints
+.ipynb_checkpoints/
+
+# Mac OS-specific storage files
+.DS_Store
+
+# vim
+*.swp
+*.swo
+
+# Mypy cache
+.mypy_cache/
+
+# virtual environment
+venv/
+.venv/
+
+repopack-output.txt
+/sqa-system/data/external/*.json
+/sqa-system/data/external/*.csv
+/sqa-system/data/knowledge_base/knowledge_graphs/local_graph/**/
+*.nt
+*.ttl
+
+# *.sqlite3
+
+logs
+*.log
+
+# all directories in data/evaluation_results
+/sqa-system/data/evaluation_results/**/
+
+generate_tree_structure.py
+
+# Ignore model files
+/sqa-system/data/models/
+cache_dir
+
+**/data/cache/microsoft_graphrag/
+**/data/cache/light_rag/
+
+# Ignore all files in the following directories
+sqa-system/src/utils/
+**/ieee_pdfs/**
+**/elsevier_pdfs/**
+
+# Ignore cache data
+**/data/cache/**
+
+venv312

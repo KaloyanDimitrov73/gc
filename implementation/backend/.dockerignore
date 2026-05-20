@@ -1,0 +1,37 @@
+# Python
+venv/
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+.eggs/
+dist/
+build/
+*.egg
+
+# Data (potentially large, mounted at runtime if needed)
+data/
+submodules/HublinkImplementation/data/
+
+# Environment files / secrets
+.env
+.env.*
+**/.env
+**/.env.*
+
+# IDE
+.vscode/
+.idea/
+
+# Tests / CI
+.pytest_cache/
+htmlcov/
+.coverage
+
+*.md
+
+# Git
+.git/
+.gitignore

@@ -1,0 +1,121 @@
+[
+    {
+        "additional_params": {
+            "k": 10,
+            "context_type": "triple"
+        },
+        "evaluator_type": "hit_at_k"
+    },
+    {
+        "additional_params": {
+            "k": 10,
+            "context_type": "entity"
+        },
+        "evaluator_type": "hit_at_k"
+    },
+    {
+        "additional_params": {
+            "k": 10,
+            "context_type": "triple"
+        },
+        "evaluator_type": "hit_at_k"
+    },
+    {
+        "additional_params": {
+            "k": 10,
+            "context_type": "triple"
+        },
+        "evaluator_type": "map_at_k"
+    },
+    {
+        "additional_params": {
+            "k": 10,
+            "context_type": "entity"
+        },
+        "evaluator_type": "map_at_k"
+    },
+    {
+        "additional_params": {
+            "k": 10,
+            "context_type": "triple"
+        },
+        "evaluator_type": "mrr_at_k"
+    },
+    {
+        "additional_params": {
+            "k": 10,
+            "context_type": "entity"
+        },
+        "evaluator_type": "mrr_at_k"
+    },
+    {
+        "additional_params": {
+            "k": 10,
+            "context_type": "triple"
+        },
+        "evaluator_type": "basic_score"
+    },
+    {
+        "additional_params": {
+            "k": 10,
+            "context_type": "entity"
+        },
+        "evaluator_type": "basic_score"
+    },
+    {
+        "additional_params": {
+            "k": -1,
+            "context_type": "triple"
+        },
+        "evaluator_type": "basic_score"
+    },
+    {
+        "additional_params": {
+            "k": -1,
+            "context_type": "entity"
+        },
+        "evaluator_type": "basic_score"
+    },
+    {
+        "additional_params": {
+            "k": 10,
+            "context_type": "triple"
+        },
+        "evaluator_type": "exact_match"
+    },
+    {
+        "additional_params": {
+            "k": 10,
+            "context_type": "entity"
+        },
+        "evaluator_type": "exact_match"
+    },
+    {
+        "additional_params": {
+            "k": -1,
+            "context_type": "triple"
+        },
+        "evaluator_type": "exact_match"
+    },
+    {
+        "additional_params": {
+            "k": -1,
+            "context_type": "entity"
+        },
+        "evaluator_type": "exact_match"
+    },
+    {
+        "additional_params": {},
+        "evaluator_type": "bleu_score"
+    },
+    {
+        "additional_params": {},
+        "evaluator_type": "rouge_score"
+    },
+    {
+        "additional_params": {
+            "model_type": "microsoft/deberta-xlarge-mnli"
+        },
+        "evaluator_type": "bert_score"
+    }
+]

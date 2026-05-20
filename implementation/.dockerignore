@@ -1,0 +1,38 @@
+# Python byte code / caches
+**/__pycache__/
+**/*.pyc
+**/*.pyo
+**/*.pyd
+**/*.egg-info/
+**/.eggs/
+**/dist/
+**/build/
+**/*.egg
+
+# Data (large, mounted at runtime via volume)
+backend/HublinkImplementation/data/
+backend/data/
+
+# Logs
+backend/HublinkImplementation/logs/
+backend/logs/
+
+# Environment files / secrets
+**/.env
+**/.env.*
+
+# Test / coverage artefacts
+**/.pytest_cache/
+**/htmlcov/
+**/.coverage
+
+# IDE
+.vscode/
+.idea/
+
+# Version control
+.git/
+.gitignore
+
+# Frontend dependencies (handled by a separate named volume)
+frontend/node_modules/
