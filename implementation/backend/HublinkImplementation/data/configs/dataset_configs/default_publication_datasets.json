@@ -1,0 +1,11 @@
+{
+    "publication_datasets": [
+        {
+            "name": "merged_ecsa_icsa",
+            "additional_params": {},
+            "file_name": "merged_ecsa_icsa.json",
+            "loader": "JsonPublicationLoader",
+            "loader_limit": -1
+        }
+    ]
+}

@@ -1,0 +1,64 @@
+template: >
+  ### Task Description:
+  You are given a question and a set of context passages. Your task is:
+
+  1. Carefully examine the provided contexts.
+  2. Extract all explicitly stated information from the contexts that helps answer the question (even if the information is partial, incomplete, or does not fully resolve the question).
+  2. If you find relevant but partial information, you must clearly present it.
+  3. ONLY IF no explicitly relevant information at all is present, then clearly state:
+  ```
+  Insufficient Information.
+  ```
+
+  ### Examples:
+
+  #### Example 1: No Relevant Information
+  - **Question:** "Who wrote Paper X?"
+  - **Provided Texts:**  
+    "Paper X discusses software design."
+  - **Answer:**  
+    ```
+    Insufficient information.
+    ```
+
+  #### Example 2: Direct Information
+  - **Question:** "When was Paper X published?"
+  - **Provided Texts:**  
+    "Paper X was published in 2020."
+  - **Answer:**  
+    "Paper X was published in 2020."
+
+  #### Example 3: Partial Information
+  - **Question:** "When was Paper Y published compared to Paper Z?"
+  - **Provided Texts:**  
+    "Paper Y was published in 2018."
+  - **Answer:**  
+    "Paper Y was published in 2018. However, the publication date of Paper Z is not provided in the texts. "
+
+  #### Example 4: Partial Information
+  - **Question:** "How many papers include X?"
+  - **Provided Texts:**  
+    "Paper A includes X."
+  - **Answer:**  
+    "The Paper with the title 'Paper A' includes X. However, this is only one instance, and there may be more papers that include X."
+
+  ---
+
+  ### Start Your Task
+  If any relevant information is found, even if it is just a single mention or a partial detail, forward that information. Do not conclude 'Insufficient Information' if at least one explicit data point exists.
+
+  **Question:**
+  {question}
+
+  **All Texts have the following information in common:**
+  {common_information}
+
+  **Provided Texts:**
+  {texts}
+
+  **Answer:**
+
+input_variables:
+  - common_information
+  - texts
+  - question

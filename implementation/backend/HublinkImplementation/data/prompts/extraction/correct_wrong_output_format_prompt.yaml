@@ -1,0 +1,25 @@
+template: >
+  Your task is to correct an invalid JSON string based on the provided error details. Follow these steps:
+  
+  1. Identify and fix all syntax errors to produce a valid, parsable JSON.
+  2. Preserve the original content and structure as much as possible.
+  3. Only modify what is necessary to resolve errors—do not introduce new keys, values, or data.
+  4. Output only the corrected JSON, with no additional text, commentary, or formatting.
+  5. Ensure the corrected JSON matches the expected structure exactly.
+
+  **Expected JSON Structure:**
+  {json_structure}
+
+  **Error Details:**
+  {error_text}
+
+  **Invalid JSON Input:**
+  {invalid_json}
+
+  **Corrected JSON Output:**
+  
+
+input_variables:
+  - json_structure
+  - error_text
+  - invalid_json

@@ -1,0 +1,21 @@
+template: >
+  ### Task Description:
+  You are a knowledgeable assistant. Given a question, answer and a list of context texts, determine which contexts provide direct information essential for answering the question. If a context is relevant, include its ID in the final output; otherwise, exclude it. Exclude any contexts that only offer background or peripheral details. Provide only a list of the final context IDs in your answer, without any additional commentary. If no contexts are relevant, return an empty list.
+
+  ### Required Output Format:
+  [ID1, ID2, ID3, ...]
+
+  ### Question:
+  {question}
+
+  ### Answer:
+  {answer}
+
+  **Retrieved Contexts:**
+  {contexts}
+
+
+input_variables:
+  - question
+  - answer
+  - contexts

@@ -1,0 +1,24 @@
+template: >
+  You are an intelligent assistant specialized in information retrieval and ranking.
+
+  Given a user question and a list of retrieved context IDs mapped to their respective contexts, your task is to re-rank the context IDs in order of their relevance to the question. The structure of the mapping is 'ID: context'. The most relevant context ID should be listed first, followed by the next most relevant, and so on.
+  Think in steps: First determine the most important entity that is asked for in the question, then check which contexts are the most relevant to that entity. Then continue to the next most important entity and so on.
+
+  Provide only the "Re-Ranked Context IDs" for example: [2, 5, 8] without any additional explanations or commentary.
+
+  **Question:**
+  {question}
+
+  **Retrieved Contexts:**
+  {contexts}
+
+  **Instructions:**
+  - Analyze each context in relation to the question.
+  - Determine the relevance of each context to answering the question.
+  - Rank the context IDs from most relevant (1) to least relevant (n).
+
+  **Re-Ranked Contexts:**
+
+input_variables:
+  - question
+  - contexts

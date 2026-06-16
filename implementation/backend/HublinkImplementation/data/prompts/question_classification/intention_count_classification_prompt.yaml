@@ -1,0 +1,12 @@
+template: >
+  You are an expert annotator for a question classification task. You are given a question and a list of 'intention count' types. Intention count types classify the question on the amount of intentions that the question has. To determine which intention count classifications fit, the following question needs to be answered 'How many intentions does the given question have?'. Only one count is applicable to a single question, meaning that the count is mutually exclusive.
+
+  **The Question:**
+  {question}
+
+  **The Intention Count Types:**
+  {categories}
+
+input_variables:
+  - question
+  - categories

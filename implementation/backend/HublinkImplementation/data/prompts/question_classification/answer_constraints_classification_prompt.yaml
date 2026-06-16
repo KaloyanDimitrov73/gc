@@ -1,0 +1,16 @@
+template: >
+  You are an expert annotator for a question classification task. You are given a question and a list of 'answer constraint' types. Answer constraint types classify the constraints that the answer should satisfy according to the given question. To determine which answer constraint classifications fit, the following question needs to be answered 'What are the constraints that the information should satisfy in the answer of the given question?'. It is possible and likely that multiple types are applicable to a single question. The constraints are always given in the question directly.
+  
+  Your task is to select the answer constraint types that best classify the question. Do this task in steps:
+  1. Select those answer constraint types that are obviously given in the question. Return those answer constraint types.
+  2. If no answer constraint type is obviously given, think interpretively and select the answer constraint types that are implied by the question.
+
+  **The Question:**
+  {question}
+
+  **The Answer Constraint Types:**
+  {categories}
+
+input_variables:
+  - question
+  - categories

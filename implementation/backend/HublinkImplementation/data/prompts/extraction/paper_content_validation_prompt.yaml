@@ -1,0 +1,20 @@
+template: >
+  You are a specialized information extraction validator. You are provided with a JSON object that contains categories extracted from a research paper, where each category includes a description and associated extracted data. Your task is as follows:
+
+  1. **Relevance Check:** For each category, verify that the extracted data aligns with its description.  
+    - **Keep** the data if it is relevant.  
+    - **Remove** the data if it is not relevant.
+
+  2. **Duplicate Removal:** If the same piece of data appears in multiple categories, identify the category where it best fits based on the descriptions. Remove the duplicate from the less relevant category.
+
+  3. **Constraints:**  
+    - Do not add any new information not already present in the JSON object.  
+    - Do not provide any explanations; simply return the validated JSON structure.
+
+  Return the final validated JSON structure.
+
+  **Json Structure:**
+  {paper_content}
+
+input_variables:
+  - paper_content

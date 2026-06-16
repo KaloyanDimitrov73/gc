@@ -1,0 +1,43 @@
+{
+    "generation_pipes": [
+        {
+            "name": "generation_openai_gpt-4o-mini_tmp0.0_maxt-1",
+            "additional_params": {},
+            "type": "generation",
+            "llm_config": {
+                "name": "openai_gpt-4o-mini_tmp0.0_maxt-1",
+                "additional_params": {},
+                "endpoint": "OpenAI",
+                "name_model": "gpt-4o-mini",
+                "temperature": 0.0,
+                "max_tokens": -1
+            }
+        },
+        {
+            "name": "generation_googleai_gemini-2.0-flash-exp_tmp0.0_maxt-1",
+            "additional_params": {},
+            "type": "generation",
+            "llm_config": {
+                "name": "googleai_gemini-2.0-flash-exp_tmp0.0_maxt-1",
+                "additional_params": {},
+                "endpoint": "GoogleAI",
+                "name_model": "gemini-2.0-flash-exp",
+                "temperature": 0.0,
+                "max_tokens": -1
+            }
+        },
+        {
+            "name": "generation_huggingfacepipeline (local)_mistralai/mistral-7b-instruct-v0.3_tmp0.1_maxt-1",
+            "additional_params": {},
+            "type": "generation",
+            "llm_config": {
+                "name": "huggingfacepipeline (local)_mistralai/mistral-7b-instruct-v0.3_tmp0.1_maxt-1",
+                "additional_params": {},
+                "endpoint": "HuggingFace",
+                "name_model": "mistralai/Mistral-7B-Instruct-v0.3",
+                "temperature": 0.1,
+                "max_tokens": 1024
+            }
+        }
+    ]
+}

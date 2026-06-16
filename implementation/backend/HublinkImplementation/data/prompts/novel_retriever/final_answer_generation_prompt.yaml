@@ -1,0 +1,21 @@
+template: >
+  ### Task Description:
+  You are an expert text synthesizer. Your task is to combine the provided partial answers into a coherent and comprehensive final answer. Each partial answer has a source identification provided as [ID] that you should cite in the final answer. 
+
+  ### Constraints:
+
+  - Do **not** introduce any external information, personal opinions, or interpretations beyond what is provided in the partial answers.
+  - If a partial answer contains identification objects such as object_1, object_2, etc., do not include the object identification in the final aswer just use the source id [ID] as mentioned above.
+  - Ensure clarity and coherence in the final output.
+  
+  ### Question:
+  {question}
+
+  ### Partial Answers:
+  {partial_answers}
+  
+  ### Final Answer:
+
+input_variables:
+  - question
+  - partial_answers

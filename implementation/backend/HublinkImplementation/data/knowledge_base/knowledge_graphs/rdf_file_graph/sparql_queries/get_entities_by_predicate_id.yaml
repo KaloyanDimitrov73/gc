@@ -1,0 +1,5 @@
+query:
+  SELECT DISTINCT ?entity
+  WHERE {{
+      ?entity <{pred}> ?object .
+  }}

@@ -1,0 +1,40 @@
+template: >
+  You are a knowledgeable assistant designed to support a Senior Software Engineer and Researcher in the field of Software Architecture. Your task is to generate highly specific and informative question-answer pairs based on the provided contexts related to software architecture concepts, practices, or research findings.
+
+  **Instructions:**
+  1. **Read the context carefully:** Thoroughly understand each context provided.
+  2. **Generate Answerable Questions:** For each chosen template, generate a question that can be directly answered using the selected context(s). Ensure that all information needed to answer the question is present in the context.
+  3. **Format Correctly:** Ensure the output adheres strictly to the provided JSON schema.
+
+  **Example: (not related to the contexts below)**
+  ```json
+  {{
+    "question": "Can we use the State Transfer Method to address the issue of transferring internal state between PLC programs during updates?",
+    "answer": "Yes, the State Transfer Method can be used to address the issue of transferring internal state between PLC programs during updates. It is described as a procedure specifically designed for this purpose. Additionally, the mechanisms for code transfer discussed in the paper highlight the ability to transfer deltas to reduce network load while also allowing for complete state transfer. Furthermore, it is noted that the state required by dependent systems can be retained in memory until the adaptation is complete, reinforcing the applicability of the State Transfer Method in this context.",
+    "context_ids": [1, 2, 3]    
+  }}
+  ```
+  ```json
+  {{
+    "question": "Do inconsistencies in architecture descriptions influence the development challenges faced by teams?",
+    "answer": "Inconsistencies in architecture descriptions significantly influence the development challenges faced by teams. Various studies highlight that such inconsistencies can lead to development issues, particularly when they affect multiple teams. For instance, developers often use general terms to describe architecture smells, which can result in unclear and inconsistent architecture descriptions. This ambiguity complicates the detection and refactoring of architecture smells, indicating a need for improved tools and methods to address these challenges.
+
+    Moreover, the concept of Architectural Decay illustrates how inconsistencies can degrade a software system's architecture over time, making maintenance and evolution more difficult. Terminology confusion among team members further exacerbates these issues, as different interpretations can hinder clarity and understanding. Ensuring consistency between system design and adaptive changes is crucial, as inconsistencies can complicate the assessment of design decisions' impacts.
+
+    Additionally, techniques like Reflexion Modelling, which compare a software's implementation against its architectural design, underscore the importance of addressing inconsistencies to ensure alignment with the intended architecture. Lastly, the neglect of architecture best practices often leads to language incompatibility between application and implementation domains, creating gaps in the development process. Overall, these factors collectively demonstrate that inconsistencies in architecture descriptions pose significant challenges for development teams.",
+    "context_ids": [12, 13, 14, 15, 18, 19]    
+  }}
+  ```
+  ```json
+  {{
+    "question": "What future research directions are suggested for federated learning systems?",
+    "answer": "Future research directions for federated learning systems include the development of an architecture decision model to guide the design of these systems, as well as the exploration of architecture design focused on establishing trust within federated learning environments",
+    "context_ids": [20]    
+  }}
+  ```
+
+  **Contexts:**
+  {contexts}
+
+input_variables:
+  - contexts

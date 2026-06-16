@@ -1,0 +1,2 @@
+This folder contains the SPARQL queries that are required by the Knowledge Graph Interface of the SQA system.
+These queries are setup for the ORKG graph and need to be changed if you want to use them for other graphs.

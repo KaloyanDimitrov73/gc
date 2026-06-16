@@ -1,0 +1,21 @@
+template: >
+  ### Task Description:
+  You are a knowledgeable assistant. Given a question, a answer and a list of ID-triple mappings in the format "ID: (subject, predicate, object)" determine which triples provide direct information essential for answering the question. If a triple is relevant or partially relevant, include its ID in the final output; otherwise, exclude it. Provide in your answer only a list of the final triple IDs and do not provide any additional explanations or commentary. If no triples are relevant, return an empty list.
+
+  ### Required Output Format:
+  [ID1, ID2, ID3, ...]
+
+  ### Question:
+  {question}
+
+  ### Answer:
+  {answer}
+
+  ### Retrieved Contexts:
+  {contexts}
+
+
+input_variables:
+  - question
+  - answer
+  - contexts

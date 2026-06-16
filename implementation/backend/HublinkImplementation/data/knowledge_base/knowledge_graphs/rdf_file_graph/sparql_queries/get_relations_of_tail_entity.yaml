@@ -1,0 +1,20 @@
+
+query:
+  SELECT ?subject ?relation ?relation_description ?subject_label
+  WHERE {{
+      ?subject ?relation orkgr:{knowledge_id} .
+      
+      OPTIONAL {{
+          ?relation rdfs:label ?relation_label .
+      }}
+      OPTIONAL {{
+          ?relation rdfs:comment ?relation_comment .
+      }}
+      BIND(COALESCE(?relation_label, ?relation_comment, STR(?relation)) AS ?relation_description)
+      
+      OPTIONAL {{
+          FILTER(STRSTARTS(STR(?subject), STR(orkgr:)) || STRSTARTS(STR(?subject), STR(orkgc:)))
+          ?subject rdfs:label ?subject_label_temp .
+      }}
+      BIND(COALESCE(?subject_label_temp, STR(?subject)) AS ?subject_label)
+  }}

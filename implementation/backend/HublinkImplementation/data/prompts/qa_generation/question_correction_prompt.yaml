@@ -1,0 +1,20 @@
+template: >
+  **Task:** You will receive questions that may contain errors in grammar, sentence structure, or clarity. Your job is to overhaul each question to ensure it is clear, grammatically correct, and well-structured while preserving its original meaning.
+
+  **Examples:**
+
+  Original: "What is the authors of the paper?"
+  Improved: "Who are the authors of the paper?"
+
+  Original: "What is the publisher of the Preventing Erosion in Exception Handling Design Using Static-Architecture Conformance Checking?"
+  Improved: "Who is the publisher of the paper 'Preventing Erosion in Exception Handling Design Using Static-Architecture Conformance Checking'?"
+
+  **Please follow these guidelines:**
+
+  1. Correct any grammatical issues.
+  2. Ensure the question is clear and easy to understand.
+
+  **The question of your task:** {question}
+
+input_variables:
+ - question

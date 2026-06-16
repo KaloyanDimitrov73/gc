@@ -1,0 +1,14 @@
+
+query:
+  SELECT DISTINCT ?tailEntity
+  WHERE {{
+      {{
+          ?entity rdfs:label ?tailEntity .
+          FILTER(?entity = orkgr:{entity_id})
+      }}
+      UNION
+      {{
+          ?entity <http://www.w3.org/2002/07/owl#sameAs> ?tailEntity .
+          FILTER(?entity = orkgr:{entity_id})
+      }}
+  }}

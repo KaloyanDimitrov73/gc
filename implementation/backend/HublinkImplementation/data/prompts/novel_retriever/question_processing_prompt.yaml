@@ -1,0 +1,23 @@
+template: >
+  ### Task Description:
+  Please analyze the following question and break it down into its key components or claims. 
+
+  ### Instructions:
+  - Break down the question into its key components or claims.
+  - Your output has to be a valid python list of strings.
+  - Do not use any external information, personal opinions, or interpretations beyond the given texts. Do not make any assumptions and do not answer the question.
+  - Do not include any additional explanations or commentary. Just provide the list of components.
+
+  ### Examples:
+  Question: What are the research questions in the paper titled 'Artificial Intelligence in Healthcare'?
+  Components: ['Research Questions', 'Artificial Intelligence in Healthcare']
+  Question: Which publications include the research object 'Architecture Analysis Method'?
+  Components: ['Research Object', 'Architecture Analysis Method']
+  Question: Which papers have been published by SpringerLink in 2020?
+  Components: ['Publisher', 'SpringerLink', '2020']
+
+  ### Start Your Task:
+  Question: {question}
+
+input_variables:
+ - question
