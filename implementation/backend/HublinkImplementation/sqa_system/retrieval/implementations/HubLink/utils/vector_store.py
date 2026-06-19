@@ -427,6 +427,9 @@ class ChromaVectorStore:
 
         with self._lock:
             try:
+
+                logger.info("Retrieve n_results * 2 from collection")
+
                 if not excluded_hub_ids:
                     results: QueryResult = self.collection.query(
                         query_embeddings=query_embeddings,
@@ -444,8 +447,12 @@ class ChromaVectorStore:
                 if not results or not results["ids"]:
                     return []
 
+
+
                 hub_paths_clustered_by_hub_id = self._convert_query_result_to_hubpaths_clustered_by_hub_id(
                     results)
+
+                logger.info("Rerank results by score and return n_results")
 
                 # Sort the hub paths by their scores in descending order
                 for hub_id, hub_paths in hub_paths_clustered_by_hub_id.items():
@@ -481,6 +488,8 @@ class ChromaVectorStore:
         if not results or not results["ids"] or len(results["ids"]) == 0:
             return {}
 
+        logger.info("Converts the QueryResult to HubPath objects")
+
         hub_paths_by_id: Dict[str, List[HubPath]] = {}
 
         for query_idx in range(len(results["ids"])):
@@ -489,7 +498,12 @@ class ChromaVectorStore:
             embeddings = results["embeddings"][query_idx]
             distances = results["distances"][query_idx]
 
+            logger.info("Query_idx: %s", query_idx)
+
             for _, (path_hash, metadata, _, distance) in enumerate(zip(ids, metadatas, embeddings, distances)):
+
+                logger.info("Path with metadata: %s with distance: %s", metadata, distance)
+
                 hub_entity_id = metadata.get("hub_entity")
                 hub_path = self._parse_hub_path(path_hash, metadata)
 

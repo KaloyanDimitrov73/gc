@@ -1,7 +1,7 @@
 import pytest
 
 from sqa_system.core.data.models import QAPair
-from sqa_system.qa_generator import QADatasetToGraphConverter
+from experiments.qa_generator import QADatasetToGraphConverter
 from sqa_system.core.config.models import KnowledgeGraphConfig
 
 # This test is designed to check whether the conversion works correctly

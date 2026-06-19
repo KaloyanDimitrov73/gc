@@ -25,6 +25,8 @@ def build_answer_nodes_sources(retrieval_answer) -> Tuple[str, List[GraphNode], 
         Tuple of (answer_text, graph_nodes, source_identifiers).
         Returns a fallback tuple when the answer is empty/invalid.
     """
+    logger.info("Convert a RetrievalAnswer into the (answer, nodes, sources) tuple")
+
     if retrieval_answer.retriever_answer is None or not retrieval_answer.contexts:
         logger.info("SciGraphChat retriever did not return a valid answer")
         return (

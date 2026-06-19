@@ -8,7 +8,7 @@ from pydantic.functional_validators import AfterValidator
 from pydantic import BaseModel, Field
 import language_tool_python
 
-from sqa_system.qa_generator.question_classifier import QuestionClassifier
+from experiments.qa_generator.question_classifier import QuestionClassifier
 from sqa_system.core.data.models.qa_pair import QAPair
 from sqa_system.app.cli.cli_progress_handler import ProgressHandler
 from sqa_system.knowledge_base.knowledge_graph.storage.utils.graph_converter import GraphConverter

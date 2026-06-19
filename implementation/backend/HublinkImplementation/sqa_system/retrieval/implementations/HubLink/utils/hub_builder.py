@@ -267,10 +267,12 @@ class HubBuilder:
             if needs_rebuilding:
                 # Process the paths that have been found
                 hub_paths = self._build_hub_paths(paths, hub_root_entity)
+                logger.debug("Process path")
             else:
                 # Reuse the paths already loaded by _check_if_hub_needs_rebuilding
                 # – avoids a second full ChromaDB scan of the hub.
                 hub_paths = cached_paths
+                logger.debug("Reuse the paths")
 
             # save into the cache
             self.cache_manager.add_data(

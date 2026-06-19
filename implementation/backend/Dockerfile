@@ -40,7 +40,6 @@ RUN --mount=type=cache,target=/root/.cache/pip \
 COPY . .
 
 EXPOSE 8000
-
 # The entrypoint is served from the bind-mounted source tree at runtime.
 ENTRYPOINT ["/bin/sh", "/app/backend/docker-entrypoint.sh"]
 CMD ["uvicorn", "backend.app.main:app", "--host", "0.0.0.0", "--port", "8000"]

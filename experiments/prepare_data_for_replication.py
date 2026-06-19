@@ -22,7 +22,7 @@ import os
 import json
 from sqa_system.core.data.file_path_manager import FilePathManager
 from sqa_system.core.config.models import KnowledgeGraphConfig
-from sqa_system.qa_generator import QADatasetToGraphConverter
+from experiments.qa_generator import QADatasetToGraphConverter
 
 
 def prepare_graph_and_dataset(graph_config_path: str, qa_dataset_path: str):

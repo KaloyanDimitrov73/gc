@@ -26,10 +26,12 @@ class DirectRetrievalStrategy(BaseRetrievalStrategy):
     def _run_retrieval(self, processed_question: ProcessedQuestion) -> Optional[RetrievalAnswer]:
         """Runs the main loop of the retrieval strategy."""
 
+        logger.info("Searching candidate hubs")
         self.progress_handler.add_task(string_id="candidate_hub_search", description="Searching candidate hubs", total=1, reset=True)
         candidate_hubs = self._find_candidate_hubs(processed_question)
         self.progress_handler.finish_by_string_id("candidate_hub_search")
 
+        logger.info("Filling paths")
         self.progress_handler.add_task(string_id="path_filling", description="Filling paths", total=len(candidate_hubs), reset=True)
         candidate_hubs = self._fill_or_remove_paths(
             processed_question=processed_question,
@@ -42,12 +44,15 @@ class DirectRetrievalStrategy(BaseRetrievalStrategy):
             candidate_hubs=candidate_hubs
         )
 
+        logger.info("Pruning hubs sorted by their weighted hub score")
         self.progress_handler.add_task(string_id="hub_pruning", description="Pruning hubs", total=1, reset=True)
         filtered_candidates = self._prune_hubs(
             hubs=hubs,
             alpha=self.settings.path_weight_alpha,
         )
         self.progress_handler.finish_by_string_id("hub_pruning")
+
+        logger.info("Generate partial answers")
 
         partial_answers = (
             self._get_hub_answers_directly(filtered_candidates)
@@ -124,6 +129,9 @@ class DirectRetrievalStrategy(BaseRetrievalStrategy):
 
             try:
                 hubs_to_exclude = list(candidate_hubs.keys())
+
+                logger.info("Use the embeddings from the question to find the candidate hubs")
+                logger.info("List of candidate hubs: %s", len(hubs_to_exclude))
                 results = self.vector_store.similarity_search_hubs(
                     query_embeddings=processed_question.embeddings,
                     excluded_hub_ids=hubs_to_exclude,
@@ -181,6 +189,8 @@ class DirectRetrievalStrategy(BaseRetrievalStrategy):
         # of paths
         prepared_candidate_hubs = {}
         for hub_id, current_hub_paths in list(candidate_hubs.items()):
+
+            logger.info("hub has the amount of paths specified, threshhold: %s, len: %s", path_threshold, len(current_hub_paths))
 
             if len(current_hub_paths) > path_threshold:
                 prepared_candidate_hubs[hub_id] = current_hub_paths[:path_threshold]

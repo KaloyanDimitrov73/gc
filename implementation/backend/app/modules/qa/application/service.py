@@ -1,6 +1,7 @@
 """
 Orchestration service for retrieval and guardrails workflows.
 """
+import logging
 from dataclasses import dataclass
 from typing import AsyncIterator, List, Optional, Dict, Any
 
@@ -11,6 +12,7 @@ from backend.app.modules.qa.infrastructure.hublink.hublink_service import (
 from backend.app.contracts.schemas import GraphNode
 from backend.app.shared.exceptions import AppError, InputRejectedError, ServiceUnavailableError
 
+logger = logging.getLogger(__name__)
 
 class RetrievalServiceError(AppError):
     """Base exception for retrieval orchestration failures."""
@@ -64,6 +66,8 @@ class RetrievalService:
             raise RetrievalUnavailableError(
                 "HubLink service is not available. Try /api/v1/qa/init and check backend logs."
             )
+
+        logger.info("Query Hublink.")
 
         answer, nodes, sources = await self._hublink_service.query(
             question=question,

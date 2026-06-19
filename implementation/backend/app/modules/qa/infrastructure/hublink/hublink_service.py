@@ -176,6 +176,8 @@ class HubLinkService:
         Raises:
             RuntimeError: If HubLink is not initialized
         """
+        logger.info("Query Hublink")
+
         if not self.hublink_available or self.retriever is None:
             logger.info("HubLink not available")
             raise RuntimeError("HubLink retriever not initialized")

@@ -1,29 +1,5 @@
 [
     {
-        "name": "openai_gpt-5-mini_tmp0.0_maxt-1",
-        "additional_params": {},
-        "endpoint": "OpenAI",
-        "name_model": "gpt-5-mini",
-        "temperature": null,
-        "max_tokens": -1
-    },
-    {
-        "name": "openai_gpt-4o-mini_tmp0.0_maxt-1",
-        "additional_params": {},
-        "endpoint": "OpenAI",
-        "name_model": "gpt-4o-mini",
-        "temperature": 0.0,
-        "max_tokens": -1
-    },
-    {
-        "name": "openai_gpt-4o_tmp0.0_maxt-1",
-        "additional_params": {},
-        "endpoint": "OpenAI",
-        "name_model": "gpt-4o",
-        "temperature": 0.0,
-        "max_tokens": -1
-    },
-    {
         "additional_params": {},
         "endpoint": "OpenAI",
         "name_model": "o3-mini",

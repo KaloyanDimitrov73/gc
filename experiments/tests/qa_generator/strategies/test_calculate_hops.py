@@ -3,7 +3,7 @@ import pytest
 from sqa_system.core.data.models.knowledge import Knowledge
 from sqa_system.core.data.models.qa_pair import QAPair
 from sqa_system.core.data.models.triple import Triple
-from sqa_system.qa_generator.base.subgraph_strategy import KGQAGenerationStrategy
+from experiments.qa_generator.base.subgraph_strategy import KGQAGenerationStrategy
 
 
 class MockQAGenerationStrategy(KGQAGenerationStrategy):

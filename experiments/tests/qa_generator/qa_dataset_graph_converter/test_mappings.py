@@ -1,7 +1,7 @@
 import pytest
 
 from sqa_system.core.data.models import Triple, Knowledge
-from sqa_system.qa_generator import QACandidateExtractor, QASimilarityMatcher  
+from experiments.qa_generator import QACandidateExtractor, QASimilarityMatcher
 
 def test_get_topic_candidate_from_triple():
     """Test whether the topic entity candidate can be retrieved from either the object or the subject of a triple."""

@@ -140,6 +140,7 @@ class BaseRetrievalStrategy(ABC):
             List[HubAnswer]: One HubAnswer per hub containing the concatenated
                 path descriptions as hub_answer text.
         """
+
         hub_answers = []
         for hub in hub_scoring:
             if not hub.paths:
@@ -334,6 +335,8 @@ class BaseRetrievalStrategy(ABC):
         components = []
         if self.settings.extract_question_components:
             components = self._get_question_components(question)
+
+        logger.info("Embedding question")
 
         self.progress_handler.add_task(string_id="embedding_question", description="Embedding question", total=1, reset=True)
         all_texts = [question] + components

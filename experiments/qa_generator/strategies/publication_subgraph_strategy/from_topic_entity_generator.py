@@ -11,7 +11,7 @@ from sqa_system.core.language_model.base.llm_adapter import LLMAdapter
 from sqa_system.knowledge_base.knowledge_graph.storage.base.knowledge_graph import KnowledgeGraph
 from sqa_system.core.data.models import QAPair, Knowledge
 from sqa_system.core.logging.logging import get_logger
-from sqa_system.qa_generator.question_classifier import QuestionClassifier
+from experiments.qa_generator.question_classifier import QuestionClassifier
 from sqa_system.knowledge_base.knowledge_graph.storage.utils.graph_path_filter import (
     GraphPathFilter
 )

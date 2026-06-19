@@ -108,6 +108,8 @@ class AnswerGenerator:
             reset=True,
         )
 
+        logger.info("AnswerGenerator: Generate final answers")
+
         # Get the prompt for the answer generation
         prompt_text, _, _ = self.prompt_provider.get_prompt(
             "novel_retriever/final_answer_generation_prompt.yaml")
@@ -162,6 +164,7 @@ class AnswerGenerator:
         referenced_sources = [ha.source_identifier for ha in hubs_for_context]
 
         if settings.return_source_data_as_context:
+            logger.info("settings.return_source_data_as_context")
             contexts = self._get_relevant_source_contexts_from_hubs(
                 hubs_for_context, question, settings.filter_output_context)
         else:
@@ -195,6 +198,8 @@ class AnswerGenerator:
                 Will only be returned if the LLM has enough information to generate
                 a partial answer. Otherwise, None is returned.
         """
+
+        logger.info("AnswerGenerator: Returns partial answers with an LLM call for Hub %s", hub_root_entity)
         common_information = self._prepare_common_data_for_hub(
             hub_root_entity=hub_root_entity,
             source_document_data=source_document_data)
@@ -332,6 +337,8 @@ class AnswerGenerator:
         Returns:
             List[Context]: The contexts generated from the source data.
         """
+
+        logger.info("Transforms the source data from the hubs into contexts.")
         # Get the paths of the hubs
         contexts: List[Context] = []
         for hub_answer in hub_answers:

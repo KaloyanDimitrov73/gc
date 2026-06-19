@@ -6,7 +6,7 @@ import pandas as pd
 from pydantic import Field
 from sqa_system.core.data.models.qa_pair import QAPair
 from sqa_system.core.data.file_path_manager import FilePathManager
-from sqa_system.qa_generator.question_classifier import QuestionClassifier
+from experiments.qa_generator.question_classifier import QuestionClassifier
 from sqa_system.core.language_model.llm_provider import LLMProvider
 from sqa_system.core.data.cache_manager import CacheManager
 from sqa_system.core.logging.logging import get_logger

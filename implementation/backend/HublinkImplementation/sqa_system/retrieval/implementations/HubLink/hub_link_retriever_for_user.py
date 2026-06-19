@@ -123,6 +123,7 @@ class HubLinkRetrieverForUser(KnowledgeGraphRetriever):
         logger.debug("Question: %s", query_text)
         logger.debug("LLM: %s", llm_config.name_model)
         logger.debug("Number of hubs: %s", local_settings.number_of_hubs)
+        logger.info("HubLinkRetrieverForUser")
 
         retrieval_data = RetrievalStrategyData(
             graph=self.graph,
@@ -274,6 +275,7 @@ class HubLinkRetrieverForUser(KnowledgeGraphRetriever):
         vector_store_name = (f"{self.graph.config.config_hash}_"
                              f"{self.settings.embedding_config.config_hash}"
                              f"{self._indexing_llm.llm_config.config_hash}")
+
         self.vector_store = ChromaVectorStore(
             store_name=vector_store_name,
             distance_metric=self.settings.distance_metric,

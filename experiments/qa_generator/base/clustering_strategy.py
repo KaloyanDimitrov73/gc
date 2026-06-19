@@ -19,7 +19,7 @@ from sqa_system.core.data.models import (
     Knowledge,
     Triple
 )
-from sqa_system.qa_generator.question_classifier import QuestionClassifier
+from experiments.qa_generator.question_classifier import QuestionClassifier
 from sqa_system.core.logging.logging import get_logger
 
 from ..utils.cluster_builder import ClusterBuilder, ClusterInformation
