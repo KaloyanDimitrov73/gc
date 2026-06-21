@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod
-from core import Config
+
+from core.config import Config
+
 
 class BaseFactory(ABC):
     """

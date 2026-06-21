@@ -1,4 +1,4 @@
-from core import LLMStats
+from core.data.models import LLMStats
 
 
 class LLMStatTracker:

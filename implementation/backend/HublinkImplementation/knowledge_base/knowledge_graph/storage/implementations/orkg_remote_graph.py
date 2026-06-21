@@ -7,11 +7,11 @@ import hashlib
 import requests
 from typing_extensions import override
 
-from core import FilePathManager
-from core import ProgressHandler
-from core import CacheManager
+from core.data.cache_manager import CacheManager
+from core.data.file_path_manager import FilePathManager
+from core.data.models import Subgraph, Triple
+from core.progress.progress_handler import ProgressHandler
 from knowledge_base.knowledge_graph.storage.utils import GraphPathFilter
-from core import Triple, Subgraph
 from knowledge_base.knowledge_graph.storage.base.knowledge_graph import KnowledgeGraph
 from core.data.models.knowledge import Knowledge
 from knowledge_base.config.knowledge_graph_config import KnowledgeGraphConfig

@@ -2,12 +2,12 @@ from abc import ABC, abstractmethod
 from typing import Type, List, ClassVar
 from typing_extensions import override
 
-from core import AdditionalConfigParameter
-from core import DatasetConfig, LLMConfig
 from core.base.base_factory import BaseFactory
-from core import PublicationDataset
+from core.config import AdditionalConfigParameter, DatasetConfig
+from core.data.models import PublicationDataset
+from knowledge_base.config.knowledge_graph_config import KnowledgeGraphConfig
 from knowledge_base.knowledge_graph.storage.base.knowledge_graph import KnowledgeGraph
-from core import KnowledgeGraphConfig
+from language_model.config.llm_config import LLMConfig
 
 
 class KnowledgeGraphBuilder(BaseFactory, ABC):

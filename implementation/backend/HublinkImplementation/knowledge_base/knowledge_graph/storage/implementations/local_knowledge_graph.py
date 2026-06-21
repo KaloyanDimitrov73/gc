@@ -6,7 +6,7 @@ from rdflib import Graph, Namespace, URIRef
 from typing_extensions import override
 import pandas as pd
 
-from core import FilePathManager
+from core.data.file_path_manager import FilePathManager
 from core.data.models.triple import Triple
 from core.data.models.knowledge import Knowledge
 from knowledge_base.knowledge_graph.storage.base.knowledge_graph import KnowledgeGraph

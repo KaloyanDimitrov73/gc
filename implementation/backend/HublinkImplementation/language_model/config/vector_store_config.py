@@ -1,7 +1,6 @@
-from core import DatasetConfig
+from core.config import Config, DatasetConfig
 from knowledge_base.config.chunking_strategy_config import ChunkingStrategyConfig
-from core import Config
-from core import EmbeddingConfig
+from language_model.config.embedding_config import EmbeddingConfig
 
 
 class VectorStoreConfig(Config):

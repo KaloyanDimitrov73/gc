@@ -1,8 +1,7 @@
 from typing import Dict, Tuple
 import yaml
 
-
-from core import FilePathManager
+from core.data.file_path_manager import FilePathManager
 
 
 class PromptProvider:

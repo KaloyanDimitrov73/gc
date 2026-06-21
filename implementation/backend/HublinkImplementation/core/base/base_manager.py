@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Dict, TypeVar, Generic
-from core import Config
+
+from core.config import Config
 
 T = TypeVar('T')
 C = TypeVar('C', bound=Config)

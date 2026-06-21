@@ -1,0 +1,28 @@
+# Log Level
+# Determines the minimum severity of messages to log.
+# Possible values: DEBUG, INFO, WARNING, ERROR, CRITICAL
+log_level: DEBUG
+
+# Log Format
+# Defines the structure of log messages.
+# Available variables:
+# %(asctime)s - Timestamp
+# %(name)s - Logger name
+# %(levelname)s - Log level (DEBUG, INFO, etc.)
+# %(message)s - The logged message
+# %(filename)s - Source file name
+# %(funcName)s - Function name
+# %(lineno)d - Line number in source code
+# %(threadName)s - Thread name
+log_format: '%(asctime)s - %(name)s - %(threadName)s - %(levelname)s - %(message)s'
+
+# Current Log Filename
+current_log_filename: 'log_file.log'
+
+# Backup Log Filename Format
+# This will be used to generate unique filenames for backups
+backup_filename_format: 'log_%Y%m%d_%H%M%S.log'
+
+# Backup Count
+# The number of backup log files to keep before deleting old log files.
+backup_count: 7

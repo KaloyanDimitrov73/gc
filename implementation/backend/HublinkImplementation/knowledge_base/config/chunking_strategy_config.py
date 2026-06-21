@@ -1,6 +1,7 @@
 from typing_extensions import Annotated
 from pydantic import Field
-from core import Config
+
+from core.config import Config
 
 
 class ChunkingStrategyConfig(Config):

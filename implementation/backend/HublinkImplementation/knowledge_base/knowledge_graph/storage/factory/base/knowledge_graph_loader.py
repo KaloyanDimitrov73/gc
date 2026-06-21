@@ -2,10 +2,10 @@ from abc import ABC, abstractmethod
 from typing import Type, List, ClassVar
 from typing_extensions import override
 
-from core import AdditionalConfigParameter
 from core.base.base_factory import BaseFactory
+from core.config import AdditionalConfigParameter
+from knowledge_base.config.knowledge_graph_config import KnowledgeGraphConfig
 from knowledge_base.knowledge_graph.storage.base.knowledge_graph import KnowledgeGraph
-from core import KnowledgeGraphConfig
 
 
 class KnowledgeGraphLoader(BaseFactory, ABC):

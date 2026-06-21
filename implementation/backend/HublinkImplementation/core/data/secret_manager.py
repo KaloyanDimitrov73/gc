@@ -4,7 +4,8 @@ import os
 from pathlib import Path
 from typing import List, Tuple
 from cryptography.fernet import Fernet
-from language_model import EndpointType
+
+from language_model.enums.llm_enums import EndpointType
 
 
 class SecretType(Enum):
