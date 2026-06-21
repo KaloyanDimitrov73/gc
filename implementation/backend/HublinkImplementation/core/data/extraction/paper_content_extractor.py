@@ -14,7 +14,7 @@ from langchain_core.prompts import (
 from langchain.text_splitter import TokenTextSplitter
 from pydantic import BaseModel, Field
 
-from core import FilePathManager
+from core.data.file_path_manager import FilePathManager
 from core.data.models.publication import Publication
 from language_model.config.llm_config import LLMConfig
 from language_model import PromptProvider

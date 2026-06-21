@@ -3,16 +3,10 @@ from typing_extensions import override
 from rdflib import Literal, URIRef
 from rdflib.namespace import RDF, RDFS
 
-
-from core import ContextTrace, ContextTracer
+from core.data.context_tracer import ContextTracer
+from core.data.extraction.paper_content_extractor import PaperContentExtractor, PaperContent, Entity, TextWithOriginal
+from core.data.models import Publication
 from language_model.config.llm_config import LLMConfig
-from core import Publication
-from core import (
-    PaperContentExtractor,
-    PaperContent,
-    TextWithOriginal,
-    Entity
-)
 from core.logging.logging import get_logger
 from ......implementations.local_knowledge_graph import (
     LocalKnowledgeGraph,

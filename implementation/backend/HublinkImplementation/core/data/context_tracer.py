@@ -1,8 +1,8 @@
 import json
 from pydantic import BaseModel, Field
 
+from core.data.file_path_manager import FilePathManager
 from core.logging.logging import get_logger
-from core import FilePathManager
 
 logger = get_logger(__name__)
 

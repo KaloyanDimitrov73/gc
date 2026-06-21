@@ -11,8 +11,8 @@ import yaml
 import pandas as pd
 from rdflib.namespace import RDF
 
-from core import FilePathManager
-from core import Triple
+from core.data.file_path_manager import FilePathManager
+from core.data.models import Triple
 from knowledge_base.knowledge_graph.storage.base.knowledge_graph import KnowledgeGraph
 from core.data.models.knowledge import Knowledge
 from core.logging.logging import get_logger

@@ -3,8 +3,8 @@ import re
 
 from pylatexenc.latex2text import LatexNodes2Text
 
-from core import LLMConfig
 from core.data.models.publication import Publication
+from language_model.config.llm_config import LLMConfig
 
 from .contribution import Contribution
 

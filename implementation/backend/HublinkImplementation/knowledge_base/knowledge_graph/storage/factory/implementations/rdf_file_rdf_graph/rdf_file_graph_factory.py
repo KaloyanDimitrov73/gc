@@ -1,8 +1,9 @@
 from typing import Type
 from typing_extensions import override
+
+from core.config import AdditionalConfigParameter
+from core.data.file_path_manager import FilePathManager
 from knowledge_base.config.knowledge_graph_config import KnowledgeGraphConfig
-from core import FilePathManager
-from core import AdditionalConfigParameter
 from core.logging.logging import get_logger
 
 from ....implementations.rdf_file_graph import RDFFileGraph

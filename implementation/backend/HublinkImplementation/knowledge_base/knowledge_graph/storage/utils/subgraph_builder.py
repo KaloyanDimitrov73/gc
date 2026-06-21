@@ -3,14 +3,10 @@ from typing import List, Set, Tuple, Optional
 from collections import deque
 import random
 
-from core import CacheManager
-from core import ProgressHandler
-from core import (
-    Triple,
-    Knowledge,
-    Subgraph
-)
+from core.data.cache_manager import CacheManager
+from core.data.models import Knowledge, Subgraph, Triple
 from core.logging.logging import get_logger
+from core.progress.progress_handler import ProgressHandler
 from ..base.knowledge_graph import KnowledgeGraph
 from .path_builder import PathBuilder
 

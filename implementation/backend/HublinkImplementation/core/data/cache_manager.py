@@ -5,7 +5,7 @@ import time
 import hashlib
 from typing import Any, Optional
 
-from core import FilePathManager
+from core.data.file_path_manager import FilePathManager
 from core.logging.logging import get_logger
 
 logger = get_logger(__name__)

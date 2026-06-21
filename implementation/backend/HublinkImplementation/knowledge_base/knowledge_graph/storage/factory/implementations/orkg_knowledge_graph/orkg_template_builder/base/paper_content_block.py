@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
-from core import PaperContent
 
+from core.data.extraction.paper_content_extractor import PaperContent
 from .orkg_template_block import OrkgTemplateBlock
 
 

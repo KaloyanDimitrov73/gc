@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from core import Publication
+from core.data.models import Publication
 from .orkg_template_block import OrkgTemplateBlock
 
 

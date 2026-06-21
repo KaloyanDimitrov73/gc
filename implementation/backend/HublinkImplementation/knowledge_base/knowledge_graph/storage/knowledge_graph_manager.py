@@ -1,16 +1,17 @@
 from typing_extensions import override
 
-from core import DatasetConfig
+from core.config import DatasetConfig
 from core.data.data_loader.factory.data_loader_factory import DataLoaderFactory
-from core import FilePathManager
-from core import PublicationDataset
-from core import KnowledgeGraphConfig
 from core.base.base_manager import BaseManager
+from core.data.file_path_manager import FilePathManager
+from core.data.models import PublicationDataset
 from core.logging.logging import get_logger
 
 from .knowledge_graph_factory_registry import KnowledgeGraphFactoryRegistry
 from .factory.base.knowledge_graph_builder import KnowledgeGraphBuilder
 from .base.knowledge_graph import KnowledgeGraph
+from ...config.knowledge_graph_config import KnowledgeGraphConfig
+
 logger = get_logger(__name__)
 
 

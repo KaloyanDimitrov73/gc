@@ -1,12 +1,9 @@
 from typing import List, Optional
 from pydantic import BaseModel, PrivateAttr
 
-from core import LLMConfig
+from core.data.extraction.paper_content_extractor import PaperContentExtractor, PaperContent
 from core.data.models.publication import Publication
-from core import (
-    PaperContent,
-    PaperContentExtractor
-)
+from language_model.config.llm_config import LLMConfig
 
 from .base.paper_content_block import PaperContentBlock
 from .base.annotations_block import AnnotationsBlock

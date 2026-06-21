@@ -1,7 +1,8 @@
 from enum import Enum
 from typing import Dict
+
+
 from ..implementations.json_publication_loader import JsonPublicationLoader
-from data.data_loader import CSVQALoader
 from ..base.data_loader import DataLoader
 
 
@@ -30,8 +31,10 @@ class DataLoaderFactory:
         """
         if data_loader_name == "JsonPublicationLoader":
             return JsonPublicationLoader()
-        if data_loader_name == "CSVQALoader":
-            return CSVQALoader()
+
+        #TODO: CSVQALoader necessary?
+        #if data_loader_name == "CSVQALoader":
+            #return CSVQALoader()
 
         raise ValueError(f"Invalid data loader name: {data_loader_name}")
 
@@ -50,7 +53,7 @@ class DataLoaderFactory:
             return {
                 "JsonPublicationLoader": JsonPublicationLoader()
             }
-        if loader_type == DataLoaderType.QUESTION_ANSWERING:
-            return {"CSVQALoader": CSVQALoader()}
+       # if loader_type == DataLoaderType.QUESTION_ANSWERING:
+            #return {"CSVQALoader": CSVQALoader()}
 
         raise ValueError(f"Invalid data loader type: {loader_type}")

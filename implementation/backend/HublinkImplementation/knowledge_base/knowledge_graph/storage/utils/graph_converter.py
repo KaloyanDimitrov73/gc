@@ -5,8 +5,8 @@ from typing import List, Optional
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import PromptTemplate
 
+from core.data.models import Triple
 from core.logging.logging import get_logger
-from core import Triple
 from language_model.base.llm_adapter import LLMAdapter
 from language_model import PromptProvider
 from ..base.knowledge_graph import KnowledgeGraph

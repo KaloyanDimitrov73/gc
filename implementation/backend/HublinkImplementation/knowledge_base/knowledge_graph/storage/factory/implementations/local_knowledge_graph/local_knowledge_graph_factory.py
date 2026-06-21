@@ -2,13 +2,12 @@ from enum import Enum
 from typing import Type, List
 from typing_extensions import override
 
-
+from core.config import AdditionalConfigParameter
+from core.data.file_path_manager import FilePathManager
+from core.data.models import PublicationDataset
+from core.progress.progress_handler import ProgressHandler
 from language_model.config.llm_config import LLMConfig
-from core import ProgressHandler
-from core import PublicationDataset
 from knowledge_base.config.knowledge_graph_config import KnowledgeGraphConfig
-from core import FilePathManager
-from core import AdditionalConfigParameter
 from core.logging.logging import get_logger
 
 from ....implementations.local_knowledge_graph import LocalKnowledgeGraph

@@ -3,8 +3,8 @@ from collections import deque
 import random
 from typing import List, Dict, Optional
 
+from core.data.models import Knowledge, Subgraph, Triple
 from knowledge_base.knowledge_graph.storage.utils.path_builder import PathBuilder
-from core import Triple, Knowledge, Subgraph
 from core.logging.logging import get_logger
 
 logger = get_logger(__name__)

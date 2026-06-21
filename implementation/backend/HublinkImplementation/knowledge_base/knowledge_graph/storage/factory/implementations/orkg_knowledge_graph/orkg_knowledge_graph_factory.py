@@ -5,13 +5,13 @@ from orkg import ORKG, Hosts
 import time
 import json
 
-from core import ProgressHandler
-from core import AdditionalConfigParameter, RestrictionType
+from core.config import AdditionalConfigParameter, RestrictionType
+from core.data.models import PublicationDataset
 from core.data.models.publication import Publication
-from core import KnowledgeGraphConfig
-from core import PublicationDataset
 from core.data.secret_manager import SecretManager, SecretType
 from core.logging.logging import get_logger
+from core.progress.progress_handler import ProgressHandler
+from knowledge_base.config.knowledge_graph_config import KnowledgeGraphConfig
 
 from ....implementations.orkg_remote_graph import ORKGRemoteGraph
 from ....factory.base.knowledge_graph_builder import KnowledgeGraphBuilder

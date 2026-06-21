@@ -1,13 +1,10 @@
 from typing import List, Tuple, Set
 from dataclasses import dataclass, field
 from collections import deque
-from core import (
-    Triple,
-    Knowledge,
-    Subgraph
-)
-from core import ProgressHandler
+
+from core.data.models import Knowledge, Triple, Subgraph
 from core.logging.logging import get_logger
+from core.progress.progress_handler import ProgressHandler
 
 logger = get_logger(__name__)
 

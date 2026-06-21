@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import Any, Dict, Optional
 
+from core.data.models import Dataset
 from core.data.models.publication import Publication
-from core import Dataset
 
 
 class DataLoader(ABC):
