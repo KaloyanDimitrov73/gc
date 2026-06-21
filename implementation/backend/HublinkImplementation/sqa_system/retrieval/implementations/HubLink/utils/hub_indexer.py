@@ -5,16 +5,14 @@ import json
 from pydantic import BaseModel, Field, ConfigDict
 from chroma_ops import hnsw
 
-from sqa_system.app.cli.cli_progress_handler import ProgressHandler
-from sqa_system.core.language_model.base.embedding_adapter import EmbeddingAdapter
-from sqa_system.core.language_model.base.llm_adapter import LLMAdapter
-from sqa_system.core.data.models import Knowledge
-from sqa_system.core.data.emission_tracker_manager import (
-    EmissionTrackerManager, EmissionsTrackingData)
-from sqa_system.core.language_model.llm_stat_tracker import LLMStatTracker, LLMStats
-from sqa_system.knowledge_base.knowledge_graph.storage.base.knowledge_graph import KnowledgeGraph
-from sqa_system.core.data.file_path_manager import FilePathManager
-from sqa_system.core.logging.logging import get_logger
+from core import ProgressHandler
+from language_model.base.embedding_adapter import EmbeddingAdapter
+from language_model.base.llm_adapter import LLMAdapter
+from core import Knowledge
+from language_model import LLMStatTracker, LLMStats
+from knowledge_base.knowledge_graph.storage.base.knowledge_graph import KnowledgeGraph
+from core import FilePathManager
+from core.logging.logging import get_logger
 
 from ..models import EntityWithDirection,  IsHubOptions
 from .vector_store import ChromaVectorStore
@@ -311,15 +309,14 @@ class HubIndexer:
 
     def _write_indexing_stats(self,
                               runtime: float,
-                              llm_stat_tracker: LLMStatTracker,
-                              emission_tracker: EmissionTrackerManager):
+                              llm_stat_tracker: LLMStatTracker):
         """
         Writes statistics about the indexing process to a file.
 
         Args:
             runtime (float): The runtime of the indexing process.
             llm_stat_tracker (LLMStatTracker): The LLM stat tracker.
-            emission_tracker (EmissionTrackerManager): The emission tracker manager.
+            #emission_tracker (EmissionTrackerManager): The emission tracker manager.
         """
 
         logger.debug("Writing indexing stats")
@@ -328,14 +325,14 @@ class HubIndexer:
             vector_store_path, "indexing_stats.json"
         )
 
-        emission_data: EmissionsTrackingData = emission_tracker.stop_and_get_results()
+        #emission_data: EmissionsTrackingData = emission_tracker.stop_and_get_results()
         llm_stats: LLMStats = llm_stat_tracker.get_stats()
 
         indexing_stats = {
             "runtime": runtime
         }
         indexing_stats.update(llm_stats.model_dump())
-        indexing_stats.update(emission_data.model_dump())
+        #indexing_stats.update(emission_data.model_dump())
         embedding_dict = self.options.embedding_model.embedding_config.model_dump()
         embedding_dict = {f"embedding_model_{k}": v for k,
                           v in embedding_dict.items()}

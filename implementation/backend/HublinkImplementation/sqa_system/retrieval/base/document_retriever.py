@@ -2,8 +2,8 @@ from abc import ABC, abstractmethod
 from typing import ClassVar, List, Optional
 import weave
 
-from sqa_system.core.data.models import RetrievalAnswer
-from sqa_system.core.config.models import (
+from core import RetrievalAnswer
+from core import (
     DocumentRetrievalConfig,
     AdditionalConfigParameter
 )

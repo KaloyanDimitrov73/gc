@@ -67,7 +67,7 @@ class HubLinkService:
             self.setup_manager.set_up_vdl_api_key()
 
             # Disable CLI progress bar - not needed in GUI context
-            from sqa_system.app.cli.cli_progress_handler import ProgressHandler
+            from core import ProgressHandler
             ProgressHandler().disabled = False
 
             self.retriever = HubLinkRetrieverForUser(config, self.graph)
@@ -100,7 +100,7 @@ class HubLinkService:
         streaming callbacks. Safe to call multiple times (no-op after first call).
         """
         try:
-            from sqa_system.app.cli.cli_progress_handler import ProgressHandler
+            from core import ProgressHandler
             ph = ProgressHandler()
 
             if getattr(ph, '_streaming_callbacks_installed', False):
@@ -241,7 +241,7 @@ class HubLinkService:
             raise RuntimeError("HubLink retriever not initialized")
 
         try:
-            from sqa_system.app.cli.cli_progress_handler import ProgressHandler
+            from core import ProgressHandler
             ph = ProgressHandler()
         except Exception:
             ph = None

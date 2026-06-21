@@ -1,12 +1,12 @@
 from typing import Optional, List
 from typing_extensions import override
 
-from sqa_system.core.config.models import KGRetrievalConfig
-from sqa_system.core.language_model.llm_provider import LLMProvider
+from core import KGRetrievalConfig
+from language_model import LLMProvider
 from sqa_system.retrieval import KnowledgeGraphRetriever
-from sqa_system.core.data.models import RetrievalAnswer
-from sqa_system.knowledge_base.knowledge_graph.storage import KnowledgeGraph
-from sqa_system.core.logging.logging import get_logger
+from core import RetrievalAnswer
+from knowledge_base.knowledge_graph.storage import KnowledgeGraph
+from core.logging.logging import get_logger
 
 from .models.hub_link_settings import HubLinkSettings, ADDITIONAL_CONFIG_PARAMS
 from .models.hub import IsHubOptions

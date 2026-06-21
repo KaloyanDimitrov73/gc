@@ -1,5 +1,5 @@
 from typing import List, Optional, Tuple
-from sqa_system.app.cli.cli_progress_handler import ProgressHandler
+from core import ProgressHandler
 import re
 import ast
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -7,15 +7,15 @@ from pydantic import BaseModel, Field
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import PromptTemplate
 
-from sqa_system.core.data.models.context import ContextType
-from sqa_system.core.data.models.context import Context
-from sqa_system.core.data.models import Triple
-from sqa_system.core.data.models.retrieval_answer import RetrievalAnswer
-from sqa_system.core.language_model.base.llm_adapter import LLMAdapter
-from sqa_system.core.language_model.prompt_provider import PromptProvider
-from sqa_system.knowledge_base.knowledge_graph.storage.utils.graph_converter import GraphConverter
-from sqa_system.knowledge_base.knowledge_graph.storage.base.knowledge_graph import KnowledgeGraph
-from sqa_system.core.logging.logging import get_logger
+from core import ContextType
+from core import Context
+from core import Triple
+from core import RetrievalAnswer
+from language_model.base.llm_adapter import LLMAdapter
+from language_model import PromptProvider
+from knowledge_base.knowledge_graph.storage.utils.graph_converter import GraphConverter
+from knowledge_base.knowledge_graph.storage.base.knowledge_graph import KnowledgeGraph
+from core.logging.logging import get_logger
 
 from ..models import (
     HubLinkSettings,

@@ -4,12 +4,12 @@ from typing import Optional, List, ClassVar
 import re
 from weave.flow.scorer import Scorer, auto_summarize
 import weave
-from sqa_system.core.data.models.dataset.implementations.qa_dataset import QADataset
-from sqa_system.core.data.models import Context, Triple, ContextType
-from sqa_system.core.config.models import AdditionalConfigParameter
+from core.models.qa_dataset import QADataset
+from core import Context, Triple, ContextType
+from core import AdditionalConfigParameter
 from experimentation.config.evaluator_config import EvaluatorConfig
 
-from sqa_system.core.logging.logging import get_logger
+from core.logging.logging import get_logger
 
 logger = get_logger(__name__)
 

@@ -1,13 +1,13 @@
 import pytest
 import shutil
 import os
-from sqa_system.knowledge_base.vector_store.storage.factory.implementations.chroma_vector_store_factory import ChromaVectorStoreFactory
-from sqa_system.core.data.models.dataset.implementations.publication_dataset import PublicationDataset
-from sqa_system.core.data.models.publication import Publication
-from sqa_system.knowledge_base.vector_store.chunking.chunker import Chunker
-from sqa_system.core.config.models.chunking_strategy_config import ChunkingStrategyConfig
-from sqa_system.core.config.models.knowledge_base.vector_store_config import VectorStoreConfig
-from sqa_system.core.config.models import EmbeddingConfig
+from knowledge_base.vector_store.storage.factory.implementations.chroma_vector_store_factory import ChromaVectorStoreFactory
+from core.data.models.publication_dataset import PublicationDataset
+from core.data.models.publication import Publication
+from knowledge_base import Chunker
+from knowledge_base.config.chunking_strategy_config import ChunkingStrategyConfig
+from language_model.config.vector_store_config import VectorStoreConfig
+from core import EmbeddingConfig
 
 
 @pytest.fixture

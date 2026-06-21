@@ -2,13 +2,13 @@ from copy import deepcopy
 from typing import Any, Tuple, Callable, List, Optional, Union
 from weave.flow.scorer import Scorer
 
-from sqa_system.core.config.models import Config, DatasetConfig
+from core import Config, DatasetConfig
 from experimentation.config.experiment_config import ExperimentConfig
-from sqa_system.core.config.models.pipeline_config import PipelineConfig
-from sqa_system.core.data.dataset_manager import DatasetManager
-from sqa_system.core.data.models.dataset.implementations.qa_dataset import QADataset
+from config.model.pipeline_config import PipelineConfig
+from data.data_management.dataset_manager import DatasetManager
+from core.models.qa_dataset import QADataset
 from experimentation.evaluation.factory.evaluator_factory import EvaluatorFactory
-from sqa_system.core.logging.logging import get_logger
+from core.logging.logging import get_logger
 logger = get_logger(__name__)
 
 

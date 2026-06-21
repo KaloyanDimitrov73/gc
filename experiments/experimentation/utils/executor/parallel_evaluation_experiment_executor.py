@@ -3,9 +3,9 @@ import concurrent.futures
 from typing import List, Dict, Any
 from typing_extensions import override
 
-from sqa_system.core.config.models.pipeline_config import PipelineConfig
-from sqa_system.core.data.pipeline_data_collector import PipelineData
-from sqa_system.core.logging.logging import get_logger
+from config.model.pipeline_config import PipelineConfig
+from data.data_management.pipeline_data_collector import PipelineData
+from core.logging.logging import get_logger
 from .base.base_experiment_executor import BaseExperimentExecutor
 from ..experiment_evaluator import ExperimentEvaluator
 

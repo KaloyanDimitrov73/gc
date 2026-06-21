@@ -2,13 +2,13 @@ import os
 from typing import List
 import re
 import pandas as pd
-from sqa_system.core.data.file_path_manager import FilePathManager
-from sqa_system.core.data.models import Triple, Knowledge, Subgraph, QAPair
-from sqa_system.core.config.models import KnowledgeGraphConfig
-from sqa_system.knowledge_base.knowledge_graph.storage.knowledge_graph_manager import KnowledgeGraphManager
-from sqa_system.core.data.data_loader.implementations.csv_qa_loader import CSVQALoader
-from sqa_system.core.data.models.dataset.implementations.qa_dataset import QADataset
-from sqa_system.knowledge_base.knowledge_graph.storage.utils import (
+from core import FilePathManager
+from core import Triple, Knowledge, Subgraph, QAPair
+from core import KnowledgeGraphConfig
+from knowledge_base.knowledge_graph import KnowledgeGraphManager
+from data.data_loader import CSVQALoader
+from core.models.qa_dataset import QADataset
+from knowledge_base.knowledge_graph import (
     SubgraphBuilder,
     SubgraphOptions
 )

@@ -4,7 +4,7 @@ from enum import Enum
 import os
 import pandas as pd
 import seaborn as sns
-from sqa_system.core.logging.logging import get_logger
+from core.logging.logging import get_logger
 
 from .plotter.base.base_plotter import PlotterSetings
 from .plotter.average_metrics_per_config_plotter import AverageMetricsPerConfigPlotter

@@ -8,7 +8,7 @@ import threading
 from collections import defaultdict
 from typing import Any, Dict, List, Optional, Tuple
 
-from sqa_system.core.data.models import Knowledge, Triple
+from core import Knowledge, Triple
 
 from backend.app.contracts.schemas import GraphNode
 from backend.app.modules.graph_explore.infrastructure.orkg.node_builder import (

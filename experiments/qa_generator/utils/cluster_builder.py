@@ -3,19 +3,19 @@ from pydantic import BaseModel, Field
 import pandas as pd
 from sklearn.cluster import DBSCAN
 
-from sqa_system.core.language_model.base.llm_adapter import LLMAdapter
-from sqa_system.core.language_model import EmbeddingAdapter
+from language_model.base.llm_adapter import LLMAdapter
+from language_model import EmbeddingAdapter
 from experiments.qa_generator.question_classifier import QuestionClassifier
-from sqa_system.knowledge_base.knowledge_graph.storage.utils.subgraph_builder import SubgraphBuilder
-from sqa_system.knowledge_base.knowledge_graph.storage.base.knowledge_graph import KnowledgeGraph
-from sqa_system.core.data.models import Triple
+from knowledge_base.knowledge_graph.storage.utils.subgraph_builder import SubgraphBuilder
+from knowledge_base.knowledge_graph.storage.base.knowledge_graph import KnowledgeGraph
+from core import Triple
 
-from sqa_system.knowledge_base.knowledge_graph.storage.utils import (
+from knowledge_base.knowledge_graph import (
     GraphPathFilter
 )
-from sqa_system.core.data.models.knowledge import Knowledge
-from sqa_system.app.cli.cli_progress_handler import ProgressHandler
-from sqa_system.core.logging.logging import get_logger
+from core.data.models.knowledge import Knowledge
+from core import ProgressHandler
+from core.logging.logging import get_logger
 
 logger = get_logger(__name__)
 

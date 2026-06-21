@@ -1,11 +1,11 @@
 from collections import deque
 from typing import List, Tuple
 
-from sqa_system.app.cli.cli_progress_handler import ProgressHandler
-from sqa_system.core.data.models.knowledge import Knowledge
-from sqa_system.core.data.models.triple import Triple
-from sqa_system.knowledge_base.knowledge_graph.storage.base.knowledge_graph import KnowledgeGraph
-from sqa_system.core.logging.logging import get_logger
+from core import ProgressHandler
+from core.data.models.knowledge import Knowledge
+from core.data.models.triple import Triple
+from knowledge_base.knowledge_graph.storage.base.knowledge_graph import KnowledgeGraph
+from core.logging.logging import get_logger
 
 from ..models import EntityWithDirection, Hub, IsHubOptions
 

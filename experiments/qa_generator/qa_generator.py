@@ -1,4 +1,4 @@
-from sqa_system.core.data.models import QAPair
+from core import QAPair
 from .base.kg_qa_generation_strategy import KGQAGenerationStrategy
 
 

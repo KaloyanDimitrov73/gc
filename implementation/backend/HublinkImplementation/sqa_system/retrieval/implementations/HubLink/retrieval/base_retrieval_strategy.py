@@ -8,13 +8,13 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import PromptTemplate
 import numpy as np
 
-from sqa_system.core.language_model.base.embedding_adapter import EmbeddingAdapter
-from sqa_system.core.language_model.base.llm_adapter import LLMAdapter
-from sqa_system.app.cli.cli_progress_handler import ProgressHandler
-from sqa_system.core.language_model.prompt_provider import PromptProvider
-from sqa_system.core.data.models import RetrievalAnswer, Triple
-from sqa_system.knowledge_base.knowledge_graph.storage import KnowledgeGraph
-from sqa_system.core.logging.logging import get_logger
+from language_model.base.embedding_adapter import EmbeddingAdapter
+from language_model.base.llm_adapter import LLMAdapter
+from core import ProgressHandler
+from language_model import PromptProvider
+from core import RetrievalAnswer, Triple
+from knowledge_base.knowledge_graph.storage import KnowledgeGraph
+from core.logging.logging import get_logger
 
 from ..models import (
     SourceDocumentSummary,

@@ -1,8 +1,8 @@
 from enum import Enum
 from typing_extensions import override
 
-from sqa_system.core.config.models import DocumentRetrievalConfig
-from sqa_system.core.base.base_factory import BaseFactory
+from core import DocumentRetrievalConfig
+from core.base.base_factory import BaseFactory
 
 from ..base.document_retriever import DocumentRetriever
 

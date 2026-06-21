@@ -4,14 +4,14 @@ import weave
 from pydantic import model_validator, BaseModel, Field
 from langchain_core.prompts import PromptTemplate
 
-from sqa_system.core.config.models import LLMConfig
-from sqa_system.core.language_model.llm_provider import LLMProvider, LLMAdapter
-from sqa_system.core.language_model.enums.llm_enums import EndpointType
-from sqa_system.app.cli.cli_progress_handler import ProgressHandler
-from sqa_system.core.config.models import AdditionalConfigParameter
-from sqa_system.core.language_model.prompt_provider import PromptProvider
+from core import LLMConfig
+from language_model import LLMProvider, LLMAdapter
+from language_model import EndpointType
+from core import ProgressHandler
+from core import AdditionalConfigParameter
+from language_model import PromptProvider
 from experimentation.evaluation.base.evaluator import Evaluator
-from sqa_system.core.logging.logging import get_logger
+from core.logging.logging import get_logger
 
 logger = get_logger(__name__)
 

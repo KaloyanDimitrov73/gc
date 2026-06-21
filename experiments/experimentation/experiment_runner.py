@@ -3,12 +3,12 @@ from typing import Optional
 import pandas as pd
 
 
-from sqa_system.core.data.file_path_manager import FilePathManager
+from core import FilePathManager
 from experimentation.utils.experiment_result_processor import ExperimentResultProcessor
 from experimentation.utils.experiment_preparer import ExperimentPreparer
-from sqa_system.app.cli.cli_progress_handler import ProgressHandler
+from core import ProgressHandler
 from experimentation.config.experiment_config import ExperimentConfig
-from sqa_system.core.logging.logging import get_logger
+from core.logging.logging import get_logger
 
 from .utils.experiment_runner_settings import ExperimentRunnerSettings, ExecutionStrategyType
 from .utils.multiple_process_worker import ExperimentWorkerData, experiment_worker

@@ -1,9 +1,9 @@
-from sqa_system.knowledge_base.vector_store.storage import ChromaVectorStoreFactory
-from sqa_system.knowledge_base.vector_store.storage import LangchainVectorStoreAdapter
-from sqa_system.knowledge_base.knowledge_graph.storage.base.knowledge_graph import KnowledgeGraph
-from sqa_system.core.config.models import VectorStoreConfig
-from sqa_system.core.logging.logging import get_logger
-from sqa_system.core.data.models import Knowledge
+from knowledge_base.vector_store.storage import ChromaVectorStoreFactory
+from knowledge_base.vector_store.storage import LangchainVectorStoreAdapter
+from knowledge_base.knowledge_graph.storage.base.knowledge_graph import KnowledgeGraph
+from core import VectorStoreConfig
+from core.logging.logging import get_logger
+from core import Knowledge
 
 from ..models import SourceDocumentSummary, ProcessedQuestion
 

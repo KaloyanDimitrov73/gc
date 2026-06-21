@@ -1,9 +1,9 @@
 from typing import List, Type
 import json
 
-from sqa_system.core.data.models import ParameterRange
-from sqa_system.core.data.file_path_manager import FilePathManager
-from sqa_system.core.config.models import (
+from core import ParameterRange
+from core import FilePathManager
+from core import (
     Config,
     ExperimentConfig,
     PipelineConfig,
@@ -11,7 +11,7 @@ from sqa_system.core.config.models import (
     EvaluatorConfig,
     KnowledgeGraphConfig
 )
-from sqa_system.core.config.config_manager import ConfigManagerFactory
+from core import ConfigManagerFactory
 
 
 class ExperimentConfigBuilder:

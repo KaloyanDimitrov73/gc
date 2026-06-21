@@ -33,11 +33,11 @@ def _require_env(name: str) -> str:
 def _get_llm_components():
     """Import LLM adapter classes from sqa_system, skipping the test if unavailable."""
     try:
-        from sqa_system.core.config.models.llm_config import LLMConfig
-        from sqa_system.core.language_model.implementations.openai_llm_adapter import (
+        from language_model.config.llm_config import LLMConfig
+        from language_model.implementations import (
             OpenAiLLMAdapter,
         )
-        from sqa_system.core.language_model.implementations.vdl_llm_adapter import (
+        from language_model.implementations.vdl_llm_adapter import (
             VDLLLMAdapter,
         )
     except Exception as exc:

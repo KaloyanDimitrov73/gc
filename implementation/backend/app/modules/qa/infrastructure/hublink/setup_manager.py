@@ -5,8 +5,8 @@ Setup for ORKG credentials and API keys.
 from typing import Optional
 
 from backend.app.core.config import Settings, get_settings
-from sqa_system.core.data.secret_manager import SecretManager, SecretType
-from sqa_system.core.language_model.enums.llm_enums import EndpointType
+from core.data.secret_manager import SecretManager, SecretType
+from language_model import EndpointType
 
 
 class SetupManager:

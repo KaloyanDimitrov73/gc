@@ -4,12 +4,12 @@ import json
 import pandas as pd
 
 from pydantic import Field
-from sqa_system.core.data.models.qa_pair import QAPair
-from sqa_system.core.data.file_path_manager import FilePathManager
+from core.models.qa_pair import QAPair
+from core import FilePathManager
 from experiments.qa_generator.question_classifier import QuestionClassifier
-from sqa_system.core.language_model.llm_provider import LLMProvider
-from sqa_system.core.data.cache_manager import CacheManager
-from sqa_system.core.logging.logging import get_logger
+from language_model import LLMProvider
+from core import CacheManager
+from core.logging.logging import get_logger
 logger = get_logger(__name__)
 
 # The data in the CSVs can be stored differently to the QAPair model.

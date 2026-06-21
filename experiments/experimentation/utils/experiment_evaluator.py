@@ -7,11 +7,11 @@ import weave
 from weave import Model
 import pandas as pd
 
-from sqa_system.core.data.file_path_manager import FilePathManager
+from core import FilePathManager
 from experimentation.evaluation.base.evaluator import Evaluator
-from sqa_system.app.cli.cli_progress_handler import ProgressHandler
-from sqa_system.core.data.models import PipeIOData, ContextType, Context, QAPair
-from sqa_system.core.logging.logging import get_logger
+from core import ProgressHandler
+from core import PipeIOData, ContextType, Context, QAPair
+from core.logging.logging import get_logger
 logger = get_logger(__name__)
 
 

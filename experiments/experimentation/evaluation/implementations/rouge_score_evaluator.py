@@ -4,9 +4,9 @@ import weave
 from weave.flow.scorer import auto_summarize
 from rouge_score import rouge_scorer
 
-from sqa_system.app.cli.cli_progress_handler import ProgressHandler
+from core import ProgressHandler
 from experimentation.evaluation.base.evaluator import Evaluator
-from sqa_system.core.logging.logging import get_logger
+from core.logging.logging import get_logger
 
 logger = get_logger(__name__)
 

@@ -20,8 +20,8 @@
 
 import os
 import json
-from sqa_system.core.data.file_path_manager import FilePathManager
-from sqa_system.core.config.models import KnowledgeGraphConfig
+from core import FilePathManager
+from core import KnowledgeGraphConfig
 from experiments.qa_generator import QADatasetToGraphConverter
 
 

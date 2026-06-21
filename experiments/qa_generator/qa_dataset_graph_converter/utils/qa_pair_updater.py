@@ -1,5 +1,5 @@
-from sqa_system.core.data.models import Knowledge, Subgraph, QAPair, Triple
-from sqa_system.knowledge_base.knowledge_graph.storage import KnowledgeGraph
+from core import Knowledge, Subgraph, QAPair, Triple
+from knowledge_base.knowledge_graph.storage import KnowledgeGraph
 
 
 from ...strategies import ClusterBasedQuestionGenerator, ClusterGeneratorOptions

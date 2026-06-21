@@ -1,4 +1,4 @@
-from sqa_system.core.config.models.base.config import Config
+from core import Config
 
 class EvaluatorConfig(Config):
     """Configuration class for Evaluators."""

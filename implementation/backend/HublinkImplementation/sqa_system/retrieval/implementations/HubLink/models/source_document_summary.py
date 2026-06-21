@@ -1,7 +1,7 @@
 from typing import List
 from pydantic import BaseModel, Field
 
-from sqa_system.core.data.models import Context
+from core import Context
 
 class SourceDocumentSummary(BaseModel):
     """

@@ -13,7 +13,7 @@ import sys, os as _os; sys.path.insert(0, _os.path.join(_os.path.dirname(_os.pat
 #    what is plotted.
 
 import os
-from sqa_system.core.data.file_path_manager import FilePathManager
+from core import FilePathManager
 from experimentation.utils.visualizer.experiment_visualizer import (
     ExperimentVisualizer, ExperimentVisualizerSettings, PlotType)
 

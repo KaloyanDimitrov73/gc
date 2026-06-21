@@ -4,23 +4,23 @@ import random
 from typing import List, Set, Tuple, Dict, Optional
 from pydantic import BaseModel
 
-from sqa_system.knowledge_base.knowledge_graph.storage import KnowledgeGraph
-from sqa_system.core.language_model import LLMAdapter
-from sqa_system.app.cli.cli_progress_handler import ProgressHandler
-from sqa_system.core.config.models import EmbeddingConfig
-from sqa_system.core.language_model.llm_provider import LLMProvider
-from sqa_system.knowledge_base.knowledge_graph.storage.utils.path_builder import PathBuilder
-from sqa_system.knowledge_base.knowledge_graph.storage import (
+from knowledge_base.knowledge_graph.storage import KnowledgeGraph
+from language_model import LLMAdapter
+from core import ProgressHandler
+from core import EmbeddingConfig
+from language_model import LLMProvider
+from knowledge_base.knowledge_graph.storage.utils.path_builder import PathBuilder
+from knowledge_base.knowledge_graph.storage import (
     SubgraphBuilder,
     SubgraphOptions
 )
-from sqa_system.core.data.models import (
+from core import (
     QAPair,
     Knowledge,
     Triple
 )
 from experiments.qa_generator.question_classifier import QuestionClassifier
-from sqa_system.core.logging.logging import get_logger
+from core.logging.logging import get_logger
 
 from ..utils.cluster_builder import ClusterBuilder, ClusterInformation
 from ..utils.from_subgraph_generator import FromSubgraphGenerator, SubgraphGeneratorOptions

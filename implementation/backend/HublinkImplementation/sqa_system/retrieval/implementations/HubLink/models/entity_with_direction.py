@@ -1,8 +1,8 @@
 from typing import List
 from pydantic import BaseModel, Field
 
-from sqa_system.core.data.models.knowledge import Knowledge
-from sqa_system.core.data.models.triple import Triple
+from core.data.models.knowledge import Knowledge
+from core.data.models.triple import Triple
 
 
 class EntityWithDirection(BaseModel):

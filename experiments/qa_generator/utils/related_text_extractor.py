@@ -3,11 +3,11 @@ from pydantic import BaseModel, Field, RootModel
 from langchain_core.prompts import PromptTemplate
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
-from sqa_system.core.data.models import Triple, Publication
-from sqa_system.core.language_model.base.llm_adapter import LLMAdapter
-from sqa_system.core.language_model.prompt_provider import PromptProvider
+from core import Triple, Publication
+from language_model.base.llm_adapter import LLMAdapter
+from language_model import PromptProvider
 
-from sqa_system.core.logging.logging import get_logger
+from core.logging.logging import get_logger
 logger = get_logger(__name__)
 
 

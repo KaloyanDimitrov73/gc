@@ -6,15 +6,15 @@ import threading
 from concurrent.futures import as_completed, ThreadPoolExecutor
 from pydantic import BaseModel, Field, ConfigDict
 
-from sqa_system.app.cli.cli_progress_handler import ProgressHandler
-from sqa_system.core.data.models.knowledge import Knowledge
-from sqa_system.core.data.models.triple import Triple
-from sqa_system.core.data.cache_manager import CacheManager
-from sqa_system.core.language_model.base.embedding_adapter import EmbeddingAdapter
-from sqa_system.core.language_model.base.llm_adapter import LLMAdapter
-from sqa_system.knowledge_base.knowledge_graph.storage.utils.graph_converter import GraphConverter
-from sqa_system.knowledge_base.knowledge_graph.storage.base.knowledge_graph import KnowledgeGraph
-from sqa_system.core.logging.logging import get_logger
+from core import ProgressHandler
+from core.data.models.knowledge import Knowledge
+from core.data.models.triple import Triple
+from core import CacheManager
+from language_model.base.embedding_adapter import EmbeddingAdapter
+from language_model.base.llm_adapter import LLMAdapter
+from knowledge_base.knowledge_graph.storage.utils.graph_converter import GraphConverter
+from knowledge_base.knowledge_graph.storage.base.knowledge_graph import KnowledgeGraph
+from core.logging.logging import get_logger
 
 from ..models import (
     EntityWithDirection,

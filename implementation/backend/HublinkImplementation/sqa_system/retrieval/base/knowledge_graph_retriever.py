@@ -2,10 +2,10 @@ from abc import ABC, abstractmethod
 from typing import ClassVar, List, Optional
 import weave
 
-from sqa_system.core.data.models import RetrievalAnswer
-from sqa_system.knowledge_base.knowledge_graph.storage.base.knowledge_graph import KnowledgeGraph
-from sqa_system.core.config.models.additional_config_parameter import AdditionalConfigParameter
-from sqa_system.core.config.models import KGRetrievalConfig
+from core import RetrievalAnswer
+from knowledge_base.knowledge_graph.storage.base.knowledge_graph import KnowledgeGraph
+from core import AdditionalConfigParameter
+from core import KGRetrievalConfig
 
 from .retriever import Retriever
 

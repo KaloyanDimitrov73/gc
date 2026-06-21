@@ -1,7 +1,7 @@
 import pytest
 from experimentation.evaluation.implementations.ragas_evaluator.ragas_evaluator import RagasEvaluator
 from experimentation.config.evaluator_config import EvaluatorConfig
-from sqa_system.core.data.models import Triple, Knowledge
+from core import Triple, Knowledge
 
 LLM_CONFIG = {
     "additional_params": {},

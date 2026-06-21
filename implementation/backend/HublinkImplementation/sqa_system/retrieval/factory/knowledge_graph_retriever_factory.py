@@ -1,12 +1,13 @@
 from enum import Enum
 from typing_extensions import override
 
-from sqa_system.knowledge_base.knowledge_graph.storage import KnowledgeGraph
-from sqa_system.knowledge_base.knowledge_graph.storage import KnowledgeGraphManager
-from sqa_system.core.config.models import KGRetrievalConfig
-from sqa_system.core.base.base_factory import BaseFactory
+from knowledge_base.knowledge_graph.storage import KnowledgeGraph
+from knowledge_base.knowledge_graph.storage import KnowledgeGraphManager
+
+from core.base.base_factory import BaseFactory
 
 from ..base.knowledge_graph_retriever import KnowledgeGraphRetriever
+from ..config.kg_retrieval_config import KGRetrievalConfig
 
 
 class KnowledgeGraphRetrieverType(Enum):

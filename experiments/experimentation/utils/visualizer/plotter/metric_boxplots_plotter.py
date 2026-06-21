@@ -3,7 +3,7 @@ import os
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-from sqa_system.core.logging.logging import get_logger
+from core.logging.logging import get_logger
 
 from .base.base_plotter import BasePlotter
 

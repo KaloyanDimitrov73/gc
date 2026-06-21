@@ -1,15 +1,15 @@
 from typing import List, Optional, Tuple
 from pydantic import BaseModel, Field
 
-from sqa_system.core.data.context_tracer import ContextTracer, ContextTrace
-from sqa_system.app.cli.cli_progress_handler import ProgressHandler
-from sqa_system.knowledge_base.knowledge_graph.storage.utils.graph_converter import GraphConverter
-from sqa_system.core.language_model.base.llm_adapter import LLMAdapter
-from sqa_system.knowledge_base.knowledge_graph.storage.base.knowledge_graph import KnowledgeGraph
-from sqa_system.core.data.models import QAPair, Knowledge, Subgraph, Triple
-from sqa_system.core.language_model.prompt_provider import PromptProvider
-from sqa_system.core.logging.logging import get_logger
-from sqa_system.core.data.extraction.paper_content_extractor import (
+from core import ContextTracer, ContextTrace
+from core import ProgressHandler
+from knowledge_base.knowledge_graph.storage.utils.graph_converter import GraphConverter
+from language_model.base.llm_adapter import LLMAdapter
+from knowledge_base.knowledge_graph.storage.base.knowledge_graph import KnowledgeGraph
+from core import QAPair, Knowledge, Subgraph, Triple
+from language_model import PromptProvider
+from core.logging.logging import get_logger
+from core import (
     TextWithOriginal,
     Entity
 )

@@ -1,10 +1,10 @@
 from typing import List, Dict, Any, Optional
 import pandas as pd
 
-from sqa_system.core.data.models import PipeIOData
-from sqa_system.core.config.models.pipeline_config import PipelineConfig
-from sqa_system.core.data.pipeline_data_collector import PipelineData
-from sqa_system.core.logging.logging import get_logger
+from core import PipeIOData
+from config.model.pipeline_config import PipelineConfig
+from data.data_management.pipeline_data_collector import PipelineData
+from core.logging.logging import get_logger
 logger = get_logger(__name__)
 
 

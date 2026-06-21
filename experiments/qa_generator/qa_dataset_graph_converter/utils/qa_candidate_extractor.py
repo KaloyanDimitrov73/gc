@@ -1,4 +1,4 @@
-from sqa_system.core.data.models import Triple, Knowledge
+from core import Triple, Knowledge
 
 
 class QACandidateExtractor:

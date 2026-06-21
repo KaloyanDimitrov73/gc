@@ -6,12 +6,12 @@ from langchain_core.prompts import PromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 
 
-from sqa_system.core.language_model.prompt_provider import PromptProvider
-from sqa_system.knowledge_base.knowledge_graph.storage.utils.path_builder import PathBuilder
-from sqa_system.core.language_model.base.llm_adapter import LLMAdapter
-from sqa_system.knowledge_base.knowledge_graph.storage.base.knowledge_graph import KnowledgeGraph
-from sqa_system.core.data.models import Triple, QAPair, Knowledge, Subgraph
-from sqa_system.core.logging.logging import get_logger
+from language_model import PromptProvider
+from knowledge_base.knowledge_graph.storage.utils.path_builder import PathBuilder
+from language_model.base.llm_adapter import LLMAdapter
+from knowledge_base.knowledge_graph.storage.base.knowledge_graph import KnowledgeGraph
+from core import Triple, QAPair, Knowledge, Subgraph
+from core.logging.logging import get_logger
 logger = get_logger(__name__)
 
 

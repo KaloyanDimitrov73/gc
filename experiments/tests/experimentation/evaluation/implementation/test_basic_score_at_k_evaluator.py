@@ -1,7 +1,7 @@
 import pytest
 from experimentation.evaluation.implementations.basic_score_evaluator import BasicScoreEvaluator
 from experimentation.config.evaluator_config import EvaluatorConfig
-from sqa_system.core.data.models import Triple, Knowledge
+from core import Triple, Knowledge
 
 TEST_TRIPLES = [
     Triple(

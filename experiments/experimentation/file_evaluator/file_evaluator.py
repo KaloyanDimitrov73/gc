@@ -6,10 +6,10 @@ import pandas as pd
 
 from experimentation.evaluation.factory.evaluator_factory import EvaluatorFactory
 from experimentation.evaluation.base.evaluator import Evaluator
-from sqa_system.core.data.file_path_manager import FilePathManager
-from sqa_system.core.data.data_loader.implementations.csv_qa_loader import CSVQALoader
+from core import FilePathManager
+from data.data_loader import CSVQALoader
 from experimentation.config.evaluator_config import EvaluatorConfig
-from sqa_system.core.data.models import QAPair
+from core import QAPair
 
 
 class FileEvaluator:

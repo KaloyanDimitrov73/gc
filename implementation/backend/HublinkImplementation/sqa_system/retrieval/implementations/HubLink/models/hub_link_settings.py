@@ -1,12 +1,12 @@
-from typing import List, Optional, Tuple, Union
+from typing import List, Optional, Tuple
 import json
 from pydantic import BaseModel
 
-from sqa_system.core.config.models.additional_config_parameter import (
+from core import (
     AdditionalConfigParameter,
     RestrictionType
 )
-from sqa_system.core.config.models import (
+from core import (
     ChunkingStrategyConfig,
     DatasetConfig,
     EmbeddingConfig,

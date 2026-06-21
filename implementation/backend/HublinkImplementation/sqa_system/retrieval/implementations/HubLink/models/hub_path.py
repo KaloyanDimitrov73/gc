@@ -1,7 +1,7 @@
 from typing import List, Optional
 from pydantic import BaseModel, Field
 
-from sqa_system.core.data.models.triple import Triple
+from core.data.models.triple import Triple
 
 class HubPath(BaseModel):
     """

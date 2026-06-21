@@ -1,8 +1,8 @@
 from typing import List, Dict, Any
 from typing_extensions import override
 
-from sqa_system.core.config.models.pipeline_config import PipelineConfig
-from sqa_system.core.logging.logging import get_logger
+from config.model.pipeline_config import PipelineConfig
+from core.logging.logging import get_logger
 from .base.base_experiment_executor import BaseExperimentExecutor
 
 logger = get_logger(__name__)

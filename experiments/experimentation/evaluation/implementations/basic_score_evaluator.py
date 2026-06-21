@@ -4,10 +4,10 @@ import weave
 from weave.flow.scorer import auto_summarize
 from pydantic import model_validator
 
-from sqa_system.app.cli.cli_progress_handler import ProgressHandler
-from sqa_system.core.config.models import AdditionalConfigParameter, RestrictionType
+from core import ProgressHandler
+from core import AdditionalConfigParameter, RestrictionType
 from experimentation.evaluation.base.evaluator import Evaluator
-from sqa_system.core.logging.logging import get_logger
+from core.logging.logging import get_logger
 
 logger = get_logger(__name__)
 

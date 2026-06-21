@@ -1,7 +1,7 @@
 import pytest
 from experimentation.evaluation.implementations.map_at_k_evaluator import MAPAtKEvaluator
 from experimentation.config.evaluator_config import EvaluatorConfig
-from sqa_system.core.data.models import Triple, Knowledge
+from core import Triple, Knowledge
 
 # Sample triples for testing
 TEST_TRIPLES = [

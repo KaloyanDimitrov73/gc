@@ -2,8 +2,8 @@ from typing import List, Optional, Tuple
 from typing_extensions import override
 
 
-from sqa_system.core.data.models import RetrievalAnswer
-from sqa_system.core.logging.logging import get_logger
+from core import RetrievalAnswer
+from core.logging.logging import get_logger
 
 from ..models import (
     IsHubOptions,

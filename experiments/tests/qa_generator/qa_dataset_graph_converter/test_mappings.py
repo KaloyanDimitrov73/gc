@@ -1,6 +1,6 @@
 import pytest
 
-from sqa_system.core.data.models import Triple, Knowledge
+from core import Triple, Knowledge
 from experiments.qa_generator import QACandidateExtractor, QASimilarityMatcher
 
 def test_get_topic_candidate_from_triple():

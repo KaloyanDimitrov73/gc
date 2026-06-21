@@ -7,7 +7,7 @@ from typing import Dict, Optional
 import json
 import logging
 
-from sqa_system.core.config.models import LLMConfig
+from core import LLMConfig
 from backend.app.core.config import get_settings
 
 logger = logging.getLogger(__name__)

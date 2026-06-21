@@ -5,9 +5,9 @@ from chromadb import QueryResult
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 
-from sqa_system.core.data.file_path_manager import FilePathManager
-from sqa_system.core.logging.logging import get_logger
-from sqa_system.core.data.models.triple import Triple
+from core import FilePathManager
+from core.logging.logging import get_logger
+from core.data.models.triple import Triple
 
 from ..models.hub_path import HubPath
 

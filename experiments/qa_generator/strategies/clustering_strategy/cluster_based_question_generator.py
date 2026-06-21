@@ -3,11 +3,11 @@ from typing import List, Optional
 from typing_extensions import override
 from dataclasses import dataclass
 
-from sqa_system.knowledge_base.knowledge_graph.storage import KnowledgeGraph
-from sqa_system.core.language_model import LLMAdapter
-from sqa_system.core.data.models import QAPair, Subgraph, Triple
-from sqa_system.core.logging.logging import get_logger
-from sqa_system.knowledge_base.knowledge_graph.storage import PathBuilder
+from knowledge_base.knowledge_graph.storage import KnowledgeGraph
+from language_model import LLMAdapter
+from core import QAPair, Subgraph, Triple
+from core.logging.logging import get_logger
+from knowledge_base.knowledge_graph.storage import PathBuilder
 
 from ...base.clustering_strategy import (
     ClusteringStrategy, ClusterStrategyOptions, GenerationOptions, ClusterInformation)

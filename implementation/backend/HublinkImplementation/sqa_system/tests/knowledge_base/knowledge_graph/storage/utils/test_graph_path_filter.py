@@ -1,9 +1,9 @@
 import pytest
-from sqa_system.core.data.models.knowledge import Knowledge
-from sqa_system.core.data.models.subgraph import Subgraph
-from sqa_system.core.data.models.triple import Triple
-from sqa_system.knowledge_base.knowledge_graph.storage.utils.graph_path_filter import GraphPathFilter
-from sqa_system.knowledge_base.knowledge_graph.storage.utils.path_builder import PathBuilder
+from core.data.models.knowledge import Knowledge
+from core import Subgraph
+from core.data.models.triple import Triple
+from knowledge_base.knowledge_graph.storage.utils.graph_path_filter import GraphPathFilter
+from knowledge_base.knowledge_graph.storage.utils.path_builder import PathBuilder
 
 @pytest.fixture
 def subgraph():

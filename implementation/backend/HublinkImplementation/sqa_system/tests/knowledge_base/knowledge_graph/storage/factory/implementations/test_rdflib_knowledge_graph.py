@@ -3,10 +3,10 @@ from rdflib import RDF, Literal
 from rdflib.namespace import RDFS
 from rdflib import Namespace
 
-from sqa_system.knowledge_base.knowledge_graph.storage.factory.implementations.local_knowledge_graph.local_knowledge_graph_factory import (
+from knowledge_base.knowledge_graph.storage.factory.implementations.local_knowledge_graph.local_knowledge_graph_factory import (
     LocalKnowledgeGraphFactory
 )
-from sqa_system.core.data.models.knowledge import Knowledge
+from core.data.models.knowledge import Knowledge
 
 
 # Mock Classes

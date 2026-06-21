@@ -1,8 +1,8 @@
 from typing import List, Optional
-from sqa_system.core.config.models.base.config import Config
-from sqa_system.core.config.models.pipeline_config import PipelineConfig
-from sqa_system.core.data.models.parameter_range import ParameterRange
-from sqa_system.core.config.models.dataset_config import DatasetConfig
+from core import Config
+from config.model.pipeline_config import PipelineConfig
+from core.models.parameter_range import ParameterRange
+from core import DatasetConfig
 from experimentation.config.evaluator_config import EvaluatorConfig
 
 

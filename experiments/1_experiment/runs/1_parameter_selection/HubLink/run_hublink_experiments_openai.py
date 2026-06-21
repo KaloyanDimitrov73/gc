@@ -2,7 +2,7 @@ import os
 import sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../../.."))
 
-from sqa_system.core.data.file_path_manager import FilePathManager
+from core import FilePathManager
 from experimentation.experiment_config_builder import ExperimentConfigBuilder
 from experimentation.experiment_runner import ExperimentRunner, ExperimentRunnerSettings
 

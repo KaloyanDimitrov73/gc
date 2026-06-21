@@ -9,16 +9,16 @@ from pydantic import BaseModel, Field
 import language_tool_python
 
 from experiments.qa_generator.question_classifier import QuestionClassifier
-from sqa_system.core.data.models.qa_pair import QAPair
-from sqa_system.app.cli.cli_progress_handler import ProgressHandler
-from sqa_system.knowledge_base.knowledge_graph.storage.utils.graph_converter import GraphConverter
-from sqa_system.core.language_model.base.llm_adapter import LLMAdapter
-from sqa_system.knowledge_base.knowledge_graph.storage.base.knowledge_graph import KnowledgeGraph
-from sqa_system.core.data.models.triple import Triple
-from sqa_system.core.data.models.knowledge import Knowledge
-from sqa_system.core.language_model.prompt_provider import PromptProvider
-from sqa_system.core.logging.logging import get_logger
-from sqa_system.core.data.extraction.paper_content_extractor import (
+from core.models.qa_pair import QAPair
+from core import ProgressHandler
+from knowledge_base.knowledge_graph.storage.utils.graph_converter import GraphConverter
+from language_model.base.llm_adapter import LLMAdapter
+from knowledge_base.knowledge_graph.storage.base.knowledge_graph import KnowledgeGraph
+from core.data.models.triple import Triple
+from core.data.models.knowledge import Knowledge
+from language_model import PromptProvider
+from core.logging.logging import get_logger
+from core import (
     TextWithOriginal,
     Entity
 )

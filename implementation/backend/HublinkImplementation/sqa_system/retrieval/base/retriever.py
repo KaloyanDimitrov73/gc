@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import ClassVar, List, Optional
 
-from sqa_system.core.config.models.additional_config_parameter import AdditionalConfigParameter
-from sqa_system.core.config.models import RetrievalConfig
+from core import AdditionalConfigParameter
+from core import RetrievalConfig
 
 
 class Retriever(ABC):

@@ -2,9 +2,9 @@ import os
 from typing import List, Dict, Any
 from typing_extensions import override
 
-from sqa_system.core.data.emission_tracker_manager import EmissionTrackerManager
-from sqa_system.core.logging.logging import get_logger
-from sqa_system.core.config.models.pipeline_config import PipelineConfig
+from data.data_management.emission_tracker_manager import EmissionTrackerManager
+from core.logging.logging import get_logger
+from config.model.pipeline_config import PipelineConfig
 from .base.base_experiment_executor import BaseExperimentExecutor
 
 logger = get_logger(__name__)

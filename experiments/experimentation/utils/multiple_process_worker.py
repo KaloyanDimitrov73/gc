@@ -6,9 +6,9 @@ import pandas as pd
 
 from experimentation.utils.experiment_result_processor import ExperimentResultProcessor
 from experimentation.config.experiment_config import ExperimentConfig
-from sqa_system.core.config.models import PipelineConfig
-from sqa_system.core.data.file_path_manager import FilePathManager
-from sqa_system.core.logging.logging import get_logger
+from core import PipelineConfig
+from core import FilePathManager
+from core.logging.logging import get_logger
 
 from ..evaluation.base.evaluator import Evaluator
 from .experiment_runner_settings import ExperimentRunnerSettings

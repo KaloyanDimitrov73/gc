@@ -1,9 +1,9 @@
 from typing import List, Optional, Tuple
 from pydantic import BaseModel, Field
 
-from sqa_system.core.data.models.triple import Triple
-from sqa_system.knowledge_base.knowledge_graph.storage.base.knowledge_graph import KnowledgeGraph
-from sqa_system.core.data.models.knowledge import Knowledge
+from core.data.models.triple import Triple
+from knowledge_base.knowledge_graph.storage.base.knowledge_graph import KnowledgeGraph
+from core.data.models.knowledge import Knowledge
 from .hub_path import HubPath
 from .entity_with_direction import EntityWithDirection
 

@@ -3,9 +3,9 @@
 This file includes configurations for testing purposes.
 """
 import pytest
-from sqa_system.core.config.models.knowledge_base.knowledge_graph_config import KnowledgeGraphConfig
-from sqa_system.core.config.models.dataset_config import DatasetConfig
-from sqa_system.core.config.models.llm_config import LLMConfig
+from knowledge_base.config.knowledge_graph_config import KnowledgeGraphConfig
+from core import DatasetConfig
+from language_model.config.llm_config import LLMConfig
 
 @pytest.fixture
 def dataset_config():

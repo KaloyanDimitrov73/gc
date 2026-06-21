@@ -1,8 +1,8 @@
 from typing import List
 import pytest
-from sqa_system.core.data.models.knowledge import Knowledge
-from sqa_system.core.data.models.qa_pair import QAPair
-from sqa_system.core.data.models.triple import Triple
+from core.data.models.knowledge import Knowledge
+from core.models.qa_pair import QAPair
+from core.data.models.triple import Triple
 from experiments.qa_generator.base.subgraph_strategy import KGQAGenerationStrategy
 
 

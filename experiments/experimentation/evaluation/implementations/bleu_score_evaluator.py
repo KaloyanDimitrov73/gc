@@ -3,9 +3,9 @@ from typing_extensions import override
 import weave
 from sacrebleu.metrics import BLEU
 
-from sqa_system.app.cli.cli_progress_handler import ProgressHandler
+from core import ProgressHandler
 from experimentation.evaluation.base.evaluator import Evaluator
-from sqa_system.core.logging.logging import get_logger
+from core.logging.logging import get_logger
 
 logger = get_logger(__name__)
 

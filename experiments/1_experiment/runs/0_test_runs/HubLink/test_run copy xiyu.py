@@ -1,5 +1,5 @@
 import os
-from sqa_system.core.data.file_path_manager import FilePathManager
+from core import FilePathManager
 from experimentation.config.experiment_config import ExperimentConfig
 from experimentation.experiment_runner import ExperimentRunner, ExperimentRunnerSettings
 

@@ -2,7 +2,7 @@ from typing import Optional
 import pandas as pd
 import numpy as np
 
-from sqa_system.core.logging.logging import get_logger
+from core.logging.logging import get_logger
 
 from .base.base_plotter import BasePlotter
 

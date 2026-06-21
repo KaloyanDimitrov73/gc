@@ -17,14 +17,14 @@ from ragas import EvaluationDataset, SingleTurnSample
 from ragas.llms import LangchainLLMWrapper
 from ragas.embeddings import LangchainEmbeddingsWrapper
 
-from sqa_system.app.cli.cli_progress_handler import ProgressHandler
-from sqa_system.core.language_model.enums.llm_enums import EndpointType
-from sqa_system.core.language_model.base.llm_adapter import LLMAdapter
-from sqa_system.core.config.models import (
+from core import ProgressHandler
+from language_model import EndpointType
+from language_model.base.llm_adapter import LLMAdapter
+from core import (
     AdditionalConfigParameter, LLMConfig, EmbeddingConfig)
 from experimentation.evaluation.base.evaluator import Evaluator
-from sqa_system.core.language_model.llm_provider import LLMProvider
-from sqa_system.core.logging.logging import get_logger
+from language_model import LLMProvider
+from core.logging.logging import get_logger
 
 from .utils.ragas_metric_preparer import RagasMetrics, RagasMetricPreparer
 

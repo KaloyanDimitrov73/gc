@@ -1,5 +1,5 @@
 from experimentation.config.experiment_config import ExperimentConfig
-from sqa_system.core.config.config_manager.base.configuration_manager import ConfigurationManager
+from core import ConfigurationManager
 
 
 class ExperimentConfigManager(ConfigurationManager[ExperimentConfig]):

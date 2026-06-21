@@ -15,14 +15,14 @@ from experimentation.utils.visualizer.experiment_visualizer import (
     PlotType
 )
 from experimentation.config.experiment_config import ExperimentConfig
-from sqa_system.core.data.file_path_manager import FilePathManager
+from core import FilePathManager
 from experimentation.evaluation.base.evaluator import Evaluator
 from experimentation.utils.experiment_result_processor import ExperimentResultProcessor
-from sqa_system.app.cli.cli_progress_handler import ProgressHandler
-from sqa_system.core.config.models.pipeline_config import PipelineConfig
-from sqa_system.core.data.pipeline_data_collector import PipelineData, PipelineDataCollector
+from core import ProgressHandler
+from config.model.pipeline_config import PipelineConfig
+from data.data_management.pipeline_data_collector import PipelineData, PipelineDataCollector
 from sqa_system.pipeline.factory.pipeline_factory import PipelineFactory
-from sqa_system.core.logging.logging import get_logger
+from core.logging.logging import get_logger
 logger = get_logger(__name__)
 
 

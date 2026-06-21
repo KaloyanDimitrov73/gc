@@ -2,10 +2,10 @@ from typing import List, Optional
 from pydantic import BaseModel, Field
 from langchain_core.prompts import PromptTemplate
 
-from sqa_system.core.language_model.base.llm_adapter import LLMAdapter
-from sqa_system.core.language_model.prompt_provider import PromptProvider
+from language_model.base.llm_adapter import LLMAdapter
+from language_model import PromptProvider
 
-from sqa_system.core.logging.logging import get_logger
+from core.logging.logging import get_logger
 logger = get_logger(__name__)
 
 

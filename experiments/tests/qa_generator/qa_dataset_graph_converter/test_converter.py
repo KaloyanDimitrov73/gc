@@ -1,8 +1,8 @@
 import pytest
 
-from sqa_system.core.data.models import QAPair
+from core import QAPair
 from experiments.qa_generator import QADatasetToGraphConverter
-from sqa_system.core.config.models import KnowledgeGraphConfig
+from core import KnowledgeGraphConfig
 
 # This test is designed to check whether the conversion works correctly
 # Note, that if the IDs in the ORKG change this test will need to be updated

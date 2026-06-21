@@ -3,16 +3,16 @@ from typing import List, Optional
 from dataclasses import dataclass
 from typing_extensions import override
 
-from sqa_system.knowledge_base.knowledge_graph.storage.utils.subgraph_builder import (
+from knowledge_base.knowledge_graph.storage.utils.subgraph_builder import (
     SubgraphBuilder,
     SubgraphOptions
 )
-from sqa_system.core.language_model.base.llm_adapter import LLMAdapter
-from sqa_system.knowledge_base.knowledge_graph.storage.base.knowledge_graph import KnowledgeGraph
-from sqa_system.core.data.models import QAPair, Knowledge
-from sqa_system.core.logging.logging import get_logger
+from language_model.base.llm_adapter import LLMAdapter
+from knowledge_base.knowledge_graph.storage.base.knowledge_graph import KnowledgeGraph
+from core import QAPair, Knowledge
+from core.logging.logging import get_logger
 from experiments.qa_generator.question_classifier import QuestionClassifier
-from sqa_system.knowledge_base.knowledge_graph.storage.utils.graph_path_filter import (
+from knowledge_base.knowledge_graph.storage.utils.graph_path_filter import (
     GraphPathFilter
 )
 

@@ -38,8 +38,8 @@ def _assert_embedding_vector(vector):
 def _get_embedding_components():
     """Import embedding classes from sqa_system, skipping the test if unavailable."""
     try:
-        from sqa_system.core.config.models import EmbeddingConfig
-        from sqa_system.core.language_model.implementations.vdl_embedding_adapter import (
+        from core import EmbeddingConfig
+        from language_model.implementations.vdl_embedding_adapter import (
             VDLEmbeddingAdapter,
         )
     except Exception as exc:

@@ -1,6 +1,6 @@
 import pytest
-from sqa_system.knowledge_base.knowledge_graph.storage.utils.path_builder import PathBuilder
-from sqa_system.core.data.models import Knowledge, Triple, Subgraph
+from knowledge_base.knowledge_graph.storage.utils.path_builder import PathBuilder
+from core import Knowledge, Triple, Subgraph
 
 
 def test_build_all_paths():

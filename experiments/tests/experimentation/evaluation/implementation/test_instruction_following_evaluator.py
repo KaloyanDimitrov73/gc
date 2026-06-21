@@ -1,7 +1,7 @@
 import pytest
 from experimentation.evaluation.implementations.instruction_following_evaluator import InstructionFollowingEvaluator
 from experimentation.config.evaluator_config import EvaluatorConfig
-from sqa_system.core.config.models import LLMConfig
+from core import LLMConfig
 
 LLM_CONFIG = {
     "additional_params": {},
