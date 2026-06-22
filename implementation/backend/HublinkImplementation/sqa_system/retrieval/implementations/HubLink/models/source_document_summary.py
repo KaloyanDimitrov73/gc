@@ -1,7 +1,8 @@
 from typing import List
 from pydantic import BaseModel, Field
 
-from core import Context
+from core.data.models import Context
+
 
 class SourceDocumentSummary(BaseModel):
     """

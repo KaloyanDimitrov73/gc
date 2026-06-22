@@ -5,7 +5,7 @@ from chromadb import QueryResult
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 
-from core import FilePathManager
+from core.data.file_path_manager import FilePathManager
 from core.logging.logging import get_logger
 from core.data.models.triple import Triple
 
@@ -498,11 +498,7 @@ class ChromaVectorStore:
             embeddings = results["embeddings"][query_idx]
             distances = results["distances"][query_idx]
 
-            logger.info("Query_idx: %s", query_idx)
-
             for _, (path_hash, metadata, _, distance) in enumerate(zip(ids, metadatas, embeddings, distances)):
-
-                logger.info("Path with metadata: %s with distance: %s", metadata, distance)
 
                 hub_entity_id = metadata.get("hub_entity")
                 hub_path = self._parse_hub_path(path_hash, metadata)

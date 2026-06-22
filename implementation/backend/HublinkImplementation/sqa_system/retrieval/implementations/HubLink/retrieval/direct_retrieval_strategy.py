@@ -1,7 +1,7 @@
 from typing import List, Optional
 from typing_extensions import override
 
-from core import RetrievalAnswer
+from core.data.models import RetrievalAnswer
 from core.logging.logging import get_logger
 
 from ..models import (
@@ -190,7 +190,7 @@ class DirectRetrievalStrategy(BaseRetrievalStrategy):
         prepared_candidate_hubs = {}
         for hub_id, current_hub_paths in list(candidate_hubs.items()):
 
-            logger.info("hub has the amount of paths specified, threshhold: %s, len: %s", path_threshold, len(current_hub_paths))
+            #logger.info("hub has the amount of paths specified, threshhold: %s, len: %s", path_threshold, len(current_hub_paths))
 
             if len(current_hub_paths) > path_threshold:
                 prepared_candidate_hubs[hub_id] = current_hub_paths[:path_threshold]

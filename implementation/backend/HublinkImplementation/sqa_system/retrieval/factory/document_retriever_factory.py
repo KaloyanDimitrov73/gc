@@ -1,10 +1,10 @@
 from enum import Enum
 from typing_extensions import override
 
-from core import DocumentRetrievalConfig
 from core.base.base_factory import BaseFactory
 
 from ..base.document_retriever import DocumentRetriever
+from ..config.document_retrieval_config import DocumentRetrievalConfig
 
 
 class DocumentRetrieverType(Enum):

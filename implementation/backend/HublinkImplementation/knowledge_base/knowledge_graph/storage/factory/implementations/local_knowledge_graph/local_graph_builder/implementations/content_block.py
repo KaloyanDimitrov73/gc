@@ -3,7 +3,7 @@ from typing_extensions import override
 from rdflib import Literal, URIRef
 from rdflib.namespace import RDF, RDFS
 
-from core.data.context_tracer import ContextTracer
+from core.data.context_tracer import ContextTracer, ContextTrace
 from core.data.extraction.paper_content_extractor import PaperContentExtractor, PaperContent, Entity, TextWithOriginal
 from core.data.models import Publication
 from language_model.config.llm_config import LLMConfig

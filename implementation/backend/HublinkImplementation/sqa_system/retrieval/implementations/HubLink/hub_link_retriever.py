@@ -1,10 +1,9 @@
 from typing import Optional, List
 from typing_extensions import override
 
-from core import KGRetrievalConfig
+from core.data.models import RetrievalAnswer
 from language_model import LLMProvider
 from sqa_system.retrieval import KnowledgeGraphRetriever
-from core import RetrievalAnswer
 from knowledge_base.knowledge_graph.storage import KnowledgeGraph
 from core.logging.logging import get_logger
 
@@ -16,6 +15,7 @@ from .utils.hub_source_handler import HubSourceHandler
 from .retrieval.base_retrieval_strategy import RetrievalStrategyData
 from .retrieval.traversal_retrieval_strategy import TraversalRetrievalStrategy
 from .retrieval.direct_retrieval_strategy import DirectRetrievalStrategy
+from ...config.kg_retrieval_config import KGRetrievalConfig
 
 logger = get_logger(__name__)
 

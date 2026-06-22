@@ -4,12 +4,11 @@ from typing_extensions import override
 import chromadb
 from langchain_chroma import Chroma
 
-
-from core import ProgressHandler
+from core.data.file_path_manager import FilePathManager
+from core.data.models import PublicationDataset, Context
+from core.progress.progress_handler import ProgressHandler
 from language_model.config.vector_store_config import VectorStoreConfig
-from core import PublicationDataset
-from core import Context
-from core import FilePathManager
+
 from language_model import LLMProvider
 from knowledge_base.vector_store.chunking.chunker import Chunker
 from core.logging.logging import get_logger

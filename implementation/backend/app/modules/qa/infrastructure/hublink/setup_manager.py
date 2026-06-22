@@ -6,7 +6,7 @@ from typing import Optional
 
 from backend.app.core.config import Settings, get_settings
 from core.data.secret_manager import SecretManager, SecretType
-from language_model import EndpointType
+from language_model.enums.llm_enums import EndpointType
 
 
 class SetupManager:

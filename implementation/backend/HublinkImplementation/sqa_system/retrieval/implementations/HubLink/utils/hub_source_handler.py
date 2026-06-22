@@ -1,9 +1,9 @@
+from core.data.models import Knowledge
 from knowledge_base.vector_store.storage import ChromaVectorStoreFactory
 from knowledge_base.vector_store.storage import LangchainVectorStoreAdapter
 from knowledge_base.knowledge_graph.storage.base.knowledge_graph import KnowledgeGraph
-from core import VectorStoreConfig
 from core.logging.logging import get_logger
-from core import Knowledge
+from language_model.config.vector_store_config import VectorStoreConfig
 
 from ..models import SourceDocumentSummary, ProcessedQuestion
 

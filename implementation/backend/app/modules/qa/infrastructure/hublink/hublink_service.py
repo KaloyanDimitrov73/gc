@@ -20,6 +20,7 @@ from backend.app.modules.qa.infrastructure.hublink.setup_manager import (
     SetupManager,
 )
 
+
 logger = logging.getLogger(__name__)
 
 
@@ -67,7 +68,7 @@ class HubLinkService:
             self.setup_manager.set_up_vdl_api_key()
 
             # Disable CLI progress bar - not needed in GUI context
-            from core import ProgressHandler
+            from core.progress.progress_handler import ProgressHandler
             ProgressHandler().disabled = False
 
             self.retriever = HubLinkRetrieverForUser(config, self.graph)
@@ -100,7 +101,7 @@ class HubLinkService:
         streaming callbacks. Safe to call multiple times (no-op after first call).
         """
         try:
-            from core import ProgressHandler
+            from core.progress.progress_handler import ProgressHandler
             ph = ProgressHandler()
 
             if getattr(ph, '_streaming_callbacks_installed', False):
@@ -241,7 +242,7 @@ class HubLinkService:
             raise RuntimeError("HubLink retriever not initialized")
 
         try:
-            from core import ProgressHandler
+            from core.progress.progress_handler import ProgressHandler
             ph = ProgressHandler()
         except Exception:
             ph = None

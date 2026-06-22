@@ -2,12 +2,12 @@ from abc import ABC, abstractmethod
 from typing import ClassVar, List, Optional
 import weave
 
-from core import RetrievalAnswer
+from core.config import AdditionalConfigParameter
+from core.data.models import RetrievalAnswer
 from knowledge_base.knowledge_graph.storage.base.knowledge_graph import KnowledgeGraph
-from core import AdditionalConfigParameter
-from core import KGRetrievalConfig
 
 from .retriever import Retriever
+from ..config.kg_retrieval_config import KGRetrievalConfig
 
 
 class KnowledgeGraphRetriever(Retriever, ABC):

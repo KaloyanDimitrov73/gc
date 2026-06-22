@@ -1,8 +1,9 @@
 from typing import Optional, Literal
 
 from pydantic import Field
+
+from core.config import DatasetConfig
 from sqa_system.retrieval.config.retrieval_config import RetrievalConfig
-from core import DatasetConfig
 from language_model.config.vector_store_config import VectorStoreConfig
 
 

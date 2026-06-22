@@ -3,12 +3,11 @@ from typing import ClassVar, List, Tuple
 from langchain_core.vectorstores import VectorStore, VectorStoreRetriever
 from langchain_core.documents import Document
 
+from core.config import DatasetConfig, AdditionalConfigParameter
+from core.data.models import Context
 from knowledge_base.config.chunking_strategy_config import ChunkingStrategyConfig
-from core import DatasetConfig
-from core import EmbeddingConfig
-from core import Context
+from language_model.config.embedding_config import EmbeddingConfig
 from language_model.config.vector_store_config import VectorStoreConfig
-from core import AdditionalConfigParameter
 
 
 class VectorStoreAdapter(ABC):

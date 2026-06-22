@@ -2,17 +2,11 @@ from typing import List, Optional, Tuple
 import json
 from pydantic import BaseModel
 
-from core import (
-    AdditionalConfigParameter,
-    RestrictionType
-)
-from core import (
-    ChunkingStrategyConfig,
-    DatasetConfig,
-    EmbeddingConfig,
-    VectorStoreConfig,
-    KGRetrievalConfig
-)
+from core.config import DatasetConfig, AdditionalConfigParameter, RestrictionType
+from knowledge_base.config.chunking_strategy_config import ChunkingStrategyConfig
+from language_model.config.embedding_config import EmbeddingConfig
+from language_model.config.vector_store_config import VectorStoreConfig
+from sqa_system.retrieval.config.kg_retrieval_config import KGRetrievalConfig
 
 # The default values used for the parameters in the retriever
 _HUB_LINK_DEFAULTS = {

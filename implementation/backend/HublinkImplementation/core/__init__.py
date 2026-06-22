@@ -1,2 +1,0 @@
-class LLMConfig:
-    pass

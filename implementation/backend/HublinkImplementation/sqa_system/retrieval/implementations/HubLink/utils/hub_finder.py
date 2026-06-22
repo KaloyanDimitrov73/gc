@@ -1,9 +1,9 @@
 from collections import deque
 from typing import List, Tuple
 
-from core import ProgressHandler
 from core.data.models.knowledge import Knowledge
 from core.data.models.triple import Triple
+from core.progress.progress_handler import ProgressHandler
 from knowledge_base.knowledge_graph.storage.base.knowledge_graph import KnowledgeGraph
 from core.logging.logging import get_logger
 

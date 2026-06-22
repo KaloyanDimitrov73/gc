@@ -2,13 +2,10 @@ from abc import ABC, abstractmethod
 from typing import ClassVar, List, Optional
 import weave
 
-from core import RetrievalAnswer
-from core import (
-    DocumentRetrievalConfig,
-    AdditionalConfigParameter
-)
-
+from core.config import AdditionalConfigParameter
+from core.data.models import RetrievalAnswer
 from .retriever import Retriever
+from ..config.document_retrieval_config import DocumentRetrievalConfig
 
 
 class DocumentRetriever(Retriever, ABC):

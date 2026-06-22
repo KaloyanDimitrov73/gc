@@ -1,6 +1,6 @@
+from core.data.models import Context
 from knowledge_base.config.chunking_strategy_config import ChunkingStrategyConfig
 from core.data.models.publication import Publication
-from core import Context
 from core.logging.logging import get_logger
 
 from .chunking_strategy_factory import ChunkingStrategyFactory

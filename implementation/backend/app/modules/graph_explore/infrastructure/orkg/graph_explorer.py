@@ -8,13 +8,13 @@ import threading
 from collections import defaultdict
 from typing import Any, Dict, List, Optional, Tuple
 
-from core import Knowledge, Triple
 
 from backend.app.contracts.schemas import GraphNode
 from backend.app.modules.graph_explore.infrastructure.orkg.node_builder import (
     build_graph_node,
     build_graph_nodes_from_edges,
 )
+from core.data.models import Knowledge, Triple
 
 
 class GraphExplorer:

@@ -1,5 +1,4 @@
 from typing import List, Optional, Tuple
-from core import ProgressHandler
 import re
 import ast
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -7,10 +6,8 @@ from pydantic import BaseModel, Field
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import PromptTemplate
 
-from core import ContextType
-from core import Context
-from core import Triple
-from core import RetrievalAnswer
+from core.data.models import RetrievalAnswer, Triple, Context, ContextType
+from core.progress.progress_handler import ProgressHandler
 from language_model.base.llm_adapter import LLMAdapter
 from language_model import PromptProvider
 from knowledge_base.knowledge_graph.storage.utils.graph_converter import GraphConverter

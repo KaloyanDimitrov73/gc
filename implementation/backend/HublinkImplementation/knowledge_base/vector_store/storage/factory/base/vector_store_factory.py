@@ -3,12 +3,11 @@ from typing import List, Type
 from typing_extensions import override
 from langchain_core.documents import Document
 
-from core import DatasetConfig
+from core.config import DatasetConfig
 from core.data.data_loader.factory.data_loader_factory import DataLoaderFactory
-from core import FilePathManager
-from core import Context
+from core.data.file_path_manager import FilePathManager
+from core.data.models import PublicationDataset, Context
 from core.data.models.publication import Publication
-from core import PublicationDataset
 from language_model.config.vector_store_config import VectorStoreConfig
 from core.base.base_factory import BaseFactory
 from knowledge_base.vector_store.chunking.chunker import Chunker

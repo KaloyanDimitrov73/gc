@@ -1,5 +1,6 @@
 from typing import Literal
-from core import Config
+
+from core.config import Config
 
 
 class RetrievalConfig(Config):

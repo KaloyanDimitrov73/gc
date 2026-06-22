@@ -1,7 +1,8 @@
 from abc import ABC, abstractmethod
+
+from core.data.models import Context
 from knowledge_base.config.chunking_strategy_config import ChunkingStrategyConfig
 from core.data.models.publication import Publication
-from core import Context
 
 
 class ChunkingStrategy(ABC):

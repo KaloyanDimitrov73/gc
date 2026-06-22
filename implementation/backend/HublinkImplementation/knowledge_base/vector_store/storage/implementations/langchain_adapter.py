@@ -5,9 +5,9 @@ import contextlib
 from langchain_core.documents import Document
 from langchain_core.vectorstores import VectorStoreRetriever
 
+from core.config import AdditionalConfigParameter
+from core.data.models import Context
 from core.logging.logging import get_logger
-from core import AdditionalConfigParameter
-from core import Context
 from ..base.vector_store_adapter import VectorStoreAdapter
 
 logger = get_logger(__name__)

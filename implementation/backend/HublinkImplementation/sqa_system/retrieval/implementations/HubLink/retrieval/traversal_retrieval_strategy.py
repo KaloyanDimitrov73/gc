@@ -1,8 +1,7 @@
 from typing import List, Optional, Tuple
 from typing_extensions import override
 
-
-from core import RetrievalAnswer
+from core.data.models import RetrievalAnswer
 from core.logging.logging import get_logger
 
 from ..models import (

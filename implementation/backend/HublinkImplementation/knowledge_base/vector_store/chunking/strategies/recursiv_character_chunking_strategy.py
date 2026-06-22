@@ -2,9 +2,9 @@ from typing import List
 from typing_extensions import override
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
+from core.data.models import Context, ContextType
 from knowledge_base.config.chunking_strategy_config import ChunkingStrategyConfig
 from knowledge_base.vector_store.chunking.base.chunking_strategy import ChunkingStrategy
-from core import Context, ContextType
 from core.data.models.publication import Publication
 from core.logging.logging import get_logger
 logger = get_logger(__name__)

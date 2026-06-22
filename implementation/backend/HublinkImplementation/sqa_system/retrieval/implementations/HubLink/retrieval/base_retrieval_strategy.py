@@ -8,11 +8,11 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import PromptTemplate
 import numpy as np
 
+from core.data.models import RetrievalAnswer, Triple
+from core.progress.progress_handler import ProgressHandler
 from language_model.base.embedding_adapter import EmbeddingAdapter
 from language_model.base.llm_adapter import LLMAdapter
-from core import ProgressHandler
 from language_model import PromptProvider
-from core import RetrievalAnswer, Triple
 from knowledge_base.knowledge_graph.storage import KnowledgeGraph
 from core.logging.logging import get_logger
 
