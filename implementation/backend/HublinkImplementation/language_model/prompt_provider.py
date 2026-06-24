@@ -1,4 +1,4 @@
-from typing import Dict, Tuple
+from typing import Dict, Optional, Tuple
 import yaml
 
 from core.data.file_path_manager import FilePathManager
@@ -10,9 +10,12 @@ class PromptProvider:
     rest of the system.
     """
 
-    def __init__(self):
-        self.file_path_manager = FilePathManager()
-        self.prompt_dir = self.file_path_manager.PROMPT_DIR
+    def __init__(self, prompt_dir: Optional[str] = None):
+        if prompt_dir is not None:
+            self.prompt_dir = prompt_dir
+        else:
+            self.file_path_manager = FilePathManager()
+            self.prompt_dir = self.file_path_manager.PROMPT_DIR
 
     def get_prompt(self,
                    prompt_file_name: str) -> Tuple[str, Dict[str, type], Dict[str, type]]:
