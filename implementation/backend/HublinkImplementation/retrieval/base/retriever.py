@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import ClassVar, List, Optional
 
 from core.config import AdditionalConfigParameter
-from sqa_system.retrieval.config.retrieval_config import RetrievalConfig
+from retrieval.config.retrieval_config import RetrievalConfig
 
 
 class Retriever(ABC):

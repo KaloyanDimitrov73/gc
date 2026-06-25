@@ -3,7 +3,7 @@ from pathlib import Path
 import json
 
 from backend.app.core.config import get_settings
-from sqa_system.retrieval.config.kg_retrieval_config import KGRetrievalConfig
+from retrieval.config.kg_retrieval_config import KGRetrievalConfig
 
 
 class HublinkConfigLoader:

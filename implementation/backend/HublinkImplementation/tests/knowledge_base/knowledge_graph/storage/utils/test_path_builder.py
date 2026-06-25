@@ -1,6 +1,7 @@
 import pytest
+
+from core.data.models import Triple, Subgraph, Knowledge
 from knowledge_base.knowledge_graph.storage.utils.path_builder import PathBuilder
-from core import Knowledge, Triple, Subgraph
 
 
 def test_build_all_paths():
