@@ -58,7 +58,7 @@ class HubLinkService:
                 raise RuntimeError("No knowledge graph provided to HubLinkService")
 
             # Import HubLink components
-            from sqa_system.retrieval.implementations.HubLink.hub_link_retriever_for_user import HubLinkRetrieverForUser
+            from retrieval.implementations.HubLink.hub_link_retriever_for_user import HubLinkRetrieverForUser
             logger.info("HubLink modules imported successfully")
 
             # load default config for HubLink from JSON file

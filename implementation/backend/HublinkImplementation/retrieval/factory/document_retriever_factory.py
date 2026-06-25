@@ -59,7 +59,7 @@ class DocumentRetrieverFactory(BaseFactory):
         if retriever_type == DocumentRetrieverType.LIGHTRAG.value:
             try:
                 # pylint: disable=import-outside-toplevel
-                from sqa_system.retrieval.implementations.LightRag.light_rag\
+                from retrieval.implementations \
                     import LightRag
                 return LightRag
             except ImportError as e:
@@ -69,7 +69,7 @@ class DocumentRetrieverFactory(BaseFactory):
         elif retriever_type == DocumentRetrieverType.DOCUMENTEMBED.value:
             try:
                 # pylint: disable=import-outside-toplevel
-                from sqa_system.retrieval.implementations.DocumentEmbed.document_embed_retriever\
+                from retrieval.implementations \
                     import DocumentEmbedRetriever
                 return DocumentEmbedRetriever
             except ImportError as e:
@@ -79,7 +79,7 @@ class DocumentRetrieverFactory(BaseFactory):
         elif retriever_type == DocumentRetrieverType.MICROSOFTGRAPHRAG.value:
             try:
                 # pylint: disable=import-outside-toplevel
-                from sqa_system.retrieval.implementations.MicrosoftGraphRAG.microsoft_graphrag_retriever\
+                from retrieval.implementations \
                     import GraphRAGRetriever
                 return GraphRAGRetriever
             except ImportError as e:

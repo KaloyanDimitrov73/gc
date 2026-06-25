@@ -1,7 +1,7 @@
 from typing import Literal
 from knowledge_base.config.knowledge_graph_config import KnowledgeGraphConfig
 from language_model.config.llm_config import LLMConfig
-from sqa_system.retrieval.config.retrieval_config import RetrievalConfig
+from retrieval.config.retrieval_config import RetrievalConfig
 
 
 class KGRetrievalConfig(RetrievalConfig):
