@@ -5,7 +5,7 @@ from core.data.models import RetrievalAnswer
 from retrieval.factory.document_retriever_factory import DocumentRetrieverFactory
 from retrieval.config.document_retrieval_config import DocumentRetrievalConfig
 from implementation.pipe.retrieval.base.retrieval_pipe import RetrievalPipe
-from implementation.models.pipe_io_data import PipeIOData
+from implementation.shared_models.pipe_io_data import PipeIOData
 
 
 class DocumentRetrievalPipe(RetrievalPipe[DocumentRetrievalConfig]):

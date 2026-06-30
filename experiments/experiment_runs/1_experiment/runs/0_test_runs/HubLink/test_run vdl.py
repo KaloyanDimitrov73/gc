@@ -1,8 +1,8 @@
 ﻿import os
 from dotenv import load_dotenv, find_dotenv
 load_dotenv(find_dotenv(), override=True)
-from implementation.data_management import FilePathManager
-from implementation.config.models import ExperimentConfig
+from implementation.resource_management import FilePathManager
+from implementation.config.config_models import ExperimentConfig
 from implementation.experimentation.experiment_runner import ExperimentRunner, ExperimentRunnerSettings
 
 

@@ -1,9 +1,9 @@
 ﻿from typing import List, Type
 import json
 
-from implementation.models.parameter_range import ParameterRange
-from implementation.data_management import FilePathManager
-from implementation.config.models import (
+from implementation.shared_models.parameter_range import ParameterRange
+from implementation.resource_management import FilePathManager
+from implementation.config.config_models import (
     Config,
     ExperimentConfig,
     PipelineConfig,

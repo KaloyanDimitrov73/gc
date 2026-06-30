@@ -1,6 +1,6 @@
 ﻿import pytest
 
-from implementation.models.qa_pair import QAPair
+from implementation.shared_models.qa_pair import QAPair
 from experiments.qa_generation import QADatasetToGraphConverter
 from knowledge_base.config.knowledge_graph_config import KnowledgeGraphConfig
 

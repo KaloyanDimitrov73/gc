@@ -14,7 +14,7 @@ from knowledge_base.knowledge_graph.storage.utils.path_builder import PathBuilde
 from language_model.base.llm_adapter import LLMAdapter
 from knowledge_base.knowledge_graph.storage.base.knowledge_graph import KnowledgeGraph
 from core.data.models import Triple, Knowledge, Subgraph
-from implementation.models.qa_pair import QAPair
+from implementation.shared_models.qa_pair import QAPair
 from implementation.core.logging import get_logger
 logger = get_logger(__name__)
 

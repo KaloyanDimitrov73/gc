@@ -2,13 +2,13 @@
 from typing import List
 import re
 import pandas as pd
-from implementation.data_management import FilePathManager
+from implementation.resource_management import FilePathManager
 from core.data.models import Triple, Knowledge, Subgraph
-from implementation.models.qa_pair import QAPair
+from implementation.shared_models.qa_pair import QAPair
 from knowledge_base.config.knowledge_graph_config import KnowledgeGraphConfig
 from knowledge_base.knowledge_graph.storage.knowledge_graph_manager import KnowledgeGraphManager
 from implementation.data_loader.csv_qa_loader import CSVQALoader
-from implementation.models.qa_dataset import QADataset
+from implementation.shared_models.qa_dataset import QADataset
 from knowledge_base.knowledge_graph.storage.utils.subgraph_builder import (
     SubgraphBuilder,
     SubgraphOptions

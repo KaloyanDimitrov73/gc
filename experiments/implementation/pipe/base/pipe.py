@@ -1,7 +1,7 @@
 ﻿from abc import ABC, abstractmethod
 from langchain_core.runnables import RunnableLambda
 
-from implementation.models.pipe_io_data import PipeIOData
+from implementation.shared_models.pipe_io_data import PipeIOData
 from core.progress.progress_handler import ProgressHandler
 
 

@@ -1,7 +1,7 @@
 ﻿from typing import List
 import pytest
 from core.data.models import Knowledge, Triple
-from implementation.models.qa_pair import QAPair
+from implementation.shared_models.qa_pair import QAPair
 from implementation.qa_generator.base.subgraph_strategy import KGQAGenerationStrategy
 
 

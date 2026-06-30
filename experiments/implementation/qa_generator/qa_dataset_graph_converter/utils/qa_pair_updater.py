@@ -1,5 +1,5 @@
 ﻿from core.data.models import Knowledge, Subgraph, Triple
-from implementation.models.qa_pair import QAPair
+from implementation.shared_models.qa_pair import QAPair
 from knowledge_base.knowledge_graph.storage.base.knowledge_graph import KnowledgeGraph
 
 

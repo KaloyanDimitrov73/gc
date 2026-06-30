@@ -7,9 +7,9 @@ from langchain_core.output_parsers import PydanticOutputParser
 
 from implementation.pipe.base.pipe import Pipe
 from language_model.prompt_provider import PromptProvider
-from implementation.config.models.pipe.post_retrieval_config import PostRetrievalConfig
+from implementation.config.config_models.pipe.post_retrieval_config import PostRetrievalConfig
 from language_model.llm_provider import LLMProvider
-from implementation.models.pipe_io_data import PipeIOData
+from implementation.shared_models.pipe_io_data import PipeIOData
 from implementation.core.logging import get_logger
 logger = get_logger(__name__)
 

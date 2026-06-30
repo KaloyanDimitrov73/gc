@@ -4,10 +4,10 @@ from typing import Optional, List, ClassVar
 import re
 from weave.flow.scorer import Scorer, auto_summarize
 import weave
-from implementation.models.qa_dataset import QADataset
+from implementation.shared_models.qa_dataset import QADataset
 from implementation.core import Context, Triple, ContextType
 from implementation.core import AdditionalConfigParameter
-from implementation.config.models.evaluator_config import EvaluatorConfig
+from implementation.config.config_models.evaluator_config import EvaluatorConfig
 
 from implementation.core.logging import get_logger
 

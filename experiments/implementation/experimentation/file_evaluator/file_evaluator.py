@@ -6,9 +6,9 @@ import pandas as pd
 
 from implementation.experimentation.evaluation.factory.evaluator_factory import EvaluatorFactory
 from implementation.experimentation.evaluation.base.evaluator import Evaluator
-from implementation.data_management import FilePathManager
+from implementation.resource_management import FilePathManager
 from implementation.data_loader.csv_qa_loader import CSVQALoader
-from implementation.config.models.evaluator_config import EvaluatorConfig
+from implementation.config.config_models.evaluator_config import EvaluatorConfig
 from implementation.core import QAPair
 
 

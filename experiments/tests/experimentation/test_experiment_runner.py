@@ -1,8 +1,8 @@
 ﻿import pytest
-from implementation.config.models import ExperimentConfig
-from implementation.config.models import PipelineConfig
-from implementation.models.parameter_range import ParameterRange
-from implementation.config.models import GenerationConfig
+from implementation.config.config_models import ExperimentConfig
+from implementation.config.config_models import PipelineConfig
+from implementation.shared_models.parameter_range import ParameterRange
+from implementation.config.config_models import GenerationConfig
 from language_model.config.llm_config import LLMConfig
 from implementation.core import DatasetConfig
 from implementation.experimentation.experiment_runner import ExperimentRunner

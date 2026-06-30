@@ -3,7 +3,7 @@ from typing import Generic, TypeVar
 from typing_extensions import override
 from retrieval.config.retrieval_config import RetrievalConfig
 from implementation.pipe.base.pipe import Pipe
-from implementation.models.pipe_io_data import PipeIOData
+from implementation.shared_models.pipe_io_data import PipeIOData
 from implementation.core.logging import get_logger
 logger = get_logger(__name__)
 

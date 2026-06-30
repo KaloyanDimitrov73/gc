@@ -1,6 +1,6 @@
 ﻿from enum import Enum
 
-from implementation.config.models.evaluator_config import EvaluatorConfig
+from implementation.config.config_models.evaluator_config import EvaluatorConfig
 from ..base.evaluator import Evaluator
 from ..implementations.ragas_evaluator.ragas_evaluator import RagasEvaluator
 from ..implementations.hit_at_k_evaluator import HitAtKEvaluator

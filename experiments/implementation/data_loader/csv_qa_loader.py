@@ -4,8 +4,8 @@ from typing import Optional, get_origin, get_args, Union
 import pandas as pd
 from pydantic import Field
 
-from implementation.models.qa_dataset import QADataset
-from implementation.models.qa_pair import QAPair
+from implementation.shared_models.qa_dataset import QADataset
+from implementation.shared_models.qa_pair import QAPair
 from implementation.core.logging import get_logger
 logger = get_logger(__name__)
 

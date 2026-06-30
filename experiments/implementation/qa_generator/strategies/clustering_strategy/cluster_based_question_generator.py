@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from knowledge_base.knowledge_graph.storage.base.knowledge_graph import KnowledgeGraph
 from language_model.base.llm_adapter import LLMAdapter
 from core.data.models import Subgraph, Triple
-from implementation.models.qa_pair import QAPair
+from implementation.shared_models.qa_pair import QAPair
 from implementation.core.logging import get_logger
 from knowledge_base.knowledge_graph.storage.utils.path_builder import PathBuilder
 

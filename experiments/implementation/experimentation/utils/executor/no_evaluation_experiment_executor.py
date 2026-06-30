@@ -1,7 +1,7 @@
 ﻿from typing import List, Dict, Any
 from typing_extensions import override
 
-from implementation.config.models.pipeline_config import PipelineConfig
+from implementation.config.config_models.pipeline_config import PipelineConfig
 from implementation.core.logging import get_logger
 from .base.base_experiment_executor import BaseExperimentExecutor
 

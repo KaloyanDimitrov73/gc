@@ -4,11 +4,11 @@ import pandas as pd
 from dotenv import load_dotenv, find_dotenv
 
 
-from implementation.data_management import FilePathManager
+from implementation.resource_management import FilePathManager
 from implementation.experimentation.utils.experiment_result_processor import ExperimentResultProcessor
 from implementation.experimentation.utils.experiment_preparer import ExperimentPreparer
 from core.progress.progress_handler import ProgressHandler
-from implementation.config.models.experiment_config import ExperimentConfig
+from implementation.config.config_models.experiment_config import ExperimentConfig
 from implementation.core.logging import get_logger
 
 from .utils.experiment_runner_settings import ExperimentRunnerSettings, ExecutionStrategyType

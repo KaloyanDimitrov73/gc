@@ -1,6 +1,6 @@
 ﻿import pytest
 from implementation.experimentation.evaluation.implementations.bleu_score_evaluator import BleuScoreEvaluator
-from implementation.config.models import EvaluatorConfig
+from implementation.config.config_models import EvaluatorConfig
 
 def test_bleu_score_evaluator():
     """Test whether the BLEU score provides the expected results."""

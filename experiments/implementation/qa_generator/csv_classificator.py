@@ -4,8 +4,8 @@ import json
 import pandas as pd
 
 from pydantic import Field
-from implementation.models.qa_pair import QAPair
-from implementation.data_management import FilePathManager
+from implementation.shared_models.qa_pair import QAPair
+from implementation.resource_management import FilePathManager
 from .question_classifier import QuestionClassifier
 from language_model.llm_provider import LLMProvider
 from core.data.cache_manager import CacheManager

@@ -6,9 +6,9 @@ from langchain_core.prompts import PromptTemplate
 _PROMPTS_DIR = str(Path(__file__).parent / "prompts")
 
 from language_model.base.llm_adapter import LLMAdapter
-from implementation.data_management.taxonomy_loader import TaxonomyLoader
+from implementation.resource_management.taxonomy_loader import TaxonomyLoader
 from language_model.prompt_provider import PromptProvider
-from implementation.models.qa_pair import QAPair
+from implementation.shared_models.qa_pair import QAPair
 from implementation.core.logging import get_logger
 
 logger = get_logger(__name__)

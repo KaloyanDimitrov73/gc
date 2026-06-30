@@ -12,7 +12,7 @@ from pydantic import BaseModel, Field
 import language_tool_python
 
 from ..question_classifier import QuestionClassifier
-from implementation.models.qa_pair import QAPair
+from implementation.shared_models.qa_pair import QAPair
 from core.progress.progress_handler import ProgressHandler
 from knowledge_base.knowledge_graph.storage.utils.graph_converter import GraphConverter
 from language_model.base.llm_adapter import LLMAdapter

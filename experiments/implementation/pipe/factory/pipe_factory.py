@@ -1,10 +1,10 @@
 ﻿import enum
-from implementation.config.models.retrieval.kg_retrieval_config import KGRetrievalConfig
-from implementation.config.models.retrieval.document_retrieval_config import DocumentRetrievalConfig
-from implementation.config.models.pipe.generation_config import GenerationConfig
-from implementation.config.models.pipe.pipe_config import PipeConfig
-from implementation.config.models.pipe.post_retrieval_config import PostRetrievalConfig
-from implementation.config.models.pipe.pre_retrieval_config import PreRetrievalConfig
+from implementation.config.config_models.retrieval.kg_retrieval_config import KGRetrievalConfig
+from implementation.config.config_models.retrieval.document_retrieval_config import DocumentRetrievalConfig
+from implementation.config.config_models.pipe.generation_config import GenerationConfig
+from implementation.config.config_models.pipe.pipe_config import PipeConfig
+from implementation.config.config_models.pipe.post_retrieval_config import PostRetrievalConfig
+from implementation.config.config_models.pipe.pre_retrieval_config import PreRetrievalConfig
 from implementation.core.logging import get_logger
 
 from ..base.pipe import Pipe

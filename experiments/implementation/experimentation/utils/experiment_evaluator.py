@@ -7,11 +7,11 @@ import weave
 from weave import Model
 import pandas as pd
 
-from implementation.data_management import FilePathManager
+from implementation.resource_management import FilePathManager
 from implementation.experimentation.evaluation.base.evaluator import Evaluator
 from implementation.core import ProgressHandler
 from implementation.core import ContextType, Context, QAPair
-from implementation.models.pipe_io_data import PipeIOData
+from implementation.shared_models.pipe_io_data import PipeIOData
 from implementation.core.logging import get_logger
 logger = get_logger(__name__)
 

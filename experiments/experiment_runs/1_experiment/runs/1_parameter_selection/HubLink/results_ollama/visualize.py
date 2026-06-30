@@ -13,7 +13,7 @@
 #    what is plotted.
 
 import os
-from implementation.data_management import FilePathManager
+from implementation.resource_management import FilePathManager
 from implementation.experimentation.utils.visualizer.experiment_visualizer import (
     ExperimentVisualizer, ExperimentVisualizerSettings, PlotType)
 

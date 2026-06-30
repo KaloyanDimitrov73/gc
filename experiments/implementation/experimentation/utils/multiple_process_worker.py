@@ -5,9 +5,9 @@ from pydantic import BaseModel, Field
 import pandas as pd
 
 from implementation.experimentation.utils.experiment_result_processor import ExperimentResultProcessor
-from implementation.config.models.experiment_config import ExperimentConfig
+from implementation.config.config_models.experiment_config import ExperimentConfig
 from implementation.core import PipelineConfig
-from implementation.data_management import FilePathManager
+from implementation.resource_management import FilePathManager
 from implementation.core.logging import get_logger
 
 from ..evaluation.base.evaluator import Evaluator

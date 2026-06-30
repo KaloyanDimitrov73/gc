@@ -18,7 +18,7 @@ from core.data.models import (
     Knowledge,
     Triple
 )
-from implementation.models.qa_pair import QAPair
+from implementation.shared_models.qa_pair import QAPair
 from ..question_classifier import QuestionClassifier
 from implementation.core.logging import get_logger
 

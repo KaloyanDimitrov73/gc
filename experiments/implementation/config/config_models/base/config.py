@@ -7,7 +7,7 @@ import hashlib
 from typing_extensions import override
 from pydantic import BaseModel, Field, model_validator
 
-from implementation.data_management import FilePathManager
+from implementation.resource_management import FilePathManager
 from ..additional_config_parameter import AdditionalConfigParameter
 
 

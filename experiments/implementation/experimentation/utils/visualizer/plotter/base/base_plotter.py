@@ -4,7 +4,7 @@ import pandas as pd
 from pydantic import BaseModel, ConfigDict
 import seaborn as sns
 
-from implementation.data_management import FilePathManager
+from implementation.resource_management import FilePathManager
 
 sns.set_theme(style="whitegrid")
 

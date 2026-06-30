@@ -4,9 +4,9 @@ from typing_extensions import override
 from core.data.models import RetrievalAnswer
 from retrieval.implementations.HubLink.hub_link_retriever import HubLinkRetriever
 from knowledge_base.knowledge_graph.storage.implementations.orkg_remote_graph import ORKGRemoteGraph
-from implementation.config.models.retrieval.kg_retrieval_config import KGRetrievalConfig
+from implementation.config.config_models.retrieval.kg_retrieval_config import KGRetrievalConfig
 from implementation.pipe.retrieval.base.retrieval_pipe import RetrievalPipe
-from implementation.models.pipe_io_data import PipeIOData
+from implementation.shared_models.pipe_io_data import PipeIOData
 from implementation.core.logging import get_logger
 
 logger = get_logger(__name__)

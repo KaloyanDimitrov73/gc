@@ -10,7 +10,7 @@ from knowledge_base.knowledge_graph.storage.utils.subgraph_builder import (
 from language_model.base.llm_adapter import LLMAdapter
 from knowledge_base.knowledge_graph.storage.base.knowledge_graph import KnowledgeGraph
 from core.data.models import Knowledge, Triple
-from implementation.models.qa_pair import QAPair
+from implementation.shared_models.qa_pair import QAPair
 from implementation.core.logging import get_logger
 from ...question_classifier import QuestionClassifier
 from knowledge_base.knowledge_graph.storage.utils.graph_path_filter import (

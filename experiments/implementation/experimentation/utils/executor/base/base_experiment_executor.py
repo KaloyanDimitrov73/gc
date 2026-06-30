@@ -14,13 +14,13 @@ from implementation.experimentation.utils.visualizer.experiment_visualizer impor
     ExperimentVisualizerSettings,
     PlotType
 )
-from implementation.config.models.experiment_config import ExperimentConfig
-from implementation.data_management import FilePathManager
+from implementation.config.config_models.experiment_config import ExperimentConfig
+from implementation.resource_management import FilePathManager
 from implementation.experimentation.evaluation.base.evaluator import Evaluator
 from implementation.experimentation.utils.experiment_result_processor import ExperimentResultProcessor
 from core.progress.progress_handler import ProgressHandler
-from implementation.config.models.pipeline_config import PipelineConfig
-from implementation.data_management.pipeline_data_collector import PipelineData, PipelineDataCollector
+from implementation.config.config_models.pipeline_config import PipelineConfig
+from implementation.resource_management.pipeline_data_collector import PipelineData, PipelineDataCollector
 from implementation.pipeline.factory.pipeline_factory import PipelineFactory
 from implementation.core.logging import get_logger
 logger = get_logger(__name__)

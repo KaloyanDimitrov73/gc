@@ -1,4 +1,4 @@
-﻿from implementation.models.qa_pair import QAPair
+﻿from implementation.shared_models.qa_pair import QAPair
 from .base.kg_qa_generation_strategy import KGQAGenerationStrategy
 
 

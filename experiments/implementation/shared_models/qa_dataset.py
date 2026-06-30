@@ -5,7 +5,7 @@ from uuid import uuid4
 import pandas as pd
 from pydantic import BaseModel, Field
 
-from implementation.models.qa_pair import QAPair
+from implementation.shared_models.qa_pair import QAPair
 
 
 class QADataset(BaseModel):

@@ -1,5 +1,5 @@
 ﻿import os
-from implementation.data_management import FilePathManager
+from implementation.resource_management import FilePathManager
 from core import KnowledgeGraphConfig
 from experiments.qa_generator import QADatasetToGraphConverter
 

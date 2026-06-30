@@ -1,6 +1,6 @@
 ﻿from implementation.pipeline.retrieval_pipeline import RetrievalPipeline
-from implementation.config.models.pipe.pipe_config import PipeConfig
-from implementation.config.models.pipeline_config import PipelineConfig
+from implementation.config.config_models.pipe.pipe_config import PipeConfig
+from implementation.config.config_models.pipeline_config import PipelineConfig
 from implementation.pipe.factory.pipe_factory import PipeFactory
 from implementation.core.logging import get_logger
 logger = get_logger(__name__)
