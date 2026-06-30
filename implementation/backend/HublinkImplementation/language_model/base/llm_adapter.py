@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Any, Optional
 
+import weave
 from langchain_core.language_models import BaseChatModel
 
 from language_model.config.llm_config import LLMConfig
@@ -23,7 +24,7 @@ class LLMAdapter(ABC):
     def _set_llm(self, llm: BaseChatModel):
         self.llm = LangchainLLMWrapper(base_llm=llm)
 
-    #@weave.op()
+    @weave.op()
     def generate(self, prompt: str) -> Any:
         """
         Generates an answer to the given prompt using the LLM.

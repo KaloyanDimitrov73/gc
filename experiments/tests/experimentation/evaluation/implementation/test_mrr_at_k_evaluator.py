@@ -1,6 +1,6 @@
-import pytest
-from experimentation.evaluation.implementations.mrr_at_k_evaluator import MRRAtKEvaluator
-from experimentation.config.evaluator_config import EvaluatorConfig
+﻿import pytest
+from implementation.experimentation.evaluation.implementations.mrr_at_k_evaluator import MRRAtKEvaluator
+from implementation.config.models import EvaluatorConfig
 from core import Triple, Knowledge
 
 # Sample triples for testing

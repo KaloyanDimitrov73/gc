@@ -1,6 +1,6 @@
-import pytest
-from experimentation.evaluation.implementations.basic_score_evaluator import BasicScoreEvaluator
-from experimentation.config.evaluator_config import EvaluatorConfig
+﻿import pytest
+from implementation.experimentation.evaluation.implementations.basic_score_evaluator import BasicScoreEvaluator
+from implementation.config.models import EvaluatorConfig
 from core import Triple, Knowledge
 
 TEST_TRIPLES = [

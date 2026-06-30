@@ -53,6 +53,7 @@ class FilePathManager:
     def __new__(cls, *args, **kwargs):
         """Make this class a singleton"""
         if not hasattr(cls, "instance"):
+            
             cls.instance = super(FilePathManager, cls).__new__(cls)
         return cls.instance
 

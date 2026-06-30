@@ -1,0 +1,93 @@
+{
+    "additional_params": {},
+    "pipes": [
+        {
+            "name": "retrieval_config",
+            "additional_params": {
+                "use_topic_if_given": false,
+                "embedding_config": {
+                    "additional_params": {},
+                    "endpoint": "OpenAI",
+                    "name_model": "text-embedding-3-large"
+                },
+                "diversity_ranking_penalty": 0.05,
+                "path_weight_alpha": 5,
+                "top_paths_to_keep": 10,
+                "number_of_hubs": 30,
+                "extract_question_components": true,
+                "distance_metric": "cosine",
+                "filter_output_context": true,
+                "use_source_documents": false,
+                "number_of_source_chunks": 10,                                       
+                "hub_edges": -1,						
+                "max_workers": 10,
+                "compare_hubs_with_same_hop_amount": false,
+                "check_updates_during_retrieval": false,
+                "max_level": 1,
+                "force_index_update": false,
+                "max_indexing_depth": -1,	
+                "max_hub_path_length": -1,
+                "return_source_data_as_context": false,
+                "indexing_root_entity_types": null,
+                "indexing_root_entity_ids": ["R659055"],
+                "hub_types": ["Paper"]                        
+            },
+            "type": "kg_retrieval",
+            "retriever_type": "hublink",
+            "llm_config": {
+                "additional_params": {},
+                "endpoint": "OpenAI",
+                "name_model": "o3-mini",
+                "temperature": null,
+                "max_tokens": -1,
+                "reasoning_effort": "low"
+            },
+            "knowledge_graph_config": {
+                "additional_params": {
+                    "contribution_building_blocks": {
+                        "Paper Class 2": [
+                            "paper_class"
+                        ],
+                        "Research Level 2": [
+                            "research_level"
+                        ],
+                        "First Research Object 2": [
+                            "first_research_object"
+                        ],
+                        "Second Research Object 2": [
+                            "second_research_object"
+                        ],
+                        "Validity 2": [
+                            "validity"
+                        ],
+                        "Evidence 2": [
+                            "evidence"
+                        ]
+                    },
+                    "force_cache_update": false,
+                    "force_publication_update": false,
+                    "subgraph_root_entity_id": "R659055",
+                    "orkg_base_url": "https://sandbox.orkg.org"
+                },
+                "graph_type": "orkg",
+                "dataset_config": {
+                    "additional_params": {},
+                    "file_name": "merged_ecsa_icsa.json",
+                    "loader": "JsonPublicationLoader",
+                    "loader_limit": -1
+                }
+            }
+        },
+        {
+            "additional_params": {},
+            "type": "generation",
+            "llm_config": {
+                "additional_params": {},
+                "endpoint": "OpenAI",
+                "name_model": "gpt-4o-mini",
+                "temperature": 0.0,
+                "max_tokens": -1
+            }
+        }      
+    ]
+}

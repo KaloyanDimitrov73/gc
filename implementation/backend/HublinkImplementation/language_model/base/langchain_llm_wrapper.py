@@ -1,6 +1,7 @@
 import re
 import time
 from typing import Any, Dict, Iterator, List, Optional, Union
+import weave
 from typing_extensions import override
 
 from langchain_core.callbacks import (
@@ -58,7 +59,7 @@ class LangchainLLMWrapper(BaseChatModel):
         return self
 
     @override
-    #@weave.op()
+    @weave.op()
     def _generate(
         self,
         messages: List[BaseMessage],

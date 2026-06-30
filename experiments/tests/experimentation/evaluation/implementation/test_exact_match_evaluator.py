@@ -1,6 +1,6 @@
-import pytest
-from experimentation.evaluation.implementations.exact_match_evaluator import ExactMatchEvaluator
-from experimentation.config.evaluator_config import EvaluatorConfig
+﻿import pytest
+from implementation.experimentation.evaluation.implementations.exact_match_evaluator import ExactMatchEvaluator
+from implementation.config.models import EvaluatorConfig
 from core import Triple, Knowledge
 
 # Sample triple for entity-mode tests if needed

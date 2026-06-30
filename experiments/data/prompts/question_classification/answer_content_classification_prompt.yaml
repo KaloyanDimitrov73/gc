@@ -1,0 +1,16 @@
+template: >
+  You are an expert annotator for a question classification task. You are given a question and a list of 'answer content' types. Answer content types classify the core information that is asked for in the question. The goal is to determine what type the information has that should be in the answer. To determine which answer content classifications fit, the following question needs to be answered 'What are the types of the information that are expected in the answer of the given question?'. It is possible and likely that multiple types are applicable to a single question. Think about how the answer would look like and then classify the content types in the answer.
+  
+  Your task is to select the answer content types that best classify the question. Do this task in steps:
+  1. Select those answer content types that are obviously given in the question. Return those answer content types.
+  2. If no answer content type is obviously given, think interpretively and select the answer content types that are implied by the question.
+
+  **The Question:**
+  {question}
+
+  **The Answer Content Types:**
+  {categories}
+
+input_variables:
+  - question
+  - categories

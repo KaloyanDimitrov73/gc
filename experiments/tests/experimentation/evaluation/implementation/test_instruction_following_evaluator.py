@@ -1,6 +1,6 @@
-import pytest
-from experimentation.evaluation.implementations.instruction_following_evaluator import InstructionFollowingEvaluator
-from experimentation.config.evaluator_config import EvaluatorConfig
+﻿import pytest
+from implementation.experimentation.evaluation.implementations.instruction_following_evaluator import InstructionFollowingEvaluator
+from implementation.config.models import EvaluatorConfig
 from core import LLMConfig
 
 LLM_CONFIG = {

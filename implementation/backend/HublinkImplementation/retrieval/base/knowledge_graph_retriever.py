@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import ClassVar, List, Optional
+
 import weave
 
 from core.config import AdditionalConfigParameter

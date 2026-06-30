@@ -1,6 +1,6 @@
-import pytest
-from experimentation.evaluation.implementations.ragas_evaluator.ragas_evaluator import RagasEvaluator
-from experimentation.config.evaluator_config import EvaluatorConfig
+﻿import pytest
+from implementation.experimentation.evaluation.implementations.ragas_evaluator.ragas_evaluator import RagasEvaluator
+from implementation.config.models import EvaluatorConfig
 from core import Triple, Knowledge
 
 LLM_CONFIG = {

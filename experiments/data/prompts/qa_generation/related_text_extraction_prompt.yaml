@@ -1,0 +1,31 @@
+template: >
+  **System Instructions:**
+  You are given:
+  1. A source text (extracted from a PDF).
+  1. A list of triples extracted from the same PDF via a knowledge-graph construction process.
+  For each triple in the list, your task is to find the specific snippet of text from the source that led to the generation of that triple. If there is no matching text for the triple in the PDF (i.e., you cannot find any textual evidence for that triple), you must not add any text for that triple.
+
+  **Important Requirements:**
+  - Do not hallucinate or make up text.
+  - If you do not find a clear textual basis for a triple, do not force a match; simply indicate this by not adding the triple to the output.
+  - When you do find a matching snippet, try to return the exact or near-exact excerpt from the source text that captures the meaning of the triple.
+  - If there are multiple places in the text that might correspond, select the best single snippet that supports the entire triple.
+  - Return your result in a structured format, so that it is clear which snippet corresponds to which triple.
+
+  **Detailed Task:**
+  1. You will receive a list of triples, each typically representing a (Subject, Predicate, Object) relationship or annotation.
+  1. For each triple:
+  - Search through the provided source text.
+  - Identify the sentence(s) that best align with the Subject, Predicate, and Object of the triple.
+  - If you find a direct match (or a closely paraphrased version) that justifies that triple, return that snippet by copying the exact text.
+  - If you cannot find supporting text, do not add the triple to the output.
+  
+  **Triples:**
+  {triples}
+
+  **Text:**
+  {text}
+
+input_variables:
+  - triples
+  - text

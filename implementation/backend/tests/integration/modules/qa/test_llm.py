@@ -34,12 +34,8 @@ def _get_llm_components():
     """Import LLM adapter classes from sqa_system, skipping the test if unavailable."""
     try:
         from language_model.config.llm_config import LLMConfig
-        from language_model.implementations import (
-            OpenAiLLMAdapter,
-        )
-        from language_model.implementations.vdl_llm_adapter import (
-            VDLLLMAdapter,
-        )
+        from language_model.implementations import OpenAiLLMAdapter
+        from language_model.implementations.vdl_llm_adapter import VDLLLMAdapter
     except Exception as exc:
         pytest.skip(f"sqa_system dependencies are unavailable: {exc}")
 
@@ -49,13 +45,13 @@ def _get_llm_components():
 @pytest.fixture(scope="module", autouse=True)
 def load_env():
     """Load .env from the project root so adapter credentials are available."""
-    load_dotenv(Path(__file__).resolve().parents[5] / ".env")
+    load_dotenv(Path(__file__).resolve().parents[4] / ".env")
 
 
 @pytest.fixture(scope="module")
 def vdl_llm():
     """Prepared VDLLLMAdapter; skipped if VDL_API_KEY is missing or the service is unreachable."""
-    LLMConfig, _, VDLLLMAdapter, _ = _get_llm_components()
+    LLMConfig, VDLLLMAdapter, _ = _get_llm_components()
     _require_env("VDL_API_KEY")
 
     config = LLMConfig(
@@ -67,7 +63,17 @@ def vdl_llm():
     adapter = VDLLLMAdapter(config)
     try:
         adapter.prepare()
+        # Probe call to catch auth errors (401) before the test body runs
+        adapter.generate("ping")
     except Exception as exc:
+        err = str(exc).lower()
+        if "401" in err or "session" in err or "token" in err or "unauthorized" in err:
+            pytest.fail(
+                f"VDL auth failed — key is invalid or expired. "
+                f"Generate a permanent API key at "
+                f"https://chat.vdl.sdq.kastel.kit.edu (Settings → Account → API Keys).\n"
+                f"Original error: {exc}"
+            )
         pytest.skip(f"VDL adapter is not available: {exc}")
     return adapter
 
@@ -75,7 +81,7 @@ def vdl_llm():
 @pytest.fixture(scope="module")
 def openai_llm():
     """Prepared OpenAiLLMAdapter; skipped if OPENAI_API_KEY is missing or the service is unreachable."""
-    LLMConfig, _, _, OpenAiLLMAdapter = _get_llm_components()
+    LLMConfig, _, OpenAiLLMAdapter = _get_llm_components()
     _require_env("OPENAI_API_KEY")
 
     config = LLMConfig(

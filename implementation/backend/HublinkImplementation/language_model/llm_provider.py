@@ -138,22 +138,16 @@ class LLMProvider:
     def _validate_api_key(self, endpoint: EndpointType) -> ValidationResult:
         """
         Validates whether the API key for the specified endpoint is set in the environment variables.
-        
+
         Args:
             endpoint (EndpointType): The endpoint to be validated.
-        
+
         Returns:
             ValidationResult: The result of the validation.
         """
-        try:
-            api_key = self.api_key_manager.get_api_key(endpoint)
-        except Exception:
-            return ValidationResult.MISSING_API_KEY
-
         env_variable = EndpointEnvVariable.get_env_variable(endpoint)
-        os.environ[env_variable.value] = api_key
         if not os.environ.get(env_variable.value):
-            raise ValueError("Error setting environment variable")
+            return ValidationResult.MISSING_API_KEY
         return ValidationResult.VALID
 
     def prepare_endpoint(self, endpoint: EndpointType, api_key: str):

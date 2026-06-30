@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 
 @pytest.fixture(scope="module", autouse=True)
 def load_env():
-    load_dotenv(Path(__file__).resolve().parents[5] / ".env")
+    load_dotenv(Path(__file__).resolve().parents[4] / ".env")
 
 
 @pytest.fixture(scope="module")

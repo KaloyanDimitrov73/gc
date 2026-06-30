@@ -1,6 +1,6 @@
-import pytest
-from experimentation.evaluation.implementations.map_at_k_evaluator import MAPAtKEvaluator
-from experimentation.config.evaluator_config import EvaluatorConfig
+﻿import pytest
+from implementation.experimentation.evaluation.implementations.map_at_k_evaluator import MAPAtKEvaluator
+from implementation.config.models import EvaluatorConfig
 from core import Triple, Knowledge
 
 # Sample triples for testing

@@ -1,6 +1,5 @@
 from abc import ABC, abstractmethod
 from typing import ClassVar, List, Optional
-import weave
 
 from core.config import AdditionalConfigParameter
 from core.data.models import RetrievalAnswer
@@ -58,7 +57,6 @@ class DocumentRetriever(Retriever, ABC):
         )
 
     @abstractmethod
-    @weave.op()
     def retrieve(self,
                  query_text: str) -> RetrievalAnswer:
         """

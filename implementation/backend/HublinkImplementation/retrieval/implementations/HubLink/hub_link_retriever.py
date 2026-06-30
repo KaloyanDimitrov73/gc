@@ -1,5 +1,6 @@
 from typing import Optional, List
 from typing_extensions import override
+import weave
 
 from core.data.models import RetrievalAnswer
 from language_model import LLMProvider

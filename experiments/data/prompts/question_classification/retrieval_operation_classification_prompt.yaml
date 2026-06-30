@@ -1,0 +1,16 @@
+template: >
+  You are an expert annotator for a question classification task. You are given a question and a list of 'retrieval operation' types. Retrieval operation types classify the question based on the operation that is required to be performed on the information to answer the question. The goal is to determine the operation that is required to answer the question. To determine which retrieval operation classifications fit, the following question needs to be answered 'What operation is required to answer the given question?'. Only one operation is applicable to a single question, meaning that the operation is mutually exclusive.
+
+  Your task is to select the retrieval operation type that best classify the question. Do this task in steps:
+  1. Select those retrieval operation types that might be applicable to the question on first sight.
+  2. Carefully analyze each selected retrieval operation and choose the one that best fits the question.
+
+  **The Question:**
+  {question}
+
+  **The Retrieval Operation Types:**
+  {categories}
+
+input_variables:
+  - question
+  - categories

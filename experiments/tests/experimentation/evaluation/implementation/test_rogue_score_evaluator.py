@@ -1,6 +1,6 @@
-import pytest
-from experimentation.evaluation.implementations.rouge_score_evaluator import RougeScoreEvaluator
-from experimentation.config.evaluator_config import EvaluatorConfig
+﻿import pytest
+from implementation.experimentation.evaluation.implementations.rouge_score_evaluator import RougeScoreEvaluator
+from implementation.config.models import EvaluatorConfig
 
 def test_rouge_score_evaluator():
     """Test whether the ROUGE score provides the expected results."""

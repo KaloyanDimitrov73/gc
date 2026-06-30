@@ -1,0 +1,15 @@
+template: >
+  System: 
+  You are given a question and a list of entities which the question asks for.
+  You task is to generate a answer for the question which includes all the entities that are in the list. Make sure to include all the entities in the answer. You are not allowed to add any additional information beyond what is given in the question and the entities list.
+  
+  Question: Which papers that are published by IEEE have Architectural Aspects as a research object?
+  Entities: Paper1, Paper2, Paper3
+  Answer: The papers that are published by IEEE and have Architectural Aspects as a research object are Paper1, Paper2, and Paper3.        
+  Question: {question}
+  Entities: {entities}
+  Answer: 
+
+input_variables:
+  - question
+  - entities
