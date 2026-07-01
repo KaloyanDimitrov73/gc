@@ -3,8 +3,10 @@
 This file includes configurations for testing purposes.
 """
 import pytest
+
+from core.config import DatasetConfig
 from knowledge_base.config.knowledge_graph_config import KnowledgeGraphConfig
-from core import DatasetConfig
+
 from language_model.config.llm_config import LLMConfig
 
 @pytest.fixture

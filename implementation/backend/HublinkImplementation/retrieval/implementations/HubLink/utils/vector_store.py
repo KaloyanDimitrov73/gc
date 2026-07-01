@@ -498,6 +498,12 @@ class ChromaVectorStore:
             embeddings = results["embeddings"][query_idx]
             distances = results["distances"][query_idx]
 
+            logger.info("-----------Query Result: %s -----------", query_idx)
+            logger.info("ID: %s", ids)
+            logger.info("Embeddings: %s", embeddings)
+            logger.info("Metadata: %s", metadatas)
+            logger.info("Distances: %s", distances)
+
             for _, (path_hash, metadata, _, distance) in enumerate(zip(ids, metadatas, embeddings, distances)):
 
                 hub_entity_id = metadata.get("hub_entity")
@@ -596,7 +602,7 @@ class ChromaVectorStore:
 
         Args:
             path_hash (str): The unique identifier for the path.
-            metadata (dict): The metadata dictionary containing the path information.
+            metadata (dict): The metadata dictionary con[1.0, 0.0]taining the path information.
 
         Returns:
             HubPath: The HubPath object created from the metadata.

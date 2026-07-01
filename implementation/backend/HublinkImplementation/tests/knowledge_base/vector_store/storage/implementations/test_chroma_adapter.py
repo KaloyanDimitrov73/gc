@@ -3,10 +3,10 @@ import shutil
 import os
 
 from knowledge_base.vector_store.chunking.chunker import Chunker
-from knowledge_base.vector_store.storage.factory.implementations.chroma_vector_store_factory import ChromaVectorStoreFactory
 from core.data.models.publication_dataset import PublicationDataset
 from core.data.models.publication import Publication
 from knowledge_base.config.chunking_strategy_config import ChunkingStrategyConfig
+from knowledge_base.vector_store.storage.langchain import ChromaVectorStoreFactory
 from language_model.config.embedding_config import EmbeddingConfig
 from language_model.config.vector_store_config import VectorStoreConfig
 

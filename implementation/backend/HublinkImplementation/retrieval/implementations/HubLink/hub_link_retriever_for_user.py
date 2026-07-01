@@ -288,6 +288,9 @@ class HubLinkRetrieverForUser(KnowledgeGraphRetriever):
         Sets up the source handler responsible for managing source documents used in hub linking.
         """
         self.hub_source_handler = None
+
+        logger.info("Prepare Source Handler")
+
         if self.settings.use_source_documents:
             self.hub_source_handler = HubSourceHandler(
                 graph=self.graph,
