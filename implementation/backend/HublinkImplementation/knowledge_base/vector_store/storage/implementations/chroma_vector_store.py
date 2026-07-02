@@ -12,8 +12,10 @@ import chromadb
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 
+from chroma_ops import hnsw
 from core.data.file_path_manager import FilePathManager
 from core.logging.logging import get_logger
+from core.progress.progress_handler import ProgressHandler
 from knowledge_base.vector_store.storage.vector_store import VectorStore, VectorScoreResults
 
 logger = get_logger(__name__)
@@ -96,6 +98,11 @@ class ChromaVectorStore(VectorStore):
 
         return collection
 
+    @property
+    @override
+    def name(self) -> str:
+        return self.store_name
+
     @override
     def store_data(self, record_id: str, embedding: List[float], metadata: Optional[Dict] = None):
         """
@@ -156,6 +163,7 @@ class ChromaVectorStore(VectorStore):
                     "Failed to batch upsert %d embeddings: %s", len(ids), e)
                 raise
 
+    @override
     def delete_records_with_filter(self, where_filter: Dict) -> None:
         """
         Deletes all embeddings that meet a specific filter expression.
@@ -173,6 +181,7 @@ class ChromaVectorStore(VectorStore):
                     f"Failed to delete embeddings for filter: {where_filter}: {e}")
                 raise
 
+    @override
     def get_records_with_metadata_by_filter(self, where_filter: Dict, limit: Optional[int] = 1) -> Optional[VectorScoreResults]:
         """
         Returns Records of the Vector store that meet the given filter expression.
@@ -208,6 +217,7 @@ class ChromaVectorStore(VectorStore):
             embeddings=results.get("embeddings"),
         )
 
+    @override
     def get_records_with_metadata_by_ids(self, ids: List[str]) -> Optional[VectorScoreResults]:
         """
         Retrieves a single entry by its unique id.
@@ -241,6 +251,7 @@ class ChromaVectorStore(VectorStore):
             embeddings=result.get("embeddings")
         )
 
+    @override
     def vector_similarity_search(self, query_embeddings: List[List[float]],
                                   where_filter: Optional[Dict] = None,
                                   n_results: int = 10) -> List[VectorScoreResults]:
@@ -300,8 +311,61 @@ class ChromaVectorStore(VectorStore):
                     f"Failed to perform similarity search for {where_filter}: {e}")
                 raise
 
+    @override
+    def rebuild(self) -> None:
+        """
+        We encountered an issue with the hnsw index where it would return the error
+        'Cannot return the results in a contigious 2D array. Probably ef or M is too small'
+        sometimes when querying the index.
+
+        This https://github.com/chroma-core/chroma/issues/3510 suggests that the issue
+        comes from adding too many data to the index in short time (maybe because of
+        parallelization). The solution is to defragmentate the index after the indexing
+        process is done. This is done by calling the rebuild_hnsw function.
+        """
+        logger.info("Defragmentating index...")
+        ProgressHandler().disable()
+        hnsw.rebuild_hnsw(
+            persist_dir=self.store_path,
+            collection_name=self.collection_name,
+            backup=False,
+            yes=True,
+        )
+        ProgressHandler().enable()
+        logger.info("Defragmentation finished!")
+
+    @override
+    def ensure_distance_metric(self, distance_metric: str) -> None:
+        current = self.collection.metadata.get("hnsw:space")
+        if current is None:
+            logger.warning("Could not find distance metric in the index. Skipping check.")
+            return
+        if current != distance_metric:
+            logger.info(f"Changing distance metric from {current} to {distance_metric}")
+            ProgressHandler().disable()
+            hnsw.rebuild_hnsw(
+                persist_dir=self.store_path,
+                collection_name=self.collection_name,
+                yes=True,
+                space=distance_metric,
+                backup=False,
+            )
+            logger.info("Successfully changed distance metric")
+            ProgressHandler().enable()
+
+    @override
+    def print_stats(self, verbose: bool = True) -> None:
+        ProgressHandler().disable()
+        hnsw.info_hnsw(
+            collection_name=self.collection_name,
+            persist_dir=self.store_path,
+            verbose=verbose,
+        )
+        ProgressHandler().enable()
+
     def count(self) -> int:
         return self.collection.count()
+
 
     def _manually_calculate_similarity_score(self,
                                              query_embeddings: List[List[float]],

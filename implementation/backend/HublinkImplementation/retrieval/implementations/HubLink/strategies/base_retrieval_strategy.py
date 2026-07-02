@@ -24,10 +24,11 @@ from ..models import (
     HubLinkSettings,
     ProcessedQuestion
 )
-from ..utils.vector_store import ChromaVectorStore
+
 from ..utils.answer_generator import HubAnswer, AnswerGenerator
 from ..utils.hub_builder import HubBuilder, HubBuilderOptions
 from ..utils.hub_source_handler import HubSourceHandler
+from ..utils.hub_storage_manager import HubStorageManager
 
 logger = get_logger(__name__)
 
@@ -50,7 +51,7 @@ class RetrievalStrategyData:
         llm_adapter (LLMAdapter): The language model adapter.
         embedding_adapter (EmbeddingAdapter): The embedding adapter.
         settings (HubLinkSettings): The settings for the retrieval strategy.
-        vector_store (ChromaVectorStore): The vector store for the retrieval.
+        hub_storage_manager (HubStorageManager): The manager which manage the vector store for the retrieval.
         source_handler (HubSourceHandler, optional): The source handler 
             for the retrieval that contains the linking data.
     """
@@ -58,7 +59,7 @@ class RetrievalStrategyData:
     llm_adapter: LLMAdapter
     embedding_adapter: EmbeddingAdapter
     settings: HubLinkSettings
-    vector_store: ChromaVectorStore
+    hub_storage_manager: HubStorageManager
     source_handler: Optional[HubSourceHandler] = None
 
 
@@ -77,7 +78,7 @@ class BaseRetrievalStrategy(ABC):
         self.llm_adapter = retrieval_data.llm_adapter
         self.embedding_model = retrieval_data.embedding_adapter
         self.settings = retrieval_data.settings
-        self.vector_store = retrieval_data.vector_store
+        self.hub_storage_manager = retrieval_data.hub_storage_manager
         self.hub_source_handler = retrieval_data.source_handler
         self._prepare_utils()
 
@@ -90,10 +91,9 @@ class BaseRetrievalStrategy(ABC):
         self.hub_builder = HubBuilder(
             graph=self.graph,
             options=HubBuilderOptions(
-                embedding_model=self.embedding_model,
                 llm=self.llm_adapter,
                 max_workers=self.settings.max_workers,
-                vector_store=self.vector_store,
+                hub_storage_manager=self.hub_storage_manager,
                 is_hub_options=IsHubOptions(
                     hub_edges=self.settings.hub_edges,
                     types=self.settings.hub_types
@@ -377,7 +377,7 @@ class BaseRetrievalStrategy(ABC):
         unique_path_hashes = set()
         result_paths = []
         while len(unique_path_hashes) < self.settings.top_paths_to_keep:
-            hub_paths = self.vector_store.similarity_search_by_hub_entity(
+            hub_paths = self.hub_storage_manager.similarity_search_by_hub_entity(
                 query_embeddings=processed_question.embeddings,
                 hub_entity_id=hub_id,
                 n_results=self.settings.top_paths_to_keep,

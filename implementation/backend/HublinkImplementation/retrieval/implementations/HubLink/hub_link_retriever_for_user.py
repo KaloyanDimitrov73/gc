@@ -17,6 +17,7 @@ from typing_extensions import override
 from copy import deepcopy
 
 from core.data.models import RetrievalAnswer
+from knowledge_base.vector_store.storage.implementations.chroma_vector_store import ChromaVectorStore
 from language_model import LLMProvider
 from language_model.config.llm_config import LLMConfig
 from retrieval import KnowledgeGraphRetriever
@@ -26,11 +27,11 @@ from core.logging.logging import get_logger
 from .models.hub_link_settings import HubLinkSettings, ADDITIONAL_CONFIG_PARAMS
 from .models.hub import IsHubOptions
 from .utils.hub_indexer import HubIndexer, HubIndexerOptions
-from .utils.vector_store import ChromaVectorStore
 from .utils.hub_source_handler import HubSourceHandler
 from .strategies.base_retrieval_strategy import RetrievalStrategyData
 from .strategies.traversal_retrieval_strategy import TraversalRetrievalStrategy
 from .strategies.direct_retrieval_strategy import DirectRetrievalStrategy
+from .utils.hub_storage_manager import HubStorageManager
 from ...config.kg_retrieval_config import KGRetrievalConfig
 
 logger = get_logger(__name__)
@@ -131,7 +132,7 @@ class HubLinkRetrieverForUser(KnowledgeGraphRetriever):
             llm_adapter=local_llm,
             embedding_adapter=self.embedding_model,
             settings=local_settings,
-            vector_store=self.vector_store,
+            hub_storage_manager=self.hub_storage_manager,
             source_handler=self.hub_source_handler,
         )
 
@@ -180,7 +181,7 @@ class HubLinkRetrieverForUser(KnowledgeGraphRetriever):
                     llm_adapter=self._retrieval_llm,
                     embedding_adapter=self.embedding_model,
                     settings=self.settings,
-                    vector_store=self.vector_store,
+                    hub_storage_manager=self.hub_storage_manager,
                     source_handler=self.hub_source_handler
                 ),
                 topic_entity_id=topic_entity_id
@@ -193,7 +194,7 @@ class HubLinkRetrieverForUser(KnowledgeGraphRetriever):
                 llm_adapter=self._retrieval_llm,
                 embedding_adapter=self.embedding_model,
                 settings=self.settings,
-                vector_store=self.vector_store,
+                hub_storage_manager=self.hub_storage_manager,
                 source_handler=self.hub_source_handler
             )
         )
@@ -220,7 +221,7 @@ class HubLinkRetrieverForUser(KnowledgeGraphRetriever):
             raise ValueError(
                 "Either root_entity_types or root_entity_ids must be specified."
             )
-        if not self.vector_store:
+        if not self.hub_storage_manager:
             raise ValueError("Vector store not initialized.")
 
         logger.info("Building/Checking index for HubLink retriever")
@@ -236,7 +237,7 @@ class HubLinkRetrieverForUser(KnowledgeGraphRetriever):
                 ),
                 llm=self._indexing_llm,  # Always use indexing LLM
                 max_workers=self.settings.max_workers,
-                vector_store=self.vector_store,
+                hub_storage_manager=self.hub_storage_manager,
                 max_indexing_depth=self.settings.max_indexing_depth,
                 max_hub_path_length=self.settings.max_hub_path_length,
                 distance_metric=self.settings.distance_metric
@@ -277,9 +278,14 @@ class HubLinkRetrieverForUser(KnowledgeGraphRetriever):
                              f"{self.settings.embedding_config.config_hash}"
                              f"{self._indexing_llm.llm_config.config_hash}")
 
-        self.vector_store = ChromaVectorStore(
+        vector_store = ChromaVectorStore(
             store_name=vector_store_name,
-            distance_metric=self.settings.distance_metric,
+            distance_metric=self.settings.distance_metric
+        )
+
+        self.hub_storage_manager = HubStorageManager(
+            vector_store=vector_store,
+            embedding_model=self.embedding_model,
             diversity_penalty=self.settings.diversity_ranking_penalty
         )
 

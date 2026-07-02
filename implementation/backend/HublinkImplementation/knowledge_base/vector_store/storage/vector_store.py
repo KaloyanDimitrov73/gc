@@ -17,6 +17,16 @@ class VectorScoreResults:
 
 class VectorStore(ABC):
 
+    @property
+    @abstractmethod
+    def name(self) -> str:
+        """
+        A stable identifier for this store instance (e.g. the persist directory
+        name, dataset name, or index name - whatever uniquely identifies THIS
+        store, as opposed to the collection/schema name, which may be shared
+        across many store instances). Safe to use as e.g. a cache key prefix.
+        """
+
     @abstractmethod
     def _initialize(self) -> None:
         """
@@ -94,7 +104,7 @@ class VectorStore(ABC):
     @abstractmethod
     def vector_similarity_search(self, query_embeddings: List[List[float]],
                                  where_filter: Optional[Dict] = None,
-                                 n_results: int = 10) -> VectorScoreResults:
+                                 n_results: int = 10) -> List[VectorScoreResults]:
         """
         Performs a similarity search, returning the entries most similar to the
         given query embedding(s), optionally restricted by a metadata filter.
@@ -105,6 +115,22 @@ class VectorStore(ABC):
             n_results (int): Maximum number of similar entries to return.
 
         Returns:
-            VectorScoreResults: The most similar entries, including their similarity
-                distances, ordered by similarity.
+            List[VectorScoreResults]: One VectorScoreResults per query embedding
+                (same order as query_embeddings), each ordered by similarity
+                (most similar first) and including distances.
         """
+
+    @abstractmethod
+    def rebuild(self) -> None:
+        """Rebuilds/defragments the underlying index, if the backend needs it.
+        Pass for backends that don't require this."""
+        ...
+
+    @abstractmethod
+    def ensure_distance_metric(self, distance_metric: str) -> None:
+        """Ensures the index uses the given distance metric, migrating if needed."""
+        ...
+
+    @abstractmethod
+    def print_stats(self, verbose: bool = True) -> None:
+        """Prints diagnostic info about the index health."""
