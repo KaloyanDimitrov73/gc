@@ -219,6 +219,12 @@ class HubIndexer:
             for entity in root_entities
         ])
 
+        logger.debug("Hub Root Entity: %s", root_entities_with_direction[0].entity.uid)
+        logger.debug("Hub Root Entity text : %s", root_entities_with_direction[0].entity.text)
+        logger.debug("Hub Root Entity type : %s", root_entities_with_direction[0].entity.knowledge_types)
+        logger.debug("Hub Root Entity direction : %s", root_entities_with_direction[0].left)
+        logger.debug("Hub Root Entity path : %s", root_entities_with_direction[0].path_from_topic)
+
         level = 0
         entities_to_start_traversal = root_entities_with_direction
         while level <= max_indexing_depth:

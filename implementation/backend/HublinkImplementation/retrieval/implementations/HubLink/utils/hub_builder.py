@@ -179,6 +179,8 @@ class HubBuilder:
         completed = 0
         logger.info("Indexing: starting processing of %d hubs", total)
 
+
+
         # Here we collect the future results from the hub processing
         for future in as_completed(futures):
             next_traversal_canidates, hub = future.result()
@@ -193,6 +195,21 @@ class HubBuilder:
                 total,
                 remaining,
             )
+
+            logger.info("Hub Root Entity: %s", hub.root_entity.entity.uid)
+            logger.info("Hub Root Entity text : %s", hub.root_entity.entity.text)
+            logger.info("Hub Root Entity type : %s", hub.root_entity.entity.knowledge_types)
+            logger.info("Hub Root Entity direction : %s", hub.root_entity.left)
+            logger.info("Hub Root Entity path : %s", hub.root_entity.path_from_topic)
+
+            logger.info("Paths: %s", hub.paths)
+
+            for path in hub.paths:
+                logger.info("Path: %s", path.path_hash)
+                logger.info("Path: %s", path.path)
+
+
+
             # Because a hub is only traversed in the forward direction of the graph
             # we need to add the left entities as candidates in case that we are
             # processing the graph to the "left" side (against the direction of the graph)
@@ -236,6 +253,7 @@ class HubBuilder:
             next_hub_roots, hub_paths = self.get_cached_hub_paths(
                 hub_root_entity=hub_root_entity,
             )
+
 
         # If no cached data is found, we process the hub and save the data
         # into the cache

@@ -132,7 +132,7 @@ class DirectRetrievalStrategy(BaseRetrievalStrategy):
 
                 logger.info("Use the embeddings from the question to find the candidate hubs")
                 logger.info("List of candidate hubs: %s", len(hubs_to_exclude))
-                results = self.vector_store.similarity_search_hubs(
+                results = self.hub_storage_manager.similarity_search_hubs(
                     query_embeddings=processed_question.embeddings,
                     excluded_hub_ids=hubs_to_exclude,
                     n_results=retrieval_amount

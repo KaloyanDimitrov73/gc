@@ -46,6 +46,7 @@ class HubStorageManager:
         Builds all storable entries for a hub (full paths, entities, triples),
         deduplicates them, embeds them in a single batch, and stores them.
         """
+
         all_texts, all_keys, all_metadata = self._collect_records(
             hub_root_entity, paths, path_texts
         )
@@ -97,37 +98,6 @@ class HubStorageManager:
         record_metadata = result.metadata[0]
 
         return parse_hub_path(path_hash=path_hash, path_as_string=record_metadata.get("path"), path_text=record_metadata.get("path_text"))
-
-    """
-    def retrieve_one_hub_path(self, path_hash: str) -> HubPath | None:
-  
-        if self.collection is None:
-            raise ValueError("Chroma collection is not initialized.")
-
-        with self._lock:
-            try:
-                results = self.collection.get(
-                    where={"path_hash": path_hash},
-                    include=["metadatas"],
-                    limit=1
-                )
-
-                if not results["ids"]:
-                    return None
-
-                i = len(results["ids"][0])
-                metadata = results["metadatas"][0][i]
-
-                return self._parse_hub_path(
-                    path_hash=path_hash,
-                    metadata=metadata
-                )
-
-            except Exception as e:
-                logger.error(
-                    f"Failed to retrieve paths with path_hash {path_hash}: {e}")
-                raise
-    """
 
     def retrieve_hub_path_by_key(self, hash_key: str) -> Optional[HubPath]:
         """
@@ -248,54 +218,6 @@ class HubStorageManager:
         hub_paths_with_score = self._process_query_results_to_hub_paths(results)
         return hub_paths_with_score[:n_results]
 
-    """
-    XXX with self._lock:
-        try:
-            if not excluded_path_hashs:
-                results: QueryResult = self.collection.query(
-                    query_embeddings=query_embeddings,
-                    where={"hub_entity":  hub_entity_id},
-                    n_results=n_results*2,
-                    include=["metadatas", "distances"]
-                )
-            else:
-                # For details on filtering see
-                # https://docs.trychroma.com/docs/querying-collections/metadata-filtering
-                where_filter = {"$and": []}
-                where_filter["$and"].append(
-                    {"path_hash": {"$nin": excluded_path_hashs}})
-                where_filter["$and"].append(
-                    {"hub_entity": {"$eq": hub_entity_id}})
-
-                results: QueryResult = self.collection.query(
-                    query_embeddings=query_embeddings,
-                    where=where_filter,
-                    n_results=n_results*2,
-                    include=["metadatas", "distances"]
-                )
-            hub_paths_with_score = self._process_query_results_to_hub_paths(
-                results)
-            return hub_paths_with_score[:n_results]
-
-        except Exception as e:
-            if "cannot return the results" in str(e).lower():
-                logger.warning(
-                    "Nearest Neighbor Query Failed trying manually..")
-                logger.debug(
-                    f"Parameters: {hub_entity_id}, {n_results}, {excluded_path_hashs}")
-                # This happens if the n_results is too large for the
-                # number of embeddings in the hub
-                return self._manually_calculate_similarity_score(
-                    hub_entity_id=hub_entity_id,
-                    query_embeddings=query_embeddings,
-                    n_results=n_results
-                )
-            logger.error(
-                f"Failed to perform similarity search for hub_entity {hub_entity_id}: {e}")
-            raise
-        
-    """
-
     def similarity_search_hubs(self,
                                query_embeddings: List[List[float]],
                                excluded_hub_ids: List[str],
@@ -309,8 +231,7 @@ class HubStorageManager:
             as the reranking can apply the DiversityRanker to the results.
 
         Args:
-            query_embeddings (List[List[float]]): The embedding vector for which to find similar
-                embeddings.
+            query_embeddings (List[List[float]]): List of embedding vectors for which to find similar embeddings.
             excluded_hub_ids (List[str]): List of hub entity IDs to exclude from search.
             n_results (int): The number of top similar embeddings to retrieve.
 
@@ -318,56 +239,47 @@ class HubStorageManager:
             Dict[str, List[HubPath]]: A dictionary containing hub entity IDs as keys and
                 a list of similar hub paths with their similarity scores as values.
         """
-        if self.collection is None:
-            raise ValueError("Chroma collection is not initialized.")
 
-        with self._lock:
-            try:
+        try:
 
-                logger.info("Retrieve n_results * 2 from collection")
+            if not excluded_hub_ids:
+                where_filter = None
+            else:
+                where_filter = {"hub_entity": {"$nin": excluded_hub_ids}}
 
-                if not excluded_hub_ids:
-                    results: QueryResult = self.collection.query(
-                        query_embeddings=query_embeddings,
-                        n_results=n_results * 2,
-                        include=["embeddings", "metadatas", "distances"]
-                    )
-                else:
-                    results: QueryResult = self.collection.query(
-                        query_embeddings=query_embeddings,
-                        where={"hub_entity": {"$nin": excluded_hub_ids}},
-                        n_results=n_results * 2,
-                        include=["embeddings", "metadatas", "distances"]
-                    )
+            logger.info("Retrieve n_results * 2 from collection")
 
-                if not results or not results["ids"]:
-                    return []
+            results: List[VectorScoreResults] = self.vector_store.vector_similarity_search(
+                query_embeddings=query_embeddings,
+                where_filter=where_filter,
+                n_results=n_results * 2,
+            )
 
-
-
-                hub_paths_clustered_by_hub_id = self._convert_query_result_to_hubpaths_clustered_by_hub_id(
-                    results)
-
-                logger.info("Rerank results by score and return n_results")
-
-                # Sort the hub paths by their scores in descending order
-                for hub_id, hub_paths in hub_paths_clustered_by_hub_id.items():
-                    if self.diversity_penalty > 0:
-                        hub_paths_clustered_by_hub_id[hub_id] = self._diversity_ranker_for_triples(
-                            paths=hub_paths)
-                    else:
-                        hub_paths.sort(key=lambda x: x.score, reverse=True)
-
-                    # ensure that the n_results is not larger than the amount of paths
-                    hub_paths_clustered_by_hub_id[hub_id] = hub_paths[:n_results]
-
-                return hub_paths_clustered_by_hub_id
-
-            except Exception as e:
-                logger.error(
-                    f"Failed to perform similarity search excluding hub entities: {e}"
-                )
+            if not results:
                 return {}
+
+            hub_paths_clustered_by_hub_id = self._convert_query_result_to_hubpaths_clustered_by_hub_id(results)
+
+            logger.info("Rerank results by score and return n_results")
+
+            # Sort the hub paths by their scores in descending order
+            for hub_id, hub_paths in hub_paths_clustered_by_hub_id.items():
+                if self.diversity_penalty > 0:
+                    hub_paths_clustered_by_hub_id[hub_id] = self._diversity_ranker_for_triples(
+                        paths=hub_paths)
+                else:
+                    hub_paths.sort(key=lambda x: x.score, reverse=True)
+
+                # ensure that the n_results is not larger than the amount of paths
+                hub_paths_clustered_by_hub_id[hub_id] = hub_paths[:n_results]
+
+            return hub_paths_clustered_by_hub_id
+
+        except Exception as e:
+            logger.error(
+                f"Failed to perform similarity search excluding hub entities: {e}"
+            )
+            return {}
 
     def rebuild_index(self) -> None:
         self.vector_store.rebuild()
@@ -380,28 +292,41 @@ class HubStorageManager:
 
     def _convert_query_result_to_hubpaths_clustered_by_hub_id(
             self,
-            results: QueryResult) -> Dict[str, List[HubPath]]:
+            results: List[VectorScoreResults]) -> Dict[str, List[HubPath]]:
         """
-        Converts the QueryResult to HubPath objects clustered by the id of the Hub.
+        Converts the list of VectorScoreResults (one per query embedding) to HubPath
+        objects clustered by the id of the Hub.
 
         Args:
-            results (QueryResult): The query results from ChromaDB.
+            results (List[VectorScoreResults]): The per-query results from the vector store.
 
         Returns:
             Dict[str, List[HubPath]]: A dictionary mapping hub entity IDs to lists of HubPath objects.
         """
-        if not results or not results["ids"] or len(results["ids"]) == 0:
+        if not results:
             return {}
 
         logger.info("Converts the QueryResult to HubPath objects")
 
         hub_paths_by_id: Dict[str, List[HubPath]] = {}
 
-        for query_idx in range(len(results["ids"])):
-            metadatas = results["metadatas"][query_idx]
-            ids = results["ids"][query_idx]
-            embeddings = results["embeddings"][query_idx]
-            distances = results["distances"][query_idx]
+        for query_idx, query_result in enumerate(results):
+            if query_result.is_empty:
+                continue
+
+            if not query_result.metadata:
+                continue
+
+            if not query_result.embeddings:
+                continue
+
+            if not query_result.distances:
+                continue
+
+            ids = query_result.ids
+            embeddings = query_result.embeddings
+            metadatas = query_result.metadata
+            distances = query_result.distances
 
             logger.info("-----------Query Result: %s -----------", query_idx)
             logger.info("ID: %s", ids)
@@ -409,15 +334,20 @@ class HubStorageManager:
             logger.info("Metadata: %s", metadatas)
             logger.info("Distances: %s", distances)
 
-            for _, (path_hash, metadata, _, distance) in enumerate(zip(ids, metadatas, embeddings, distances)):
-
+            for path_hash, metadata, embedding, distance in zip(ids, metadatas, embeddings, distances):
                 hub_entity_id = metadata.get("hub_entity")
-                hub_path =  parse_hub_path(path_hash=path_hash, path_as_string=metadata.get("path"), path_text=metadata.get("path_text"))
+
+                hub_path = parse_hub_path(
+                    path_hash=path_hash,
+                    path_as_string=metadata.get("path"),
+                    path_text=metadata.get("path_text"),
+                )
+
+                logger.info("Hub Path: %s", hub_path)
 
                 hub_path.score = 1 - distance
                 hub_path.embedded_text = metadata.get("embedded_text")
 
-                # Add hub path to the cluster dictionary
                 if hub_entity_id not in hub_paths_by_id:
                     hub_paths_by_id[hub_entity_id] = []
                 hub_paths_by_id[hub_entity_id].append(hub_path)
@@ -447,18 +377,6 @@ class HubStorageManager:
                 hub_path.score = 1 - distance
                 hub_path.embedded_text = metadata.get("embedded_text")
                 similar_paths.append(hub_path)
-
-        """
-        for k in range(len(results["ids"])):
-            for i in range(len(results["ids"][0])):
-                metadata = results["metadatas"][k][i]
-                distance = results["distances"][k][i]
-                path_hash = metadata.get("path_hash")
-                hub_path = self._parse_hub_path(path_hash, metadata)
-                hub_path.score = 1 - distance
-                hub_path.embedded_text = metadata.get("embedded_text")
-                similar_paths.append(hub_path)
-        """
 
         if self.diversity_penalty > 0:
             similar_paths = self._diversity_ranker_for_triples(
@@ -508,27 +426,6 @@ class HubStorageManager:
 
         paths.sort(key=lambda x: x.score, reverse=True)
         return paths
-
-    def xy(self, path_hash: str, metadata: Dict) -> HubPath:
-        """
-        Creates a HubPath object based on the metadata. This is needed as we
-        can only store strings in the vector store as metadata. With this parser
-        we can convert the metadata back to a HubPath object.
-
-        Args:
-            path_hash (str): The unique identifier for the path.
-            metadata (dict): The metadata dictionary con[1.0, 0.0]taining the path information.
-
-        Returns:
-            HubPath: The HubPath object created from the metadata.
-        """
-        path_as_string = metadata.get("path")
-        path = deserialize_path(path_as_string)
-        return HubPath(
-            path_hash=path_hash,
-            path=path,
-            path_text=metadata.get("path_text"),
-        )
 
     def _collect_records(self,
                           hub_root_entity: EntityWithDirection,
