@@ -196,20 +196,6 @@ class HubBuilder:
                 remaining,
             )
 
-            logger.info("Hub Root Entity: %s", hub.root_entity.entity.uid)
-            logger.info("Hub Root Entity text : %s", hub.root_entity.entity.text)
-            logger.info("Hub Root Entity type : %s", hub.root_entity.entity.knowledge_types)
-            logger.info("Hub Root Entity direction : %s", hub.root_entity.left)
-            logger.info("Hub Root Entity path : %s", hub.root_entity.path_from_topic)
-
-            logger.info("Paths: %s", hub.paths)
-
-            for path in hub.paths:
-                logger.info("Path: %s", path.path_hash)
-                logger.info("Path: %s", path.path)
-
-
-
             # Because a hub is only traversed in the forward direction of the graph
             # we need to add the left entities as candidates in case that we are
             # processing the graph to the "left" side (against the direction of the graph)

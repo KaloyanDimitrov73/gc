@@ -328,12 +328,6 @@ class HubStorageManager:
             metadatas = query_result.metadata
             distances = query_result.distances
 
-            logger.info("-----------Query Result: %s -----------", query_idx)
-            logger.info("ID: %s", ids)
-            logger.info("Embeddings: %s", embeddings)
-            logger.info("Metadata: %s", metadatas)
-            logger.info("Distances: %s", distances)
-
             for path_hash, metadata, embedding, distance in zip(ids, metadatas, embeddings, distances):
                 hub_entity_id = metadata.get("hub_entity")
 
@@ -342,8 +336,6 @@ class HubStorageManager:
                     path_as_string=metadata.get("path"),
                     path_text=metadata.get("path_text"),
                 )
-
-                logger.info("Hub Path: %s", hub_path)
 
                 hub_path.score = 1 - distance
                 hub_path.embedded_text = metadata.get("embedded_text")
