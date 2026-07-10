@@ -3,7 +3,7 @@ import sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../../../.."))
 from dotenv import load_dotenv, find_dotenv
 load_dotenv(find_dotenv(), override=True)
-from implementation.resource_management import FilePathManager
+from implementation.file_path_management import FilePathManager
 from implementation.config.config_models import ExperimentConfig
 from implementation.experimentation.experiment_runner import ExperimentRunner, ExperimentRunnerSettings
 

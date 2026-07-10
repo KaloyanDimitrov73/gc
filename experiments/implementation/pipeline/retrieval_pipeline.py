@@ -5,9 +5,9 @@ import weave
 from weave import Model
 from langchain_core.runnables import Runnable
 
-from implementation.resource_management.emission_tracker_manager import EmissionTrackerManager
+from implementation.pipeline.tracking.emission_tracker_manager import EmissionTrackerManager
 from language_model.llm_stat_tracker import LLMStatTracker
-from implementation.resource_management.pipeline_data_collector import PipelineDataCollector, PipelineData
+from implementation.pipeline.tracking.pipeline_data_collector import PipelineDataCollector, PipelineData
 from implementation.config.config_models.pipeline_config import PipelineConfig
 from implementation.pipe.base.pipe import Pipe
 from implementation.shared_models.pipe_io_data import PipeIOData

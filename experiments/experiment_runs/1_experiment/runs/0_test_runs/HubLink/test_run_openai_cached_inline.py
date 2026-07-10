@@ -1,6 +1,5 @@
 ﻿import os
-from Pratikum.src.xiyuzhong.experiments.tests.experimentation.test_experiment_runner import experiment_config
-from implementation.resource_management import FilePathManager
+from implementation.file_path_management import FilePathManager
 from implementation.config.config_models import ExperimentConfig
 from implementation.experimentation.experiment_runner import ExperimentRunner, ExperimentRunnerSettings
 
@@ -238,7 +237,7 @@ def main():
         experiment_config=test_run_config,
         settings=ExperimentRunnerSettings(
             results_folder_path=fpm.combine_paths(
-                folder_path, "test_run", experiment_config.config_hash),
+                folder_path, "test_run", test_run_config.config_hash),
             qa_data_path=qa_dataset_path,
             debugging=True,
             log_to_results_folder=True,

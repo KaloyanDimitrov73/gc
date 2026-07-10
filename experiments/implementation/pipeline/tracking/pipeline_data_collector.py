@@ -2,7 +2,7 @@
 from pydantic import BaseModel
 from implementation.shared_models.pipe_io_data import PipeIOData
 from implementation.core import LLMStats
-from implementation.resource_management.emission_tracker_manager import EmissionsTrackingData
+from implementation.pipeline.tracking.emission_tracker_manager import EmissionsTrackingData
 
 
 class PipelineData(BaseModel):

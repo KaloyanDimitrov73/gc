@@ -1,0 +1,3 @@
+#local setup files in vscode
+.vscode/
+pyrightconfig.json

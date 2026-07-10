@@ -22,7 +22,8 @@ def find_project_root():
 
 
 class FilePathManager:
-    """    Manages file paths for the experiments package.
+    """
+    Manages file paths for the experiments package.
 
     Provides generic path utilities and a JSON-based name-to-path lookup
     for shared assets (e.g. taxonomy files). The root is anchored to the

@@ -2,7 +2,7 @@
 from typing import List, Dict, Any
 from typing_extensions import override
 
-from implementation.resource_management.emission_tracker_manager import EmissionTrackerManager
+from implementation.pipeline.tracking.emission_tracker_manager import EmissionTrackerManager
 from implementation.core.logging import get_logger
 from implementation.config.config_models.pipeline_config import PipelineConfig
 from .base.base_experiment_executor import BaseExperimentExecutor

@@ -1,7 +1,7 @@
 ﻿from typing import List, Optional
 from .base.config import Config
 from .pipeline_config import PipelineConfig
-from implementation.shared_models.parameter_range import ParameterRange
+from ..data_models.parameter_range import ParameterRange
 from .dataset_config import DatasetConfig
 from .evaluator_config import EvaluatorConfig
 

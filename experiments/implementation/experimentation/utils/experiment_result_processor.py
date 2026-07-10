@@ -3,7 +3,7 @@ import pandas as pd
 
 from implementation.shared_models.pipe_io_data import PipeIOData
 from implementation.config.config_models.pipeline_config import PipelineConfig
-from implementation.resource_management.pipeline_data_collector import PipelineData
+from implementation.pipeline.tracking.pipeline_data_collector import PipelineData
 from implementation.core.logging import get_logger
 logger = get_logger(__name__)
 

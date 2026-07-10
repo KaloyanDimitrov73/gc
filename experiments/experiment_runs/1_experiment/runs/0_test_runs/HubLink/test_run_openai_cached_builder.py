@@ -1,6 +1,6 @@
 ﻿import os
 
-from implementation.resource_management import FilePathManager
+from implementation.file_path_management import FilePathManager
 from implementation.experimentation.experiment_config_builder import ExperimentConfigBuilder
 from implementation.experimentation.experiment_runner import ExperimentRunner, ExperimentRunnerSettings
 from implementation.experimentation.utils.experiment_runner_settings import ExecutionStrategyType

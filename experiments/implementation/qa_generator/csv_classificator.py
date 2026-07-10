@@ -5,7 +5,7 @@ import pandas as pd
 
 from pydantic import Field
 from implementation.shared_models.qa_pair import QAPair
-from implementation.resource_management import FilePathManager
+from implementation.file_path_management import FilePathManager
 from .question_classifier import QuestionClassifier
 from language_model.llm_provider import LLMProvider
 from core.data.cache_manager import CacheManager

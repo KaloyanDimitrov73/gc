@@ -1,7 +1,7 @@
 ﻿import os
-from implementation.resource_management import FilePathManager
-from core import KnowledgeGraphConfig
-from experiments.qa_generator import QADatasetToGraphConverter
+from implementation.file_path_management import FilePathManager
+from implementation.config.config_models import KnowledgeGraphConfig
+from implementation.qa_generator import QADatasetToGraphConverter
 
 RESEARCH_FIELD_ID = "R659055"
 KG_CONFIG = KnowledgeGraphConfig.from_dict({

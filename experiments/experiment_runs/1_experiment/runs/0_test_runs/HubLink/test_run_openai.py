@@ -1,5 +1,5 @@
 ﻿import os
-from implementation.resource_management import FilePathManager
+from implementation.file_path_management import FilePathManager
 from implementation.config.config_models import ExperimentConfig
 from implementation.experimentation.experiment_runner import ExperimentRunner, ExperimentRunnerSettings
 

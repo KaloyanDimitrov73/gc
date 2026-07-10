@@ -5,7 +5,7 @@ from weave.flow.scorer import Scorer
 from implementation.core import Config, DatasetConfig
 from implementation.config.config_models.experiment_config import ExperimentConfig
 from implementation.config.config_models.pipeline_config import PipelineConfig
-from implementation.resource_management.dataset_manager import DatasetManager
+from implementation.data_loader.dataset_manager import DatasetManager
 from implementation.shared_models.qa_dataset import QADataset
 from implementation.experimentation.evaluation.factory.evaluator_factory import EvaluatorFactory
 from implementation.core.logging import get_logger

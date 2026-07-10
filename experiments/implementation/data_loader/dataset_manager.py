@@ -1,9 +1,9 @@
-﻿from typing import Dict, Optional
+from typing import Dict, Optional
 
 from implementation.config.config_models.dataset_config import DatasetConfig
 from implementation.data_loader.csv_qa_loader import CSVQALoader
 from implementation.shared_models.qa_dataset import QADataset
-from .file_path_manager import FilePathManager
+from implementation.file_path_management import FilePathManager
 
 _LOADER_MAP = {
     "CSVQALoader": CSVQALoader,

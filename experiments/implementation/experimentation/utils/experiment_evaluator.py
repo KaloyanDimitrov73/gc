@@ -7,7 +7,7 @@ import weave
 from weave import Model
 import pandas as pd
 
-from implementation.resource_management import FilePathManager
+from implementation.file_path_management import FilePathManager
 from implementation.experimentation.evaluation.base.evaluator import Evaluator
 from implementation.core import ProgressHandler
 from implementation.core import ContextType, Context, QAPair

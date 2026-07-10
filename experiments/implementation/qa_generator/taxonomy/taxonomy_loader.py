@@ -1,7 +1,7 @@
 ﻿import json
 
-from .file_path_manager import FilePathManager
-from implementation.shared_models.taxonomy.taxonomy import Taxonomy
+from implementation.file_path_management import FilePathManager
+from .taxonomy import Taxonomy
 
 
 class TaxonomyLoader:

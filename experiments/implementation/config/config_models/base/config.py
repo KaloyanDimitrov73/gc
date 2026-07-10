@@ -1,5 +1,4 @@
-﻿import os
-from abc import ABC, abstractmethod
+﻿from abc import ABC, abstractmethod
 from uuid import uuid4
 from typing import Any, Dict, List
 import json
@@ -7,7 +6,6 @@ import hashlib
 from typing_extensions import override
 from pydantic import BaseModel, Field, model_validator
 
-from implementation.resource_management import FilePathManager
 from ..additional_config_parameter import AdditionalConfigParameter
 
 
@@ -31,27 +29,6 @@ class Config(BaseModel, ABC):
         hash_value = hashlib.md5(json.dumps(
             config_dict, sort_keys=True).encode()).hexdigest()
         return hash_value
-
-    def _update_config_mapping(self, hash_value: str):
-        """
-        This method adds a mapping with the config hash and the configuration into a 
-        json file to allow to trace the configuration by hash.
-
-        Args:
-            hash_value (str): The hash value of the configuration.
-        """
-        fpm = FilePathManager()
-        json_path = fpm.get_path("config_mapping.json")
-        os.makedirs(os.path.dirname(json_path), exist_ok=True)
-        if not os.path.exists(json_path):
-            with open(json_path, "w", encoding="utf-8") as f:
-                json.dump({}, f, indent=4)
-        with open(json_path, "r+", encoding="utf-8") as f:
-            config_mapping = json.load(f)
-            config_mapping[hash_value] = self.to_dict()
-            f.seek(0)
-            json.dump(config_mapping, f, indent=4)
-            f.truncate()
 
     @abstractmethod
     def generate_name(self) -> str:
