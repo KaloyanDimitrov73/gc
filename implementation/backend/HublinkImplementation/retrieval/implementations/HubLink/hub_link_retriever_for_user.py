@@ -121,11 +121,10 @@ class HubLinkRetrieverForUser(KnowledgeGraphRetriever):
         # Log the retrieval attempt
         separator = "#" * 30
         strategy_name = "GraphTraversal" if local_settings.use_topic_if_given else "DirectRetrieval"
-        logger.debug("\n%s\nNew HubLink Retrieval (%s)\n%s", separator, strategy_name, separator)
-        logger.debug("Question: %s", query_text)
-        logger.debug("LLM: %s", llm_config.name_model)
-        logger.debug("Number of hubs: %s", local_settings.number_of_hubs)
-        logger.info("HubLinkRetrieverForUser")
+        logger.info("\n%s\nNew HubLink Retrieval (%s)\n%s", separator, strategy_name, separator)
+        logger.info("Question: %s", query_text)
+        logger.info("LLM: %s", llm_config.name_model)
+        logger.info("Number of hubs: %s", local_settings.number_of_hubs)
 
         retrieval_data = RetrievalStrategyData(
             graph=self.graph,

@@ -8,7 +8,8 @@ from core.logging.logging import get_logger
 from core.data.models.triple import Triple
 from knowledge_base.vector_store.storage.vector_store import VectorStore, VectorScoreResults
 from language_model import EmbeddingAdapter
-from .hub_path_util import parse_hub_path, path_to_hash, deserialize_path, serialize_path
+from knowledge_base.vector_store.storage.utils.filters import FilterCondition, FilterOperator, FilterGroup, LogicalOperator
+from .hub_path_util import parse_hub_path, path_to_hash, serialize_path
 from ..models import EntityWithDirection
 
 from ..models.hub_path import HubPath
@@ -72,7 +73,13 @@ class HubStorageManager:
         Args:
             hub_entity_id (str): The unique identifier of the hub entity.
         """
-        self.vector_store.delete_records_with_filter({"hub_entity": hub_entity_id})
+        where_filter = FilterCondition(
+            field="hub_entity",
+            operator=FilterOperator.EQUALS,
+            value=hub_entity_id,
+        )
+
+        self.vector_store.delete_records_with_filter(where_filter)
 
     def retrieve_one_hub_path(self, path_hash: str) -> HubPath | None:
         """
@@ -87,8 +94,15 @@ class HubStorageManager:
         Returns:
             HubPath: The first matching HubPath, or None if nothing matched.
         """
+
+        where_filter = FilterCondition(
+            field="path_hash",
+            operator=FilterOperator.EQUALS,
+            value=path_hash,
+        )
+
         result = self.vector_store.get_records_with_metadata_by_filter(
-            where_filter={"path_hash": path_hash},
+            where_filter=where_filter,
             limit=1
         )
 
@@ -154,8 +168,14 @@ class HubStorageManager:
             List[HubPath]: A list of HubPath objects.
         """
 
+        where_filter = FilterCondition(
+            field="hub_entity",
+            operator=FilterOperator.EQUALS,
+            value=hub_entity_id,
+        )
+
         result = self.vector_store.get_records_with_metadata_by_filter(
-            where_filter={"hub_entity": hub_entity_id},
+            where_filter=where_filter,
             limit=None
         )
         if result is None or result.is_empty:
@@ -196,13 +216,27 @@ class HubStorageManager:
             List[HubPath]: List of similar hub paths with their similarity scores.
         """
         if not excluded_path_hashs:
-            where_filter = {"hub_entity":  hub_entity_id}
+            where_filter = FilterCondition(
+                field="hub_entity",
+                operator=FilterOperator.EQUALS,
+                value=hub_entity_id,
+            )
         else:
-            where_filter = {"$and": []}
-            where_filter["$and"].append(
-                {"path_hash": {"$nin": excluded_path_hashs}})
-            where_filter["$and"].append(
-                {"hub_entity": {"$eq": hub_entity_id}})
+            where_filter = FilterGroup(
+                operator=LogicalOperator.AND,
+                conditions=(
+                    FilterCondition(
+                        field="path_hash",
+                        operator=FilterOperator.IS_NOT_IN_LIST,
+                        value=excluded_path_hashs,
+                    ),
+                    FilterCondition(
+                        field="hub_entity",
+                        operator=FilterOperator.EQUALS,
+                        value=hub_entity_id,
+                    ),
+                ),
+            )
 
         try:
             results = self.vector_store.vector_similarity_search(
@@ -245,9 +279,13 @@ class HubStorageManager:
             if not excluded_hub_ids:
                 where_filter = None
             else:
-                where_filter = {"hub_entity": {"$nin": excluded_hub_ids}}
+                where_filter = FilterCondition(
+                    field="hub_entity",
+                    operator=FilterOperator.IS_NOT_IN_LIST,
+                    value=excluded_hub_ids,
+                )
 
-            logger.info("Retrieve n_results * 2 from collection")
+            logger.info("Retrieve n_results (%s) * 2 from collection", n_results)
 
             results: List[VectorScoreResults] = self.vector_store.vector_similarity_search(
                 query_embeddings=query_embeddings,
@@ -312,15 +350,6 @@ class HubStorageManager:
 
         for query_idx, query_result in enumerate(results):
             if query_result.is_empty:
-                continue
-
-            if not query_result.metadata:
-                continue
-
-            if not query_result.embeddings:
-                continue
-
-            if not query_result.distances:
                 continue
 
             ids = query_result.ids

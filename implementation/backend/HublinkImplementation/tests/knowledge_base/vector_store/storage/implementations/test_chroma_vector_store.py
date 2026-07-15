@@ -5,6 +5,8 @@ import numpy as np
 import pytest
 
 from knowledge_base.vector_store.storage.implementations.chroma_vector_store import ChromaVectorStore
+from knowledge_base.vector_store.storage.utils.filters import FilterCondition, FilterOperator, FilterGroup, \
+    LogicalOperator
 
 
 @pytest.fixture
@@ -82,7 +84,13 @@ def test_get_records_with_metadata_by_filter(store):
 
     assert store.count() == 3
 
-    result = store.get_records_with_metadata_by_filter({"topic": "Software Architecture and Design"}, limit=10)
+    where_filter = FilterCondition(
+        field="topic",
+        operator=FilterOperator.EQUALS,
+        value="Software Architecture and Design",
+    )
+
+    result = store.get_records_with_metadata_by_filter(where_filter, limit=10)
 
     assert result is not None
     assert result.ids == ["paper_1", "paper_3"]
@@ -91,9 +99,16 @@ def test_get_records_with_metadata_by_filter(store):
 def test_get_records_with_metadata_by_filter_no_match_returns_none(store):
     store.store_data("paper_1", [0.1, 0.2, 0.3], {"topic": "Software Architecture and Design"})
 
-    result = store.get_records_with_metadata_by_filter({"category": "nonexistent"})
+    where_filter = FilterCondition(
+        field="category",
+        operator=FilterOperator.EQUALS,
+        value="nonexistent",
+    )
+
+    result = store.get_records_with_metadata_by_filter(where_filter)
 
     assert result is None
+
 
 def test_delete_records_with_filter(store):
     store.store_data("paper_1", [0.1, 0.2, 0.3], {"topic": "Software Architecture and Design"})
@@ -101,7 +116,13 @@ def test_delete_records_with_filter(store):
 
     assert store.count() == 2
 
-    store.delete_records_with_filter({"topic": "Software Architecture and Design"})
+    where_filter = FilterCondition(
+        field="topic",
+        operator=FilterOperator.EQUALS,
+        value="Software Architecture and Design",
+    )
+
+    store.delete_records_with_filter(where_filter)
 
     assert store.count() == 1
     assert store.get_records_with_metadata_by_ids(ids=["paper_1"]) is None
@@ -129,9 +150,15 @@ def test_vector_similarity_search_respects_filter(store):
     store.store_data("paper_1", [0.1, 0.2, 0.3], {"topic": "Software Architecture and Design"})
     store.store_data("paper_2", [0.1, 0.2, 0.3], {"topic": "Software Analysis"})
 
+    where_filter = FilterCondition(
+        field="topic",
+        operator=FilterOperator.EQUALS,
+        value="Software Analysis",
+    )
+
     results = store.vector_similarity_search(
         query_embeddings=[[0.1, 0.2, 0.3]],
-        where_filter={"topic": "Software Analysis"},
+        where_filter=where_filter,
         n_results=10,
     )
 
@@ -197,3 +224,148 @@ def test_manually_calculation_with_multiple_queries(store):
 
     np.allclose(manual_results[0].distances, results[0].distances)
     np.allclose(manual_results[1].distances, results[1].distances)
+
+def test_not_equals_none_matches_everything(store):
+    store.store_data("paper_1", [0.1, 0.2, 0.3], {"path_hash": "hash_123"})
+    store.store_data("paper_2", [0.4, 0.5, 0.6], {"path_hash": "hash_456"})
+
+    where_filter = FilterCondition(field="path_hash", operator=FilterOperator.NOT_EQUALS, value=None)
+
+    result = store.get_records_with_metadata_by_filter(where_filter, limit=10)
+    assert set(result.ids) == {"paper_1", "paper_2"}
+
+
+def test_not_in_empty_list_matches_everything(store):
+    store.store_data("paper_1", [0.1, 0.2, 0.3], {"path_hash": "hash_123"})
+    store.store_data("paper_2", [0.4, 0.5, 0.6], {"path_hash": "hash_456"})
+
+    where_filter = FilterCondition(field="path_hash", operator=FilterOperator.IS_NOT_IN_LIST, value=[])
+
+    result = store.get_records_with_metadata_by_filter(where_filter, limit=10)
+    assert set(result.ids) == {"paper_1", "paper_2"}
+
+
+def test_equals_none_raises(store):
+    where_filter = FilterCondition(field="path_hash", operator=FilterOperator.EQUALS, value=None)
+
+    with pytest.raises(ValueError, match="Invalid filter"):
+        store.get_records_with_metadata_by_filter(where_filter)
+
+
+def test_in_empty_list_raises(store):
+    where_filter = FilterCondition(field="path_hash", operator=FilterOperator.IS_IN_LIST, value=[])
+
+    with pytest.raises(ValueError, match="Invalid filter"):
+        store.get_records_with_metadata_by_filter(where_filter)
+
+
+def test_greater_than_none_raises(store):
+    where_filter = FilterCondition(field="score", operator=FilterOperator.GREATER_THAN, value=None)
+
+    with pytest.raises(ValueError, match="Invalid filter"):
+        store.get_records_with_metadata_by_filter(where_filter)
+
+
+def test_delete_records_with_complex_nested_filter(store):
+    store.store_data("paper_1", [0.1, 0.2, 0.3], {"topic": "Software Architecture", "year": 2021})
+    store.store_data("paper_2", [0.4, 0.5, 0.6], {"topic": "Software Analysis", "year": 2019})
+    store.store_data("paper_3", [0.7, 0.8, 0.9], {"topic": "Software Analysis", "year": 2022})
+    store.store_data("paper_4", [1.0, 1.1, 1.2], {"topic": "Machine Learning", "year": 2024})
+
+
+    complex_filter = FilterGroup(
+        operator=LogicalOperator.AND,
+        conditions=(
+            FilterGroup(
+                operator=LogicalOperator.OR,
+                conditions=(
+                    FilterCondition(
+                        field="topic",
+                        operator=FilterOperator.EQUALS,
+                        value="Software Architecture",
+                    ),
+                    FilterCondition(
+                        field="topic",
+                        operator=FilterOperator.EQUALS,
+                        value="Software Analysis",
+                    ),
+                ),
+            ),
+            FilterCondition(
+                field="year",
+                operator=FilterOperator.GREATER_THAN_OR_EQUAL,
+                value=2021,
+            ),
+        ),
+    )
+
+    store.delete_records_with_filter(complex_filter)
+
+    assert store.count() == 2
+
+    assert store.get_records_with_metadata_by_ids(ids=["paper_1"]) is None
+    assert store.get_records_with_metadata_by_ids(ids=["paper_3"]) is None
+
+    assert store.get_records_with_metadata_by_ids(ids=["paper_2"]) is not None
+    assert store.get_records_with_metadata_by_ids(ids=["paper_4"]) is not None
+
+
+def test_get_records_with_and_not_in_filter(store):
+    store.store_data("paper_1", [0.1, 0.2, 0.3], {"path_hash": "hash_123", "hub_entity": "hub_a"})
+    store.store_data("paper_2", [0.4, 0.5, 0.6], {"path_hash": "hash_456", "hub_entity": "hub_a"})
+    store.store_data("paper_3", [0.7, 0.8, 0.9], {"path_hash": "hash_257", "hub_entity": "hub_a"})
+    store.store_data("paper_4", [1.0, 1.1, 1.2], {"path_hash": "hash_534", "hub_entity": "hub_b"})
+
+    excluded_path_hashes = ["hash_123", "hash_257"]
+    hub_entity_id = "hub_a"
+
+    where_filter = FilterGroup(
+        operator=LogicalOperator.AND,
+        conditions=(
+            FilterCondition(
+                field="path_hash",
+                operator=FilterOperator.IS_NOT_IN_LIST,
+                value=excluded_path_hashes,
+            ),
+            FilterCondition(
+                field="hub_entity",
+                operator=FilterOperator.EQUALS,
+                value=hub_entity_id,
+            ),
+        ),
+    )
+
+    result = store.get_records_with_metadata_by_filter(where_filter)
+
+    assert result is not None
+    assert result.ids == ["paper_2"]
+
+
+def test_get_records_with_and_not_in_filter_empty(store):
+    store.store_data("paper_1", [0.1, 0.2, 0.3], {"path_hash": "hash_123", "hub_entity": "hub_a"})
+    store.store_data("paper_2", [0.4, 0.5, 0.6], {"path_hash": "hash_456", "hub_entity": "hub_a"})
+    store.store_data("paper_3", [0.7, 0.8, 0.9], {"path_hash": "hash_257", "hub_entity": "hub_b"})
+    store.store_data("paper_4", [1.0, 1.1, 1.2], {"path_hash": "hash_534", "hub_entity": "hub_a"})
+
+    hub_entity_id = "hub_a"
+
+    where_filter = FilterGroup(
+        operator=LogicalOperator.AND,
+        conditions=(
+            FilterCondition(
+                field="path_hash",
+                operator=FilterOperator.IS_NOT_IN_LIST,
+                value=[],
+            ),
+            FilterCondition(
+                field="hub_entity",
+                operator=FilterOperator.EQUALS,
+                value=hub_entity_id,
+            ),
+        ),
+    )
+
+    result = store.get_records_with_metadata_by_filter(where_filter, limit=10)
+
+    assert result is not None
+    assert result.ids == ["paper_1", "paper_2", "paper_4"]

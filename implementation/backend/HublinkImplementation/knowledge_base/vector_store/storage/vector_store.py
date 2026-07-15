@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
 from dataclasses import field, dataclass
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Any
+
+from knowledge_base.vector_store.storage.utils.filters import WhereFilter
 
 
 @dataclass
@@ -26,6 +28,7 @@ class VectorStore(ABC):
         store, as opposed to the collection/schema name, which may be shared
         across many store instances). Safe to use as e.g. a cache key prefix.
         """
+        ...
 
     @abstractmethod
     def _initialize(self) -> None:
@@ -34,6 +37,7 @@ class VectorStore(ABC):
         Called once during construction. Implementations should be idempotent —
         calling it again should not recreate an already-initialized client/collection.
         """
+        ...
 
     @abstractmethod
     def store_data(self, record_id: str, embedding: List[float],
@@ -47,6 +51,7 @@ class VectorStore(ABC):
             embedding (List[float]): The embedding vector to store.
             metadata (Dict, optional): Additional metadata associated with the entry.
         """
+        ...
 
     @abstractmethod
     def store_data_batch(self, ids: List[str], embeddings: List[List[float]],
@@ -61,9 +66,10 @@ class VectorStore(ABC):
             embeddings (List[List[float]]): The embedding vectors to store.
             metadatas (List[Dict]): Metadata dict for each entry.
         """
+        ...
 
     @abstractmethod
-    def delete_records_with_filter(self, where_filter: Dict) -> None:
+    def delete_records_with_filter(self, where_filter: WhereFilter) -> None:
         """
         Deletes all entries whose metadata matches the given filter condition.
 
@@ -71,9 +77,10 @@ class VectorStore(ABC):
             where_filter (Dict): Metadata filter condition. Implementation-specific
                 filter syntax is translated by the adapter.
         """
+        ...
 
     @abstractmethod
-    def get_records_with_metadata_by_filter(self, where_filter: Dict,
+    def get_records_with_metadata_by_filter(self, where_filter: WhereFilter,
                                             limit: Optional[int] = None) -> Optional[VectorScoreResults]:
         """
         Retrieves entries (without similarity search) whose metadata matches
@@ -88,6 +95,7 @@ class VectorStore(ABC):
         Returns:
             VectorScoreResults: The matching entries, or None if nothing matched.
         """
+        ...
 
     @abstractmethod
     def get_records_with_metadata_by_ids(self, ids: List[str]) -> Optional[VectorScoreResults]:
@@ -100,10 +108,11 @@ class VectorStore(ABC):
         Returns:
             VectorScoreResults: The matching entry, or None if no entry with this id exists.
         """
+        ...
 
     @abstractmethod
     def vector_similarity_search(self, query_embeddings: List[List[float]],
-                                 where_filter: Optional[Dict] = None,
+                                 where_filter: Optional[WhereFilter] = None,
                                  n_results: int = 10) -> List[VectorScoreResults]:
         """
         Performs a similarity search, returning the entries most similar to the
@@ -119,6 +128,7 @@ class VectorStore(ABC):
                 (same order as query_embeddings), each ordered by similarity
                 (most similar first) and including distances.
         """
+        ...
 
     @abstractmethod
     def rebuild(self) -> None:
@@ -134,3 +144,12 @@ class VectorStore(ABC):
     @abstractmethod
     def print_stats(self, verbose: bool = True) -> None:
         """Prints diagnostic info about the index health."""
+        ...
+
+    @abstractmethod
+    def _translate_filter(self, where_filter: Optional[WhereFilter]) -> Any:
+        """
+        Translates a backend-independent WhereFilter into the native
+        filter syntax of this vector store backend.
+        """
+        ...

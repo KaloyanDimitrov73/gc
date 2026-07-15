@@ -17,6 +17,8 @@ from core.data.file_path_manager import FilePathManager
 from core.logging.logging import get_logger
 from core.progress.progress_handler import ProgressHandler
 from knowledge_base.vector_store.storage.vector_store import VectorStore, VectorScoreResults
+from knowledge_base.vector_store.storage.utils.filters import FilterOperator, LogicalOperator, WhereFilter, \
+    FilterCondition, FilterGroup
 
 logger = get_logger(__name__)
 
@@ -40,6 +42,22 @@ class ChromaVectorStore(VectorStore):
         self.collection = None
         self.store_path = store_path or self._default_store_path()
         self._initialize()
+
+    _OPERATOR_TO_CHROMA_SYNTAX: Dict[FilterOperator, str] = {
+        FilterOperator.EQUALS: "$eq",
+        FilterOperator.NOT_EQUALS: "$ne",
+        FilterOperator.IS_IN_LIST: "$in",
+        FilterOperator.IS_NOT_IN_LIST: "$nin",
+        FilterOperator.GREATER_THAN: "$gt",
+        FilterOperator.GREATER_THAN_OR_EQUAL: "$gte",
+        FilterOperator.LESS_THAN: "$lt",
+        FilterOperator.LESS_THAN_OR_EQUAL: "$lte",
+    }
+
+    _LOGICAL_OPERATOR_TO_CHROMA_SYNTAX: Dict[LogicalOperator, str] = {
+        LogicalOperator.AND: "$and",
+        LogicalOperator.OR: "$or",
+    }
 
     def _default_store_path(self) -> str:
         file_path_manager = FilePathManager()
@@ -164,16 +182,16 @@ class ChromaVectorStore(VectorStore):
                 raise
 
     @override
-    def delete_records_with_filter(self, where_filter: Dict) -> None:
+    def delete_records_with_filter(self, where_filter : WhereFilter) -> None:
         """
         Deletes all embeddings that meet a specific filter expression.
 
         Args:
-            where_filter (str): The filtering expression.
+            where_filter (WhereFilter): The generic filtering expression.
         """
         with self._lock:
             try:
-                self.collection.delete(where=where_filter)
+                self.collection.delete(where=self._translate_filter(where_filter))
                 logger.debug(
                     f"Deleted embeddings for filter: {where_filter}")
             except Exception as e:
@@ -182,17 +200,18 @@ class ChromaVectorStore(VectorStore):
                 raise
 
     @override
-    def get_records_with_metadata_by_filter(self, where_filter: Dict, limit: Optional[int] = 1) -> Optional[VectorScoreResults]:
+    def get_records_with_metadata_by_filter(self, where_filter: WhereFilter, limit: Optional[int] = 1) -> Optional[VectorScoreResults]:
         """
         Returns Records of the Vector store that meet the given filter expression.
 
         Args:
-            where_filter (str): The filtering expression.
+            where_filter (WhereFilter): The generic filtering expression.
             limit: number of retrieval results
 
         Returns:
             VectorScoreResults: The matching entries, or None if nothing matched.
         """
+
 
         if self.collection is None:
             raise ValueError("Chroma collection is not initialized.")
@@ -200,7 +219,7 @@ class ChromaVectorStore(VectorStore):
         with self._lock:
             try:
                 results = self.collection.get(
-                    where=where_filter,
+                    where=self._translate_filter(where_filter),
                     include=["embeddings", "metadatas"],
                     limit=limit,
                 )
@@ -253,7 +272,7 @@ class ChromaVectorStore(VectorStore):
 
     @override
     def vector_similarity_search(self, query_embeddings: List[List[float]],
-                                  where_filter: Optional[Dict] = None,
+                                  where_filter: Optional[WhereFilter] = None,
                                   n_results: int = 10) -> List[VectorScoreResults]:
 
         """
@@ -276,16 +295,17 @@ class ChromaVectorStore(VectorStore):
             try:
                 result = self.collection.query(
                     query_embeddings=query_embeddings,
-                    where=where_filter,
+                    where=self._translate_filter(where_filter),
                     n_results=n_results,
                     include=["embeddings", "metadatas", "distances"],
                 )
+
                 # Flatten the per-query nesting; assumes single-query use for now.
 
                 results = [
                     VectorScoreResults(
                         ids=result["ids"][k],
-                        embeddings=result.get("embeddings"),
+                        embeddings=result["embeddings"][k] if result.get("embeddings") is not None else [],
                         metadata=result["metadatas"][k] if result.get("metadatas") else [],
                         distances=result["distances"][k] if result.get("distances") else None
                     )
@@ -303,7 +323,7 @@ class ChromaVectorStore(VectorStore):
                     # This happens if the n_results is too large for the
                     # number of embeddings in the hub
                     return self._manually_calculate_similarity_score(
-                        where_filter=where_filter,
+                        where_filter=self._translate_filter(where_filter),
                         query_embeddings=query_embeddings,
                         n_results=n_results
                     )
@@ -363,6 +383,62 @@ class ChromaVectorStore(VectorStore):
         )
         ProgressHandler().enable()
 
+    @override
+    def _translate_filter(self, where_filter: Optional[WhereFilter]) -> Optional[dict]:
+        if where_filter is None:
+            return None
+
+        if isinstance(where_filter, FilterCondition):
+            return self._translate_condition(where_filter)
+
+        if isinstance(where_filter, FilterGroup):
+            translated_conditions = [
+                self._translate_filter(condition) for condition in where_filter.conditions
+            ]
+            translated_conditions = [c for c in translated_conditions if c is not None]
+
+            if not translated_conditions:
+                return None
+            if len(translated_conditions) == 1:
+                return translated_conditions[0]
+
+            chroma_logical_operator = self._LOGICAL_OPERATOR_TO_CHROMA_SYNTAX[where_filter.operator]
+            return {chroma_logical_operator: translated_conditions}
+
+        raise TypeError(f"Unknown filter type: {type(where_filter)!r}")
+
+    def _translate_condition(self, condition: FilterCondition) -> Optional[dict]:
+        """
+        Translates a single condition into Chroma's where-syntax.
+
+        NOT_EQUALS with value=None and IS_NOT_IN_LIST with value=[] both
+        mean "no restriction" , so they resolve to `None`.
+
+        Every other combination is treated as an invalid filter and raises ValueError.
+        """
+        value = condition.value
+        operator = condition.operator
+
+        if value is None:
+            if operator == FilterOperator.NOT_EQUALS:
+                return None
+            raise ValueError(
+                f"Invalid filter: field '{condition.field}' with operator "
+                f"{operator} cannot have value=None."
+            )
+
+        if operator == FilterOperator.IS_NOT_IN_LIST and len(value) == 0:
+            return None
+
+        if operator == FilterOperator.IS_IN_LIST and len(value) == 0:
+            raise ValueError(
+                f"Invalid filter: field '{condition.field}' with operator "
+                f"{operator} cannot have an empty list as value."
+            )
+
+        chroma_operator = self._OPERATOR_TO_CHROMA_SYNTAX[operator]
+        return {condition.field: {chroma_operator: value}}
+
     def count(self) -> int:
         return self.collection.count()
 
@@ -381,7 +457,7 @@ class ChromaVectorStore(VectorStore):
         between the query embeddings and the embeddings in the collection.
 
         Args:
-            filter (str): The filter expression.
+            where_filter (str): The filter expression.
             query_embeddings (List[List[float]]): The embedding vector for which to find similar
                 embeddings.
             n_results (int): The number of top similar embeddings to retrieve.

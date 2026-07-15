@@ -247,8 +247,6 @@ def test_store_hub_batch_multiple_paths_deduplicates_shared_entity(
         research_field_hub_path, venue_hub_path,
         publication_year_path_triple, publication_year_hub_path,
 ):
-    """Beide Pfade teilen sich denselben Subjekt-Text (Titel des Papers), der
-    Entity-Record dafür darf nur einmal gespeichert werden."""
     hub_storage_manager.store_hub_batch(
         hub_root,
         [[research_field_path_triple], [venue_path_triple], [publication_year_path_triple]],
