@@ -104,6 +104,8 @@ class ProgressHandler:
                 logger.debug(
                     f"Task with string ID '{string_id}' not found.")
                 return
+            task = self._get_task_by_id(task_id)
+            logger.debug("Completed %s of %s", task.completed, task.total)
             if not self._is_task_running(task_id):
                 self.add_task(string_id,
                               self._tasks[string_id]["description"],

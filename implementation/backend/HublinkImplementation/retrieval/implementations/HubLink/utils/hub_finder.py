@@ -56,6 +56,7 @@ class HubFinder:
 
         queue: deque = deque()
         queue.extend(root_entities)
+        total = len(queue)
 
         hub_task = self.progress_handler.add_task(
             description="Searching for Hubs..",
@@ -66,7 +67,7 @@ class HubFinder:
         # Search for hubs
         found_hub_entities = []
         next_traversal_candidates = []
-        logger.debug("Starting to search for hubs in the graph")
+        logger.info("Starting to search for hubs in the graph")
         while queue:
             entity_with_direction: EntityWithDirection = queue.popleft()
 
@@ -107,8 +108,10 @@ class HubFinder:
                 next_traversal_candidates.extend(next_entities)
             else:
                 queue.extend(next_entities)
+                total += len(next_entities)
+                self.progress_handler.update_task_length(hub_task, total)
 
-            self.progress_handler.update_task_length(hub_task, len(queue))
+
             self.progress_handler.update_task_by_string_id(hub_task, advance=1)
 
         self.progress_handler.finish_by_string_id(hub_task)

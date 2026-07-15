@@ -13,9 +13,9 @@ from language_model.base.llm_adapter import LLMAdapter
 from language_model import LLMStatTracker, LLMStats
 from knowledge_base.knowledge_graph.storage.base.knowledge_graph import KnowledgeGraph
 from core.logging.logging import get_logger
+from .hub_storage_manager import HubStorageManager
 
 from ..models import EntityWithDirection,  IsHubOptions
-from .vector_store import ChromaVectorStore
 from .hub_finder import HubFinder
 from .hub_builder import HubBuilder, HubBuilderOptions
 
@@ -30,7 +30,7 @@ class HubIndexerOptions(BaseModel):
         max_workers (int): Maximum number of workers for parallel processing.
         embedding_model (EmbeddingAdapter): Embedding model for vectorization.
         llm (LLMAdapter): LLM used for converting graph structures to text.
-        vector_store (ChromaVectorStore): Vector store for caching hub paths.
+        hub_storage_manager (HubStorageManager): Manager that manage vector store for caching hub paths.
         max_indexing_depth (int): Maximum depth for indexing from root entities.
         is_hub_options (IsHubOptions): Options for hub classification.
         max_hub_path_length (int): Maximum allowed length for a hub path.
@@ -55,7 +55,7 @@ class HubIndexerOptions(BaseModel):
         title="LLM Adapter",
         description="The LLM that is used for inference."
     )
-    vector_store: ChromaVectorStore = Field(
+    hub_storage_manager: HubStorageManager = Field(
         ...,
         title="Vector Store",
         description="The vector store for caching"
@@ -86,7 +86,8 @@ class HubIndexer:
     """
     Indexes hubs in a knowledge graph for efficient retrieval.
 
-    The HubIndexer traverses the knowledge graph from specified root entities, identifies hubs according to configuration, and stores their paths in a vector store for fast similarity search during retrieval.
+    The HubIndexer traverses the knowledge graph from specified root entities, identifies hubs according to configuration,
+    and stores their paths in a vector store for fast similarity search during retrieval.
 
     Args:
         graph (KnowledgeGraph): The knowledge graph to index.
@@ -106,11 +107,10 @@ class HubIndexer:
         self.hub_builder = HubBuilder(
             graph=graph,
             options=HubBuilderOptions(
-                embedding_model=self.options.embedding_model,
                 is_hub_options=self.options.is_hub_options,
                 llm=self.options.llm,
                 max_workers=self.options.max_workers,
-                vector_store=self.options.vector_store,
+                hub_storage_manager=self.options.hub_storage_manager,
                 max_hub_path_length=self.options.max_hub_path_length
             )
         )
@@ -144,7 +144,7 @@ class HubIndexer:
         """
         # First we check whether the index has the distance metric that is defined
         # in the current config
-        self._ensure_distance_metric()
+        self.options.hub_storage_manager.ensure_distance_metric(distance_metric=self.options.distance_metric)
         '''
         # For tracking the stats of the LLM we prepare the
         # StatTracker
@@ -173,12 +173,12 @@ class HubIndexer:
             raise e
         end_time = time.time()
         runtime = end_time - start_time
-        self._defragmentate_index()
+        self.options.hub_storage_manager.rebuild_index()
 
         '''
         # If no calls were made, no update to the index was made
         if llm_stat_tracker.stats.total_tokens == 0:
-            self._print_index_stats()
+            self.options.hub_storage_manager.print_index_stats()
             return
 
 
@@ -219,6 +219,12 @@ class HubIndexer:
             for entity in root_entities
         ])
 
+        logger.debug("Hub Root Entity: %s", root_entities_with_direction[0].entity.uid)
+        logger.debug("Hub Root Entity text : %s", root_entities_with_direction[0].entity.text)
+        logger.debug("Hub Root Entity type : %s", root_entities_with_direction[0].entity.knowledge_types)
+        logger.debug("Hub Root Entity direction : %s", root_entities_with_direction[0].left)
+        logger.debug("Hub Root Entity path : %s", root_entities_with_direction[0].path_from_topic)
+
         level = 0
         entities_to_start_traversal = root_entities_with_direction
         while level <= max_indexing_depth:
@@ -243,70 +249,6 @@ class HubIndexer:
                 return
             level += 1
 
-    def _defragmentate_index(self):
-        """
-        We encountered an issue with the hnsw index where it would return the error
-        'Cannot return the results in a contigious 2D array. Probably ef or M is too small'
-        sometimes when querying the index. 
-
-        This https://github.com/chroma-core/chroma/issues/3510 suggests that the issue
-        comes from adding too many data to the index in short time (maybe because of 
-        parallelization). The solution is to defragmentate the index after the indexing
-        process is done. This is done by calling the rebuild_hnsw function.
-        """
-        logger.info("Defragmentating index...")
-        # Because hnsw uses the live display which can only run once we need to temporarly
-        # disable the progress bar
-        ProgressHandler().disable()
-        hnsw.rebuild_hnsw(
-            persist_dir=self.options.vector_store.store_path,
-            collection_name=self.options.vector_store.collection_name,
-            backup=False,
-            yes=True
-        )
-        ProgressHandler().enable()
-        logger.info("Defragmentation finished!")
-
-    def _ensure_distance_metric(self):
-        """
-        Allows to change the distance metric of the index without having to re-index.
-        """
-        current = self.options.vector_store.collection.metadata.get(
-            "hnsw:space", None)
-        if current is None:
-            logger.warning("Could not find distance metric in the index.")
-            logger.warning("Skipping distance metric check.")
-            return
-        if current != self.options.distance_metric:
-            logger.info(
-                f"Found distance metric {current} which is different from the configuration")
-            logger.info(
-                f"Changing distance metric to {self.options.distance_metric}")
-           
-            ProgressHandler().disable()
-            hnsw.rebuild_hnsw(
-                persist_dir=self.options.vector_store.store_path,
-                collection_name=self.options.vector_store.collection_name,
-                yes=True,
-                space=self.options.distance_metric,
-                backup=False
-            )
-            logger.info("Successfully changed distance metric")
-
-            ProgressHandler().enable()
-
-    def _print_index_stats(self):
-        """
-        Prints statistics about the health of the index.
-        """
-        ProgressHandler().disable()
-        hnsw.info_hnsw(
-            collection_name=self.options.vector_store.collection_name,
-            persist_dir=self.options.vector_store.store_path,
-            verbose=True
-        )
-        ProgressHandler().enable()
-
     def _write_indexing_stats(self,
                               runtime: float,
                               llm_stat_tracker: LLMStatTracker):
@@ -320,9 +262,9 @@ class HubIndexer:
         """
 
         logger.debug("Writing indexing stats")
-        vector_store_path = self.options.vector_store.store_path
+        vector_store_name = self.options.hub_storage_manager.vector_store_name()
         indexing_stats_file_path = FilePathManager().combine_paths(
-            vector_store_path, "indexing_stats.json"
+            vector_store_name, "indexing_stats.json"
         )
 
         #emission_data: EmissionsTrackingData = emission_tracker.stop_and_get_results()

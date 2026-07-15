@@ -132,7 +132,8 @@ class DirectRetrievalStrategy(BaseRetrievalStrategy):
 
                 logger.info("Use the embeddings from the question to find the candidate hubs")
                 logger.info("List of candidate hubs: %s", len(hubs_to_exclude))
-                results = self.vector_store.similarity_search_hubs(
+                logger.info("Question Components: %s", processed_question.components)
+                results = self.hub_storage_manager.similarity_search_hubs(
                     query_embeddings=processed_question.embeddings,
                     excluded_hub_ids=hubs_to_exclude,
                     n_results=retrieval_amount
@@ -189,8 +190,6 @@ class DirectRetrievalStrategy(BaseRetrievalStrategy):
         # of paths
         prepared_candidate_hubs = {}
         for hub_id, current_hub_paths in list(candidate_hubs.items()):
-
-            #logger.info("hub has the amount of paths specified, threshhold: %s, len: %s", path_threshold, len(current_hub_paths))
 
             if len(current_hub_paths) > path_threshold:
                 prepared_candidate_hubs[hub_id] = current_hub_paths[:path_threshold]

@@ -3,10 +3,10 @@ import shutil
 import os
 
 from knowledge_base.vector_store.chunking.chunker import Chunker
-from knowledge_base.vector_store.storage.factory.implementations.chroma_vector_store_factory import ChromaVectorStoreFactory
 from core.data.models.publication_dataset import PublicationDataset
 from core.data.models.publication import Publication
 from knowledge_base.config.chunking_strategy_config import ChunkingStrategyConfig
+from knowledge_base.vector_store.storage.langchain import ChromaVectorStoreFactory
 from language_model.config.embedding_config import EmbeddingConfig
 from language_model.config.vector_store_config import VectorStoreConfig
 
@@ -46,6 +46,7 @@ def test_publications() -> PublicationDataset:
     }
     return PublicationDataset("", publications)
 
+
 @pytest.fixture
 def chunking_config():
     return ChunkingStrategyConfig(
@@ -55,6 +56,7 @@ def chunking_config():
         chunk_size=100,
         chunk_overlap=20
     )
+
 
 @pytest.fixture
 def vector_store_config(chunking_config, embedding_test_config, dataset_config):
@@ -69,35 +71,35 @@ def vector_store_config(chunking_config, embedding_test_config, dataset_config):
 @pytest.fixture
 def chroma_adapter(test_publications, vector_store_config, tmp_path):
 
-    # Set up temporary directory for Chroma    
+    # Set up temporary directory for Chroma
     factory = ChromaVectorStoreFactory()
     path = factory._prepare_storage_path(vector_store_config)
     # delete the directory if it already exists
     if os.path.exists(path):
         shutil.rmtree(path)
     chunker = Chunker(vector_store_config.chunking_strategy_config)
-    
+
     adapter = factory._create_vector_store(
         publications=test_publications,
         chunker=chunker,
         config=vector_store_config
     )
-    
+
     yield adapter
 
 def test_query(chroma_adapter):
     """Test querying the Chroma vector store."""
     results = chroma_adapter.query("software architecture", 2)
-    
+
     assert len(results) > 0
     assert "software architecture" in results[0].text.lower()
-    
+
     results = chroma_adapter.query_with_metadata_filter(
         query_text="test",
         n_results=2,
         metadata_filter={"publisher": "TestPublisher1"}
     )
-    
+
     assert len(results) > 0
     assert all(result.metadata.get("publisher") == "TestPublisher1" for result in results)
 
