@@ -4,7 +4,7 @@ SQLAlchemy ORM models for conversation persistence.
 import uuid
 from datetime import datetime
 
-from sqlalchemy import Column, String, DateTime, ForeignKey, JSON, Text, Integer, Float, Index
+from sqlalchemy import Column, String, DateTime, ForeignKey, JSON, Text, Integer, Float
 from sqlalchemy.orm import DeclarativeBase, relationship
 
 
@@ -58,7 +58,3 @@ class RequestLogModel(Base):
     status_code = Column(Integer, nullable=False)
     duration_ms = Column(Float, nullable=False)
     user_id = Column(String(36), nullable=True)
-
-    __table_args__ = (
-        Index("ix_request_logs_timestamp", "timestamp"),
-    )

@@ -32,6 +32,7 @@ def is_infrastructure_error(reason: str) -> bool:
     normalized = reason.lower()
     markers = (
         "remote inference unauthorized",
+        "invalid response from remote inference",
         "please run `guardrails configure`",
         "resource punkt_tab not found",
         "resource punkt not found",

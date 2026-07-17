@@ -14,9 +14,18 @@ RUN --mount=type=cache,target=/root/.cache/pip pip install --upgrade pip
 COPY backend/HublinkImplementation/pyproject.toml backend/HublinkImplementation/pyproject.toml
 COPY backend/pyproject.toml backend/pyproject.toml
 
-# Create minimal package stubs so "pip install -e" can resolve them
-RUN install -d backend/HublinkImplementation/sqa_system backend/app && \
-    touch backend/HublinkImplementation/sqa_system/__init__.py \
+# Create minimal package stubs so "pip install -e" can resolve them.
+# NOTE: keep in sync with the top-level packages in HublinkImplementation —
+# the editable install only registers packages that exist at build time.
+RUN install -d backend/HublinkImplementation/core \
+               backend/HublinkImplementation/knowledge_base \
+               backend/HublinkImplementation/language_model \
+               backend/HublinkImplementation/retrieval \
+               backend/app && \
+    touch backend/HublinkImplementation/core/__init__.py \
+          backend/HublinkImplementation/knowledge_base/__init__.py \
+          backend/HublinkImplementation/language_model/__init__.py \
+          backend/HublinkImplementation/retrieval/__init__.py \
           backend/__init__.py backend/app/__init__.py __init__.py
 
 # Install dependencies (HublinkImplementation first for correct resolution)

@@ -15,6 +15,9 @@ dependencies = [
   "pydantic-settings==2.6.0",
   "python-dotenv>=1.0.0",
   "guardrails-ai==0.9.2",
+  # rich >=14.3 crashes the guardrails CLI during hub installs
+  # (lazy rich._unicode_data import breaks when pip swaps rich mid-run).
+  "rich>=13,<14",
   "sqlalchemy==2.0.48",
   "aiosqlite==0.22.1",
 ]
