@@ -115,7 +115,5 @@ sqa-system/src/utils/
 **/ieee_pdfs/**
 **/elsevier_pdfs/**
 
-# Ignore cache data
-**/data/cache/**
 
 venv312
