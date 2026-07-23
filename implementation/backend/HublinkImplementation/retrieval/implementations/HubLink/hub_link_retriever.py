@@ -37,7 +37,8 @@ class HubLinkRetriever(KnowledgeGraphRetriever):
     def __init__(self, config: KGRetrievalConfig, graph: KnowledgeGraph) -> None:
         super().__init__(config, graph)
         self.settings: HubLinkSettings = HubLinkSettings.from_config(config)
-        self.llm = LLMProvider().get_llm_adapter(config.llm_config)
+        self.index_llm = LLMProvider().get_llm_adapter(config.index_llm_config)
+        self.query_llm = LLMProvider().get_llm_adapter(config.query_llm_config)
         self.embedding_model = LLMProvider().get_embeddings(
             self.settings.embedding_config)
 
@@ -81,7 +82,7 @@ class HubLinkRetriever(KnowledgeGraphRetriever):
             strategy = TraversalRetrievalStrategy(
                 retrieval_data=RetrievalStrategyData(
                     graph=self.graph,
-                    llm_adapter=self.llm,
+                    llm_adapter=self.query_llm,
                     embedding_adapter=self.embedding_model,
                     settings=self.settings,
                     hub_storage_manager=self.hub_storage_manager,
@@ -94,7 +95,7 @@ class HubLinkRetriever(KnowledgeGraphRetriever):
         strategy = DirectRetrievalStrategy(
             retrieval_data=RetrievalStrategyData(
                 graph=self.graph,
-                llm_adapter=self.llm,
+                llm_adapter=self.query_llm,
                 embedding_adapter=self.embedding_model,
                 settings=self.settings,
                 hub_storage_manager=self.hub_storage_manager,
@@ -132,7 +133,7 @@ class HubLinkRetriever(KnowledgeGraphRetriever):
                     hub_edges=self.settings.hub_edges,
                     types=self.settings.hub_types
                 ),
-                llm=self.llm,
+                llm=self.index_llm,
                 max_workers=self.settings.max_workers,
                 hub_storage_manager=self.hub_storage_manager,
                 max_indexing_depth=self.settings.max_indexing_depth,
@@ -171,7 +172,7 @@ class HubLinkRetriever(KnowledgeGraphRetriever):
         """
         vector_store_name = (f"{self.graph.config.config_hash}_"
                              f"{self.settings.embedding_config.config_hash}"
-                             f"{self.llm.llm_config.config_hash}")
+                             f"{self.index_llm.llm_config.config_hash}")
 
         vector_store = ChromaVectorStore(
             store_name=vector_store_name,

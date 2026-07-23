@@ -105,6 +105,15 @@ class ProgressHandler:
                     f"Task with string ID '{string_id}' not found.")
                 return
             task = self._get_task_by_id(task_id)
+            if task is None:
+                # Task was already removed from the progress display (e.g. it
+                # completed early) but the string_id -> task_id mapping is
+                # stale. Re-create it, mirroring update_task_length() below.
+                self.add_task(string_id,
+                              self._tasks[string_id]["description"],
+                              self._tasks[string_id]["total"],
+                              reset=True)
+                return
             logger.debug("Completed %s of %s", task.completed, task.total)
             if not self._is_task_running(task_id):
                 self.add_task(string_id,

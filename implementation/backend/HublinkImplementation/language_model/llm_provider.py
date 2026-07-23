@@ -18,6 +18,8 @@ from .implementations.openai_llm_adapter import OpenAiLLMAdapter
 # from .implementations.googleai_llm_adapter import GoogleAiLLMAdapter
 from .implementations.vdl_llm_adapter import VDLLLMAdapter
 from .implementations.vdl_embedding_adapter import VDLEmbeddingAdapter
+from .implementations.kittoolbox_llm_adapter import KitToolboxLLMAdapter
+from .implementations.kittoolbox_embedding_adapter import KitToolboxEmbeddingAdapter
 from .enums.llm_enums import EndpointType, ValidationResult, EndpointEnvVariable
 from .base.embedding_adapter import EmbeddingAdapter
 from .base.llm_adapter import LLMAdapter
@@ -73,6 +75,12 @@ class LLMProvider:
             llm_adapter.prepare()
             logger.debug("VDL LLM adapter prepared")
             return llm_adapter
+        if llm_config.endpoint == EndpointType.KIT_TOOLBOX.value:
+            self.validate_endpoint(EndpointType.KIT_TOOLBOX)
+            llm_adapter = KitToolboxLLMAdapter(llm_config)
+            llm_adapter.prepare()
+            logger.debug("KitToolbox LLM adapter prepared")
+            return llm_adapter
         return None
 
     def get_embeddings(self, embedding_config: EmbeddingConfig) -> EmbeddingAdapter:
@@ -109,6 +117,11 @@ class LLMProvider:
             embedding_adapter = VDLEmbeddingAdapter(embedding_config)
             embedding_adapter.prepare()
             return embedding_adapter
+        if embedding_config.endpoint == EndpointType.KIT_TOOLBOX.value:
+            self.validate_endpoint(EndpointType.KIT_TOOLBOX)
+            embedding_adapter = KitToolboxEmbeddingAdapter(embedding_config)
+            embedding_adapter.prepare()
+            return embedding_adapter
 
         raise ValueError(
             f"Unknown embedding endpoint: {embedding_config.endpoint}")
@@ -133,6 +146,8 @@ class LLMProvider:
             return True
         if endpoint == EndpointType.VDL:
             return self._validate_api_key(EndpointType.VDL)
+        if endpoint == EndpointType.KIT_TOOLBOX:
+            return self._validate_api_key(EndpointType.KIT_TOOLBOX)
         return False
 
     def _validate_api_key(self, endpoint: EndpointType) -> ValidationResult:

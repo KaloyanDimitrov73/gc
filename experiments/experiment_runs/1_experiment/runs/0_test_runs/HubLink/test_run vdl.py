@@ -72,7 +72,13 @@ def main():
                         },
                         "type": "kg_retrieval",
                         "retriever_type": "hublink",
-                        "llm_config": {
+                        "index_llm_config": {
+                            "endpoint": "VDL",
+                            "name_model": "llama3.1:8b",
+                            "temperature": 0.0,
+                            "max_tokens": -1
+                        },
+                        "query_llm_config": {
                             "endpoint": "VDL",
                             "name_model": "llama3.1:8b",
                             "temperature": 0.0,

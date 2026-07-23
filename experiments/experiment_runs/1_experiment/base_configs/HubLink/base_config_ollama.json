@@ -49,7 +49,14 @@
             },
             "type": "kg_retrieval",
             "retriever_type": "hublink",
-            "llm_config": {
+            "index_llm_config": {
+                "additional_params": {},
+                "endpoint": "Ollama",
+                "name_model": "qwen2.5:14b",
+                "temperature": 0.0,
+                "max_tokens": 4096
+            },
+            "query_llm_config": {
                 "additional_params": {},
                 "endpoint": "Ollama",
                 "name_model": "qwen2.5:14b",

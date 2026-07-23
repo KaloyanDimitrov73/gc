@@ -7,6 +7,10 @@ name = "hublink-experiments"
 version = "0.1.0"
 license = { text = "MIT" }
 dependencies = [
+  # Shared config/file-path code — install first with:
+  # pip install -e ../implementation/hublink_shared
+  "hublink-shared",
+
   # Core deployment library — install first with:
   # pip install -e ../implementation/backend/HublinkImplementation
   "HubLink-Backend",

@@ -74,7 +74,13 @@ def main():
                         },
                         "type": "kg_retrieval",
                         "retriever_type": "hublink",
-                        "llm_config": {
+                        "index_llm_config": {
+                            "endpoint": "OpenAI",
+                            "name_model": "gpt-4o-mini",
+                            "temperature": 0.0,
+                            "max_tokens": -1
+                        },
+                        "query_llm_config": {
                             "endpoint": "OpenAI",
                             "name_model": "gpt-4o-mini",
                             "temperature": 0.0,
@@ -132,7 +138,7 @@ def main():
             "parameter_ranges": [
                 {
                     "config_name": "retrieval_config",
-                    "parameter_name": "llm_config",
+                    "parameter_name": "query_llm_config",
                     "values": [
                         {
                             "additional_params": {},

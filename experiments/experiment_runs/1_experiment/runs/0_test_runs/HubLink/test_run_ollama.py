@@ -69,7 +69,14 @@ def main():
                         },
                         "type": "kg_retrieval",
                         "retriever_type": "hublink",
-                        "llm_config": {
+                        "index_llm_config": {
+                            "additional_params": {},
+                            "endpoint": "Ollama",
+                            "name_model": "llama3.1:latest",
+                            "temperature": 0.0,
+                            "max_tokens": 4096
+                        },
+                        "query_llm_config": {
                             "additional_params": {},
                             "endpoint": "Ollama",
                             "name_model": "llama3.1:latest",

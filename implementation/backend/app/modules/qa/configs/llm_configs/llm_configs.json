@@ -42,5 +42,12 @@
         "name_model": "gemma2:9b",
         "temperature": 0.0,
         "max_tokens": -1
+    },
+    {
+        "additional_params": {},
+        "endpoint": "KitToolbox",
+        "name_model": "kit.qwen3.5-397b-A17b",
+        "temperature": 0.0,
+        "max_tokens": -1
     }
 ]

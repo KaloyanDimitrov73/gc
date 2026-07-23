@@ -53,7 +53,14 @@ def main():
                         },
                         "type": "kg_retrieval",
                         "retriever_type": "hublink",
-                        "llm_config": {
+                        "index_llm_config": {
+                            "additional_params": {},
+                            "endpoint": "OpenAI",
+                            "name_model": "o3-mini",
+                            "temperature": None,
+                            "max_tokens": -1
+                        },
+                        "query_llm_config": {
                             "additional_params": {},
                             "endpoint": "OpenAI",
                             "name_model": "o3-mini",
