@@ -1,11 +1,11 @@
 from core.data.models import Knowledge
+from hublink.retrieval.models.processed_question import ProcessedQuestion
+from hublink.retrieval.models.source_document_summary import SourceDocumentSummary
 from knowledge_base.vector_store.storage.langchain import ChromaVectorStoreFactory
 from knowledge_base.vector_store.storage.langchain import LangchainVectorStoreAdapter
 from knowledge_base.knowledge_graph.storage.base.knowledge_graph import KnowledgeGraph
 from core.logging.logging import get_logger
 from language_model.config.vector_store_config import VectorStoreConfig
-
-from ..models import SourceDocumentSummary, ProcessedQuestion
 
 logger = get_logger(__name__)
 

@@ -1,7 +1,7 @@
 import hashlib
 from typing import List, Dict
 from core.data.models.triple import Triple
-from retrieval.implementations.HubLink.models import HubPath
+from hublink.core.models.hub_path import HubPath
 
 PATH_SEPARATOR = "$$$||$$$"
 

@@ -4,13 +4,11 @@ from typing_extensions import override
 from core.data.models import RetrievalAnswer
 from core.logging.logging import get_logger
 
-from ..models import (
-    EntityWithDirection,
-    Hub,
-    HubPath,
-    ProcessedQuestion
-)
 from .base_retrieval_strategy import BaseRetrievalStrategy
+from ..models.processed_question import ProcessedQuestion
+from ...core.models.entity_with_direction import EntityWithDirection
+from ...core.models.hub import Hub
+from ...core.models.hub_path import HubPath
 
 logger = get_logger(__name__)
 

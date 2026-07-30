@@ -10,25 +10,21 @@ import numpy as np
 
 from core.data.models import RetrievalAnswer, Triple
 from core.progress.progress_handler import ProgressHandler
+from hublink.core.models.hub import IsHubOptions, Hub
+from hublink.core.models.hub_link_settings import HubLinkSettings
+from hublink.core.models.hub_path import HubPath
+from hublink.retrieval.models.processed_question import ProcessedQuestion
+from hublink.retrieval.models.source_document_summary import SourceDocumentSummary
 from language_model.base.embedding_adapter import EmbeddingAdapter
 from language_model.base.llm_adapter import LLMAdapter
 from language_model import PromptProvider
 from knowledge_base.knowledge_graph.storage import KnowledgeGraph
 from core.logging.logging import get_logger
 
-from ..models import (
-    SourceDocumentSummary,
-    Hub,
-    HubPath,
-    IsHubOptions,
-    HubLinkSettings,
-    ProcessedQuestion
-)
-
-from ..utils.answer_generator import HubAnswer, AnswerGenerator
-from ..utils.hub_builder import HubBuilder, HubBuilderOptions
-from ..utils.hub_source_handler import HubSourceHandler
-from ..utils.hub_storage_manager import HubStorageManager
+from hublink.retrieval.utils.answer_generator import HubAnswer, AnswerGenerator
+from hublink.indexing.hub_builder import HubBuilder, HubBuilderOptions
+from hublink.retrieval.utils.hub_source_handler import HubSourceHandler
+from hublink.core.hub_storage_manager import HubStorageManager
 
 logger = get_logger(__name__)
 

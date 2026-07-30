@@ -24,15 +24,15 @@ from retrieval import KnowledgeGraphRetriever
 from knowledge_base.knowledge_graph.storage import KnowledgeGraph
 from core.logging.logging import get_logger
 
-from .models.hub_link_settings import HubLinkSettings, ADDITIONAL_CONFIG_PARAMS
-from .models.hub import IsHubOptions
-from .utils.hub_indexer import HubIndexer, HubIndexerOptions
-from .utils.hub_source_handler import HubSourceHandler
-from .strategies.base_retrieval_strategy import RetrievalStrategyData
-from .strategies.traversal_retrieval_strategy import TraversalRetrievalStrategy
-from .strategies.direct_retrieval_strategy import DirectRetrievalStrategy
-from .utils.hub_storage_manager import HubStorageManager
-from ...config.kg_retrieval_config import KGRetrievalConfig
+from hublink.core.models.hub_link_settings import HubLinkSettings, ADDITIONAL_CONFIG_PARAMS
+from hublink.core.models.hub import IsHubOptions
+from hublink.indexing.hub_indexer import HubIndexer, HubIndexerOptions
+from hublink.retrieval.utils.hub_source_handler import HubSourceHandler
+from hublink.retrieval.strategies.base_retrieval_strategy import RetrievalStrategyData
+from hublink.retrieval.strategies.traversal_retrieval_strategy import TraversalRetrievalStrategy
+from hublink.retrieval.strategies.direct_retrieval_strategy import DirectRetrievalStrategy
+from hublink.core.hub_storage_manager import HubStorageManager
+from retrieval.config.kg_retrieval_config import KGRetrievalConfig
 
 logger = get_logger(__name__)
 

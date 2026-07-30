@@ -1,16 +1,16 @@
 """
 test_chroma_vector_store.py
 """
-import numpy as np
 import pytest
 
 from core.data.models import Knowledge, Triple
+from hublink.core.models.entity_with_direction import EntityWithDirection
+from hublink.core.models.hub_path import HubPath
 from knowledge_base.vector_store.storage.implementations.chroma_vector_store import ChromaVectorStore
 from language_model import LLMProvider
 from language_model.config.embedding_config import EmbeddingConfig
-from retrieval.implementations.HubLink.models import EntityWithDirection, HubPath
-from retrieval.implementations.HubLink.utils.hub_path_util import path_to_hash
-from retrieval.implementations.HubLink.utils.hub_storage_manager import HubStorageManager
+from hublink.core.utils.hub_path_util import path_to_hash
+from hublink.core.hub_storage_manager import HubStorageManager
 
 
 _DEFAULT_EMBEDDING_CONFIG = EmbeddingConfig(

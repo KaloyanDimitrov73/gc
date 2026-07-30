@@ -4,14 +4,11 @@ from typing_extensions import override
 from core.data.models import RetrievalAnswer
 from core.logging.logging import get_logger
 
-from ..models import (
-    IsHubOptions,
-    EntityWithDirection,
-    Hub,
-    ProcessedQuestion
-)
-from ..utils.hub_finder import HubFinder
+from hublink.core.hub_finder import HubFinder
 from .base_retrieval_strategy import BaseRetrievalStrategy
+from ..models.processed_question import ProcessedQuestion
+from ...core.models.entity_with_direction import EntityWithDirection
+from ...core.models.hub import Hub, IsHubOptions
 
 logger = get_logger(__name__)
 

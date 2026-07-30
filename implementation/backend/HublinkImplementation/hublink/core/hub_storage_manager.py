@@ -6,13 +6,13 @@ from chromadb import QueryResult
 
 from core.logging.logging import get_logger
 from core.data.models.triple import Triple
+from hublink.core.models.entity_with_direction import EntityWithDirection
 from knowledge_base.vector_store.storage.vector_store import VectorStore, VectorScoreResults
 from language_model import EmbeddingAdapter
 from knowledge_base.vector_store.storage.utils.filters import FilterCondition, FilterOperator, FilterGroup, LogicalOperator
-from .hub_path_util import parse_hub_path, path_to_hash, serialize_path
-from ..models import EntityWithDirection
+from hublink.core.utils.hub_path_util import parse_hub_path, path_to_hash, serialize_path
 
-from ..models.hub_path import HubPath
+from hublink.core.models.hub_path import HubPath
 
 logger = get_logger(__name__)
 
