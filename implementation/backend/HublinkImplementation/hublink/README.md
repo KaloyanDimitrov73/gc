@@ -4,30 +4,38 @@
 
 ## Overview
 
-The HubLink Retriever is a novel retriever that we have developed ourselves as part of the Master Thesis. It is our main contribution and the main focus of the experiments.
-
+The HubLink Retriever is a custom retriever originally developed as part of a Master's thesis. It serves as the core retriever component of this application and is based on the knowledge graph retrieval approach.
 ## Folder Structure
 
 ```
-├── models/     # The data models of the retriever  
-│   ├── entity_with_direction.py    # The entity with direction model
-│   ├── hub_link_settings.py    # All parameters of the retriever
-│   ├── hub_path.py   # The hub path model
-│   ├── hub.py   # The hub model
-│   ├── processed_question.py   # The processed question model
-│   └── source_document_summary.py   # The source document summary model
-├── retrieval/  
-│   ├── base_retrieval_strategy.py  # The base class for all retrieval strategies
-│   ├── direct_retrieval_strategy.py    # The direct retrieval strategy
-│   └── traversal_retrieval_strategy.py   # The graph traversal retrieval strategy
-├── utils/   
-│   ├── answer_generator.py     # Class for partial and final answer generation
-│   ├── hub_builder.py  # Class for building the hub structures
-│   ├── hub_finder.py   # Class for finding the hub structures in the graph
-│   ├── hub_indexer.py  # Class for indexing the hub structures
-│   ├── hub_source_handler.py   # Class for handling the linking procedure
-│   └── vector_store.py # Class for the vector store and required functions
-└── hub_link_retriever.py   # The main entry point of the retriever
+
+hublink/
+├── core/
+│   ├── hub_storage_manager.py                  # Class for managing hub storage
+│   ├── hub_finder.py                           # Class for finding the hub structures in the graph
+│   ├── models/                                
+│   │   ├── hub.py                              # The hub model
+│   │   ├── hub_path.py                         # The hub path model
+│   │   ├── entity_with_direction.py            # The entity with direction model
+│   │   └── hub_link_settings.py                # All parameters of the retriever
+│   └── util/
+│       └── hub_path_util.py                    # Utility functions for hub paths
+├── indexing/
+│   ├── hub_indexer.py                          # Class for indexing the hub structures
+│   └── hub_builder.py                          # Class for building the hub structures
+└── retrieval/
+    ├── hub_link_retriever_for_user.py          # User-facing entry point for the retriever
+    ├── hub_link_retriever.py                   # The main entry point of the retriever
+    ├── models/
+    │   ├── source_document_summary.py          # The source document summary model
+    │   └── processed_question.py               # The processed question model
+    ├── util/
+    │   ├── answer_generator.py                 # Class for partial and final answer generation
+    │   └── hub_source_handler.py               # Class for handling the linking procedure to source documents
+    └── strategies/
+        ├── base_retrieval_strategy.py          # The base class for all retrieval strategies
+        ├── direct_retrieval_strategy.py        # The direct retrieval strategy
+        └── traversal_retrieval_strategy.py     # The graph traversal retrieval strategy
 ```
 
 ## Approach Explanation

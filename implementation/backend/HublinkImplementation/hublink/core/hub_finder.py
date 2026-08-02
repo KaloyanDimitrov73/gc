@@ -4,10 +4,10 @@ from typing import List, Tuple
 from core.data.models.knowledge import Knowledge
 from core.data.models.triple import Triple
 from core.progress.progress_handler import ProgressHandler
+from hublink.core.models.entity_with_direction import EntityWithDirection
+from hublink.core.models.hub import Hub, IsHubOptions
 from knowledge_base.knowledge_graph.storage.base.knowledge_graph import KnowledgeGraph
 from core.logging.logging import get_logger
-
-from ..models import EntityWithDirection, Hub, IsHubOptions
 
 logger = get_logger(__name__)
 

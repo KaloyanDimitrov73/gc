@@ -4,10 +4,9 @@ test_hub_path_util.py
 import hashlib
 
 import pytest
-from pydantic import ValidationError
 
 from core.data.models import Knowledge, Triple
-from retrieval.implementations.HubLink.utils.hub_path_util import (
+from hublink.core.utils.hub_path_util import (
     PATH_SEPARATOR,
     deserialize_path,
     parse_hub_path,

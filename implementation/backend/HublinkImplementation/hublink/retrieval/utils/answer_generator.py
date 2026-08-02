@@ -8,18 +8,15 @@ from langchain_core.prompts import PromptTemplate
 
 from core.data.models import RetrievalAnswer, Triple, Context, ContextType
 from core.progress.progress_handler import ProgressHandler
+from hublink.core.models.entity_with_direction import EntityWithDirection
+from hublink.core.models.hub_link_settings import HubLinkSettings
+from hublink.core.models.hub_path import HubPath
+from hublink.retrieval.models.source_document_summary import SourceDocumentSummary
 from language_model.base.llm_adapter import LLMAdapter
 from language_model import PromptProvider
 from knowledge_base.knowledge_graph.storage.utils.graph_converter import GraphConverter
 from knowledge_base.knowledge_graph.storage.base.knowledge_graph import KnowledgeGraph
 from core.logging.logging import get_logger
-
-from ..models import (
-    HubLinkSettings,
-    EntityWithDirection,
-    HubPath
-)
-from ..utils.hub_source_handler import SourceDocumentSummary
 
 
 logger = get_logger(__name__)

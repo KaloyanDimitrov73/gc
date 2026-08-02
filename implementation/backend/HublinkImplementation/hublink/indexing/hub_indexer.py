@@ -3,21 +3,21 @@ from typing import List
 import time
 import json
 from pydantic import BaseModel, Field, ConfigDict
-from chroma_ops import hnsw
 
 from core.data.file_path_manager import FilePathManager
 from core.data.models import Knowledge
 from core.progress.progress_handler import ProgressHandler
+from hublink.core.models.entity_with_direction import EntityWithDirection
+from hublink.core.models.hub import IsHubOptions
 from language_model.base.embedding_adapter import EmbeddingAdapter
 from language_model.base.llm_adapter import LLMAdapter
 from language_model import LLMStatTracker, LLMStats
 from knowledge_base.knowledge_graph.storage.base.knowledge_graph import KnowledgeGraph
 from core.logging.logging import get_logger
-from .hub_storage_manager import HubStorageManager
+from hublink.core.hub_storage_manager import HubStorageManager
 
-from ..models import EntityWithDirection,  IsHubOptions
-from .hub_finder import HubFinder
-from .hub_builder import HubBuilder, HubBuilderOptions
+from hublink.core.hub_finder import HubFinder
+from hublink.indexing.hub_builder import HubBuilder, HubBuilderOptions
 
 logger = get_logger(__name__)
 

@@ -4,8 +4,8 @@ from pydantic import BaseModel, Field
 from core.data.models.triple import Triple
 from knowledge_base.knowledge_graph.storage.base.knowledge_graph import KnowledgeGraph
 from core.data.models.knowledge import Knowledge
-from .hub_path import HubPath
-from .entity_with_direction import EntityWithDirection
+from hublink.core.models.hub_path import HubPath
+from hublink.core.models.entity_with_direction import EntityWithDirection
 
 class Hub(BaseModel):
     """
