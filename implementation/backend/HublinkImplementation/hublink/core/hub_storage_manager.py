@@ -1,3 +1,4 @@
+import threading
 from datetime import datetime
 from typing import List, Optional, Dict, Tuple
 
@@ -8,11 +9,12 @@ from core.logging.logging import get_logger
 from core.data.models.triple import Triple
 from hublink.core.models.entity_with_direction import EntityWithDirection
 from knowledge_base.vector_store.storage.vector_store import VectorStore, VectorScoreResults
-from language_model import EmbeddingAdapter
+from language_model import EmbeddingAdapter, LLMProvider
 from knowledge_base.vector_store.storage.utils.filters import FilterCondition, FilterOperator, FilterGroup, LogicalOperator
 from hublink.core.utils.hub_path_util import parse_hub_path, path_to_hash, serialize_path
 
 from hublink.core.models.hub_path import HubPath
+from language_model.config.embedding_config import EmbeddingConfig
 
 logger = get_logger(__name__)
 
@@ -28,16 +30,24 @@ class HubStorageManager:
 
     Args:
         vector_store (VectorStore): Already-initialized vector store adapter.
+        embedding_config (EmbeddingConfig): Config used to resolve the embedding model.
         diversity_penalty (float): Penalty for repeated subjects in diversity ranking.
     """
 
-    def __init__(self, vector_store: VectorStore, embedding_model:  EmbeddingAdapter, diversity_penalty: float):
+    def __init__(self, vector_store: VectorStore, embedding_config: EmbeddingConfig, diversity_penalty: float):
+        _llm_provider = LLMProvider()
         self.vector_store = vector_store
-        self.embedding_model = embedding_model
+        self.embedding_model = _llm_provider.get_embeddings(embedding_config)
         self.diversity_penalty = diversity_penalty
 
     def vector_store_name(self):
         return self.vector_store.name
+
+    def vector_store_is_empty(self) -> bool:
+        """
+        Returns True if the vector store currently holds no records at all.
+        """
+        return self.vector_store.count() == 0
 
     def store_hub_batch(self,
                             hub_root_entity: EntityWithDirection,

@@ -7,7 +7,7 @@ from typing import Dict, Optional
 import json
 import logging
 
-from backend.app.core.config import get_settings
+from backend.app.config.base_settings import get_settings
 from language_model.config.llm_config import LLMConfig
 
 logger = logging.getLogger(__name__)

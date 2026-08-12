@@ -4,8 +4,9 @@ storage/chroma/chroma_vector_store.py
 Native Chroma adapter implementing the VectorStore interface.
 Contains only generic vector storage logic — no Hub/Triple domain knowledge.
 """
+import gc
 
-from threading import RLock
+from readerwriterlock import rwlock
 from typing import override, List, Optional, Dict
 
 import chromadb
@@ -37,7 +38,12 @@ class ChromaVectorStore(VectorStore):
         self.store_name = store_name
         self.collection_name = collection_name
         self.distance_metric = distance_metric
-        self._lock = RLock()
+
+        # Shared/"read" handle: acquired by all regular index & query operations.
+        # Multiple callers can hold this simultaneously.
+        # Exclusive/"write" handle: acquired only by rebuild operations that
+        self._rw_lock = rwlock.RWLockFair()
+
         self.client = None
         self.collection = None
         self.store_path = store_path or self._default_store_path()
@@ -67,11 +73,10 @@ class ChromaVectorStore(VectorStore):
 
     @override
     def _initialize(self) -> None:
-        with self._lock:
-            if self.client is None:
-                self.client = self._initialize_client()
-            if self.collection is None:
-                self.collection = self._initialize_collection()
+        if self.client is None:
+            self.client = self._initialize_client()
+        if self.collection is None:
+            self.collection = self._initialize_collection()
 
     def _initialize_client(self) -> chromadb.ClientAPI:
         """
@@ -131,10 +136,11 @@ class ChromaVectorStore(VectorStore):
             embedding (List[float]): The embedding vector.
             metadata (dict, optional): Additional metadata associated with the embedding.
         """
-        if self.collection is None:
-            raise ValueError("Chroma collection is not initialized.")
 
-        with self._lock:
+        with self._rw_lock.gen_rlock():
+            if self.collection is None:
+                raise ValueError("Chroma collection is not initialized.")
+
             try:
                 self.collection.upsert(
                     embeddings=[embedding],
@@ -162,11 +168,12 @@ class ChromaVectorStore(VectorStore):
         """
         if not ids:
             return
-        if self.collection is None:
-            raise ValueError("Chroma collection is not initialized.")
 
         chunk_size = self._CHROMA_MAX_BATCH_SIZE
-        with self._lock:
+        with self._rw_lock.gen_rlock():
+            if self.collection is None:
+                raise ValueError("Chroma collection is not initialized.")
+
             try:
                 for start in range(0, len(ids), chunk_size):
                     end = start + chunk_size
@@ -189,7 +196,7 @@ class ChromaVectorStore(VectorStore):
         Args:
             where_filter (WhereFilter): The generic filtering expression.
         """
-        with self._lock:
+        with self._rw_lock.gen_rlock():
             try:
                 self.collection.delete(where=self._translate_filter(where_filter))
                 logger.debug(
@@ -212,11 +219,10 @@ class ChromaVectorStore(VectorStore):
             VectorScoreResults: The matching entries, or None if nothing matched.
         """
 
+        with self._rw_lock.gen_rlock():
+            if self.collection is None:
+                raise ValueError("Chroma collection is not initialized.")
 
-        if self.collection is None:
-            raise ValueError("Chroma collection is not initialized.")
-
-        with self._lock:
             try:
                 results = self.collection.get(
                     where=self._translate_filter(where_filter),
@@ -248,10 +254,10 @@ class ChromaVectorStore(VectorStore):
             VectorScoreResults: The matching entry, or None if no entry with this id exists.
         """
 
-        if self.collection is None:
-            raise ValueError("Chroma collection is not initialized.")
+        with self._rw_lock.gen_rlock():
+            if self.collection is None:
+                raise ValueError("Chroma collection is not initialized.")
 
-        with self._lock:
             try:
                 result = self.collection.get(
                     ids=ids, include=["embeddings", "metadatas"]
@@ -288,10 +294,11 @@ class ChromaVectorStore(VectorStore):
                     VectorScoreResults: The most similar entries, including their similarity
                         distances, ordered by similarity.
                 """
-        if self.collection is None:
-            raise ValueError("Chroma collection is not initialized.")
 
-        with self._lock:
+        with self._rw_lock.gen_rlock():
+            if self.collection is None:
+                raise ValueError("Chroma collection is not initialized.")
+
             try:
                 result = self.collection.query(
                     query_embeddings=query_embeddings,
@@ -345,43 +352,74 @@ class ChromaVectorStore(VectorStore):
         """
         logger.info("Defragmentating index...")
         ProgressHandler().disable()
-        hnsw.rebuild_hnsw(
-            persist_dir=self.store_path,
-            collection_name=self.collection_name,
-            backup=False,
-            yes=True,
-        )
+
+        with self._rw_lock.gen_wlock():
+            # Drop the references of client/collection so nothing in
+            # this process keeps the HNSW segment files.
+            self.collection = None
+            self.client = None
+            gc.collect()
+
+            hnsw.rebuild_hnsw(
+                persist_dir=self.store_path,
+                collection_name=self.collection_name,
+                backup=False,
+                yes=True,
+            )
+            # Re-establish client/collection before releasing the lock so
+            # callers waiting on `_op_lock` see a fully working store again.
+            self._initialize()
+
         ProgressHandler().enable()
         logger.info("Defragmentation finished!")
 
     @override
     def ensure_distance_metric(self, distance_metric: str) -> None:
-        current = self.collection.metadata.get("hnsw:space")
-        if current is None:
-            logger.warning("Could not find distance metric in the index. Skipping check.")
-            return
+        with self._rw_lock.gen_rlock():
+            if self.collection is None:
+                raise ValueError("Chroma collection is not initialized.")
+            current = self.collection.metadata.get("hnsw:space")
+            if current is None:
+                logger.warning("Could not find distance metric in the index. Skipping check.")
+                return
+
         if current != distance_metric:
             logger.info(f"Changing distance metric from {current} to {distance_metric}")
             ProgressHandler().disable()
-            hnsw.rebuild_hnsw(
-                persist_dir=self.store_path,
-                collection_name=self.collection_name,
-                yes=True,
-                space=distance_metric,
-                backup=False,
-            )
+
+            with self._rw_lock.gen_wlock():
+                self.collection = None
+                self.client = None
+                gc.collect()
+
+                hnsw.rebuild_hnsw(
+                    persist_dir=self.store_path,
+                    collection_name=self.collection_name,
+                    yes=True,
+                    space=distance_metric,
+                    backup=False,
+                )
+
+                self._initialize()
+
             logger.info("Successfully changed distance metric")
             ProgressHandler().enable()
 
     @override
     def print_stats(self, verbose: bool = True) -> None:
-        ProgressHandler().disable()
-        hnsw.info_hnsw(
-            collection_name=self.collection_name,
-            persist_dir=self.store_path,
-            verbose=verbose,
-        )
-        ProgressHandler().enable()
+        with self._rw_lock.gen_rlock():
+            ProgressHandler().disable()
+            hnsw.info_hnsw(
+                collection_name=self.collection_name,
+                persist_dir=self.store_path,
+                verbose=verbose,
+            )
+            ProgressHandler().enable()
+
+    @override
+    def count(self) -> int:
+        with self._rw_lock.gen_rlock():
+            return self.collection.count()
 
     @override
     def _translate_filter(self, where_filter: Optional[WhereFilter]) -> Optional[dict]:
@@ -439,9 +477,6 @@ class ChromaVectorStore(VectorStore):
         chroma_operator = self._OPERATOR_TO_CHROMA_SYNTAX[operator]
         return {condition.field: {chroma_operator: value}}
 
-    def count(self) -> int:
-        return self.collection.count()
-
 
     def _manually_calculate_similarity_score(self,
                                              query_embeddings: List[List[float]],
@@ -465,9 +500,11 @@ class ChromaVectorStore(VectorStore):
         Returns:
             List[VectorScoreResults]: A list of VectorScoreResults objects sorted by their similarity score.
         """
-        if self.collection is None:
-            raise ValueError("Chroma collection is not initialized.")
-        with self._lock:
+
+        with self._rw_lock.gen_rlock():
+            if self.collection is None:
+                raise ValueError("Chroma collection is not initialized.")
+
             try:
                 records = self.collection.get(
                     where=where_filter,

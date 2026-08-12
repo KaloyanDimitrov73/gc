@@ -9,17 +9,17 @@ import os
 import threading
 
 from backend.app.contracts.schemas import GraphNode
-from backend.app.modules.qa.infrastructure.hublink.config_loader import (
+from backend.app.config.hublink.config_loader import (
     HublinkConfigLoader,
 )
-from backend.app.modules.qa.infrastructure.hublink.llm_config_registry import (
+from backend.app.config.llm.llm_config_registry import (
     LLMConfigRegistry,
 )
 from backend.app.modules.graph_explore.infrastructure.orkg import node_builder
 from backend.app.modules.qa.infrastructure.hublink.setup_manager import (
     SetupManager,
 )
-
+from hublink.core.hub_storage_manager import HubStorageManager
 
 logger = logging.getLogger(__name__)
 
@@ -35,7 +35,7 @@ class HubLinkService:
     - Transforms contexts to graph nodes for visualization
     """
 
-    def __init__(self, graph: Any):
+    def __init__(self, graph: Any, hub_storage_manager: HubStorageManager):
         """Initialize the HubLink service.
 
         Args:
@@ -44,6 +44,7 @@ class HubLinkService:
         self.hublink_available = False
         self.retriever = None
         self.graph = graph
+        self.hub_storage_manager = hub_storage_manager
         self.config_loader = HublinkConfigLoader()
         self.llm_config_registry = LLMConfigRegistry()
         self.setup_manager = SetupManager()
@@ -71,7 +72,7 @@ class HubLinkService:
             from core.progress.progress_handler import ProgressHandler
             ProgressHandler().disabled = False
 
-            self.retriever = HubLinkRetrieverForUser(config, self.graph)
+            self.retriever = HubLinkRetrieverForUser(config, self.graph, self.hub_storage_manager)
 
             # --- Override the LLM used for answer generation ---
             ANSWER_LLM_MODEL = os.getenv("ANSWER_LLM_MODEL")

@@ -91,7 +91,7 @@ class DirectRetrievalStrategy(BaseRetrievalStrategy):
                 clustered by their root id.
 
         Returns:
-            List[Huby]: A list of Hub objects
+            List[Hub]: A list of Hub objects
                 representing the candidate hubs and their paths.
         """
         converted_hubs: List[Hub] = []

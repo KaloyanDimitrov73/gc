@@ -22,7 +22,7 @@ from backend.app.modules.qa.application.service import (
     RetrievalUnavailableError,
 )
 from backend.app.modules.conversations.application.service import ConversationService
-from backend.app.modules.qa.infrastructure.hublink.llm_config_registry import LLMConfigRegistry
+from backend.app.config.llm.llm_config_registry import LLMConfigRegistry
 
 logger = logging.getLogger(__name__)
 
