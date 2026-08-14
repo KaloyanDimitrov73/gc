@@ -13,8 +13,8 @@ from backend.app.modules.graph_load.application.graph_load_service import GraphL
 from backend.app.modules.indexing.infrastructure.hublink.hub_indexing_service import (
     HubIndexingService,
 )
-from backend.app.modules.indexing.infrastructure.hublink.vector_store_service import (
-    VectorStoreService,
+from backend.app.modules.indexing.infrastructure.hublink.hub_store_service import (
+    HubStoreService,
 )
 from backend.app.shared.exceptions import AppError
 
@@ -66,7 +66,7 @@ class IndexingService:
     def __init__(
         self,
         hub_indexing_service: HubIndexingService,
-        vector_store_service: VectorStoreService,
+        vector_store_service: HubStoreService,
         graph_load_service: GraphLoadService,
     ):
         self._hub_indexing_service = hub_indexing_service

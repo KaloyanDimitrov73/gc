@@ -17,7 +17,7 @@ from knowledge_base.vector_store.storage.vector_store_provider import VectorStor
 
 
 
-class VectorStoreService:
+class HubStoreService:
     """
     Owns creation of the configured vector store backend and the
     ``HubStorageManager`` built on top of it.

@@ -5,7 +5,7 @@ import threading
 
 from backend.app.modules.indexing.application.service import IndexingService
 from backend.app.modules.indexing.infrastructure.hublink.hub_indexing_service import HubIndexingService
-from backend.app.modules.indexing.infrastructure.hublink.vector_store_service import VectorStoreService
+from backend.app.modules.indexing.infrastructure.hublink.hub_store_service import HubStoreService
 from backend.app.modules.qa.infrastructure.hublink.hublink_service import HubLinkService
 from backend.app.config.hublink.config_loader import HublinkConfigLoader
 from backend.app.config.llm.llm_config_registry import LLMConfigRegistry
@@ -25,7 +25,7 @@ _retrieval_lock = threading.Lock()
 
 _graph_load_service: Optional[GraphLoadService] = None
 _graph_explore_service: Optional[GraphExploreService] = None
-_vector_store_service: Optional[VectorStoreService] = None
+_vector_store_service: Optional[HubStoreService] = None
 _hub_indexing_service: Optional[HubIndexingService] = None
 _indexing_service: Optional[IndexingService] = None
 _hublink_service: Optional[HubLinkService] = None
@@ -64,8 +64,8 @@ def get_graph_explore_service() -> GraphExploreService:
     return _graph_explore_service
 
 
-def get_vector_store_service() -> VectorStoreService:
-    """Return the singleton ``VectorStoreService``, creating it on first call.
+def get_vector_store_service() -> HubStoreService:
+    """Return the singleton ``HubStoreService``, creating it on first call.
 
     Wraps ``HubStorageManager`` and is the single shared access point to the
     vector store used for indexing write-path and the retrieval read-path.
@@ -74,7 +74,7 @@ def get_vector_store_service() -> VectorStoreService:
     if _vector_store_service is None:
         with _vector_store_lock:
             if _vector_store_service is None:
-                _vector_store_service = VectorStoreService()
+                _vector_store_service = HubStoreService()
     return _vector_store_service
 
 
@@ -98,7 +98,7 @@ def get_hub_indexing_service() -> HubIndexingService:
 def get_indexing_service() -> IndexingService:
     """Return the singleton ``IndexingService``, creating it on first call.
 
-    Composes ``HubIndexingService`` and the shared ``VectorStoreService``.
+    Composes ``HubIndexingService`` and the shared ``HubStoreService``.
     Thread-safe via a double-checked locking pattern.
     """
     global _indexing_service

@@ -34,7 +34,7 @@ class HubIndexingService:
 
     This service:
     - Receives an already-loaded knowledge graph from GraphLoadService
-    - Receives HubStorageManager from VectorStoreService
+    - Receives HubStorageManager from HubStoreService
 
     Responsibilities:
       - Create `HubIndexerOptions` from config and with HubStorageManager

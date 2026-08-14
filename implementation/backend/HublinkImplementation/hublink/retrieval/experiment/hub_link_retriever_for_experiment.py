@@ -21,7 +21,7 @@ from retrieval.config.kg_retrieval_config import KGRetrievalConfig
 logger = get_logger(__name__)
 
 
-class HubLinkRetriever(KnowledgeGraphRetriever):
+class HubLinkRetrieverForExperiment(KnowledgeGraphRetriever):
     """
     Our new retrieval approach.
     
@@ -180,7 +180,7 @@ class HubLinkRetriever(KnowledgeGraphRetriever):
 
         self.hub_storage_manager = HubStorageManager(
             vector_store=vector_store,
-            embedding_model=self.embedding_model,
+            embedding_config=self.settings.embedding_config,
             diversity_penalty=self.settings.diversity_ranking_penalty
         )
 
