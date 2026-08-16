@@ -22,7 +22,6 @@ from knowledge_base.knowledge_graph.storage import KnowledgeGraph
 from core.logging.logging import get_logger
 
 from hublink.retrieval.utils.answer_generator import HubAnswer, AnswerGenerator
-from hublink.indexing.hub_builder import HubBuilder, HubBuilderOptions
 from hublink.retrieval.utils.hub_source_handler import HubSourceHandler
 from hublink.core.hub_storage_manager import HubStorageManager
 
@@ -83,19 +82,6 @@ class BaseRetrievalStrategy(ABC):
         self.answer_generator = AnswerGenerator(
             graph=self.graph,
             llm=self.llm_adapter
-        )
-        self.hub_builder = HubBuilder(
-            graph=self.graph,
-            options=HubBuilderOptions(
-                llm=self.llm_adapter,
-                max_workers=self.settings.max_workers,
-                hub_storage_manager=self.hub_storage_manager,
-                is_hub_options=IsHubOptions(
-                    hub_edges=self.settings.hub_edges,
-                    types=self.settings.hub_types
-                ),
-                max_hub_path_length=self.settings.max_hub_path_length
-            )
         )
 
     def retrieval(self, question: str) -> Optional[RetrievalAnswer]:

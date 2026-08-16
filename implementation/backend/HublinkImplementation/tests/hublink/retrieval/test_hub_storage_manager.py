@@ -169,7 +169,7 @@ def embedding_model(tmp_path):
 def hub_storage_manager(store, embedding_model):
     return HubStorageManager(
         vector_store=store,
-        embedding_model=embedding_model,
+        embedding_config=_DEFAULT_EMBEDDING_CONFIG,
         diversity_penalty=0.1,
     )
 
@@ -341,7 +341,7 @@ def test_delete_data_from_hub_removes_only_matching_hub(
 
 def test_similarity_search_by_hub_entity_finds_best_match(
         hub_storage_manager, hub_root, research_field_path_triple, venue_path_triple,
-        research_field_hub_path, venue_hub_path,
+        research_field_hub_path, venue_hub_path, embedding_model
 ):
     hub_storage_manager.store_hub_batch(
         hub_root,
@@ -349,7 +349,7 @@ def test_similarity_search_by_hub_entity_finds_best_match(
         [research_field_hub_path.path_text, venue_hub_path.path_text],
     )
 
-    query_embedding = hub_storage_manager.embedding_model.embed_batch([research_field_hub_path.path_text])
+    query_embedding = embedding_model.embed_batch([research_field_hub_path.path_text])
 
     results = hub_storage_manager.similarity_search_by_hub_entity(
         query_embeddings=query_embedding,
@@ -365,7 +365,7 @@ def test_similarity_search_by_hub_entity_finds_best_match(
 
 def test_similarity_search_by_hub_entity_respects_excluded_hashes(
         hub_storage_manager, hub_root, research_field_path_triple, venue_path_triple,
-        research_field_hub_path, venue_hub_path,
+        research_field_hub_path, venue_hub_path, embedding_model
 ):
     hub_storage_manager.store_hub_batch(
         hub_root,
@@ -373,7 +373,7 @@ def test_similarity_search_by_hub_entity_respects_excluded_hashes(
         [research_field_hub_path.path_text, venue_hub_path.path_text],
     )
 
-    query_embedding = hub_storage_manager.embedding_model.embed_batch([research_field_hub_path.path_text])
+    query_embedding = embedding_model.embed_batch([research_field_hub_path.path_text])
     excluded_hash = path_to_hash([research_field_path_triple])
 
     results = hub_storage_manager.similarity_search_by_hub_entity(
@@ -389,14 +389,14 @@ def test_similarity_search_by_hub_entity_respects_excluded_hashes(
 def test_similarity_search_hubs_excludes_given_hub_ids(
         hub_storage_manager, hub_root, second_hub_root,
         research_field_path_triple, second_research_field_path_triple,
-        research_field_hub_path, second_research_field_hub_path,
+        research_field_hub_path, second_research_field_hub_path, embedding_model
 ):
     hub_storage_manager.store_hub_batch(hub_root, [[research_field_path_triple]], [research_field_hub_path.path_text])
     hub_storage_manager.store_hub_batch(
         second_hub_root, [[second_research_field_path_triple]], [second_research_field_hub_path.path_text]
     )
 
-    query_embedding = hub_storage_manager.embedding_model.embed_batch(["Software Architecture and Design research"])
+    query_embedding = embedding_model.embed_batch(["Software Architecture and Design research"])
 
     results = hub_storage_manager.similarity_search_hubs(
         query_embeddings=query_embedding,

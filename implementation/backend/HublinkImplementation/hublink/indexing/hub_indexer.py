@@ -9,15 +9,18 @@ from core.data.models import Knowledge
 from core.progress.progress_handler import ProgressHandler
 from hublink.core.models.entity_with_direction import EntityWithDirection
 from hublink.core.models.hub import IsHubOptions
+from hublink.core.models.hub_link_settings import HubLinkSettings
 from language_model.base.embedding_adapter import EmbeddingAdapter
 from language_model.base.llm_adapter import LLMAdapter
-from language_model import LLMStatTracker, LLMStats
+from language_model import LLMStatTracker, LLMStats, LLMProvider
 from knowledge_base.knowledge_graph.storage.base.knowledge_graph import KnowledgeGraph
 from core.logging.logging import get_logger
 from hublink.core.hub_storage_manager import HubStorageManager
 
 from hublink.core.hub_finder import HubFinder
 from hublink.indexing.hub_builder import HubBuilder, HubBuilderOptions
+from language_model.config.embedding_config import EmbeddingConfig
+from language_model.config.llm_config import LLMConfig
 
 logger = get_logger(__name__)
 
@@ -80,6 +83,39 @@ class HubIndexerOptions(BaseModel):
         title="Distance Metric",
         description="The distance metric to use for the vector store."
     )
+
+    @classmethod
+    def from_settings(
+            cls,
+            settings: HubLinkSettings,
+            hub_storage_manager: HubStorageManager,
+            indexing_llm_config: LLMConfig,
+            embedding_config:  EmbeddingConfig,
+    ) -> "HubIndexerOptions":
+        """
+        Builds indexer options from a ``HubLinkSettings`` instance.
+
+        Args:
+            settings: Resolved HubLink settings.
+            hub_storage_manager: The storage manager that manage indexing and retrieval.
+            indexing_llm_config: The config for LLM used to build hub text for indexing.
+            embedding_config: The config for embedding adapter to vectorize hub text.
+        """
+        _llm_provider = LLMProvider()
+
+        return cls(
+            embedding_model=_llm_provider.get_embeddings(embedding_config),
+            llm=_llm_provider.get_llm_adapter(indexing_llm_config),
+            hub_storage_manager=hub_storage_manager,
+            max_workers=settings.max_workers,
+            max_indexing_depth=settings.max_indexing_depth,
+            is_hub_options=IsHubOptions(
+                hub_edges=settings.hub_edges,
+                types=settings.hub_types,
+            ),
+            max_hub_path_length=settings.max_hub_path_length,
+            distance_metric=settings.distance_metric,
+        )
 
 
 class HubIndexer:

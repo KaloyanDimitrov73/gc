@@ -184,29 +184,12 @@ class TraversalRetrievalStrategy(BaseRetrievalStrategy):
             candidate_hub_entities=candidate_hub_entities
         )
 
-        # If the index of a hub needs to be updated, we update them here
-        next_entities, fresh_processed_hubs = self.hub_builder.build_hubs(
-            hub_entities=hubs_that_need_processing,
-            update_cached_hubs=self.settings.check_updates_during_retrieval
-        )
-        entities.extend(next_entities)
-
-        # For those hubs that were processed, we need to get the hub paths again
-        # as they might have changed or added new paths
-        for hub in fresh_processed_hubs:
-            hub_paths_with_score = self._get_hub_paths_for_hub(
-                processed_question=processed_question,
-                hub_id=hub.root_entity.entity.uid
+        if hubs_that_need_processing:
+            logger.debug(
+                "Skipping %s hubs not valid indexed by background indexer",
+                len(hubs_that_need_processing)
             )
-            if len(hub_paths_with_score) == 0:
-                logger.warning(
-                    "No query result found for hub even after processing: %s",
-                    hub.root_entity.entity.uid)
-                continue
-            hubs.append(Hub(
-                root_entity=hub.root_entity,
-                paths=hub_paths_with_score
-            ))
+
         return hubs, entities
 
     def _get_hub_roots_at_current_level(
@@ -269,26 +252,23 @@ class TraversalRetrievalStrategy(BaseRetrievalStrategy):
 
         hubs_that_need_processing: List[EntityWithDirection] = []
         hubs: List[Hub] = []
-        if not self.settings.check_updates_during_retrieval:
-            # If we don't force the hub update, we can directly do the
-            # similarity search on the hubs
-            for entity_with_direction in candidate_hub_entities:
-                hub_paths = self._get_hub_paths_for_hub(
-                    processed_question=processed_question,
-                    hub_id=entity_with_direction.entity.uid
-                )
-                
-                if len(hub_paths) == 0:
-                    # In case the hub candidate does not return any results,
-                    # we need to process the hub
-                    hubs_that_need_processing.append(entity_with_direction)
-                    continue
-                
-                hubs.append(Hub(
-                    root_entity=entity_with_direction,
-                    paths=hub_paths
-                ))
-        else:
-            hubs_that_need_processing = candidate_hub_entities
+
+        for entity_with_direction in candidate_hub_entities:
+            hub_paths = self._get_hub_paths_for_hub(
+                processed_question=processed_question,
+                hub_id=entity_with_direction.entity.uid
+            )
+
+            if len(hub_paths) == 0:
+                # In case the hub candidate does not return any results,
+                # we need to process the hub
+                hubs_that_need_processing.append(entity_with_direction)
+                continue
+
+            hubs.append(Hub(
+                root_entity=entity_with_direction,
+                paths=hub_paths
+            ))
+
 
         return hubs_that_need_processing, hubs

@@ -147,9 +147,17 @@ class VectorStore(ABC):
         ...
 
     @abstractmethod
+    def count(self) -> int:
+        """
+        Returns the total number of records currently stored.
+        """
+        ...
+
+    @abstractmethod
     def _translate_filter(self, where_filter: Optional[WhereFilter]) -> Any:
         """
         Translates a backend-independent WhereFilter into the native
         filter syntax of this vector store backend.
         """
         ...
+

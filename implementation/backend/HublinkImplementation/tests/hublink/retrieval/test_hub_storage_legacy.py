@@ -7,7 +7,7 @@ from language_model import LLMProvider
 from language_model.config.embedding_config import EmbeddingConfig
 from knowledge_base.vector_store.storage.implementations.chroma_vector_store import ChromaVectorStore
 from hublink.core.hub_storage_manager import HubStorageManager
-from tests.retrieval.implementations.HubLink.legacy.chroma_vector_store_old import ChromaVectorStoreOld
+from tests.hublink.retrieval.legacy.chroma_vector_store_old import ChromaVectorStoreOld
 
 _VECTOR_STORE_NAME = "736960f8b73149a36889a4f2f5adc1d3_da9bf9ced3b86d4b6bfbcac1452859290775a394f73462884eb5f866fce6faed"
 _DIVERSITY_PENALTY = 0.05

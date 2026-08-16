@@ -191,6 +191,7 @@ class KnowledgeGraph(ABC):
             entity = self.get_entity_by_id(entity_id)
             if entity is not None:
                 entities.add(entity)
+
         return entities
 
     @abstractmethod

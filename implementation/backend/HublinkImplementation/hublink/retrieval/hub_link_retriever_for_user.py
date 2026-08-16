@@ -17,7 +17,6 @@ from typing_extensions import override
 from copy import deepcopy
 
 from core.data.models import RetrievalAnswer
-from knowledge_base.vector_store.storage.implementations.chroma_vector_store import ChromaVectorStore
 from language_model import LLMProvider
 from language_model.config.llm_config import LLMConfig
 from retrieval import KnowledgeGraphRetriever
@@ -25,13 +24,10 @@ from knowledge_base.knowledge_graph.storage import KnowledgeGraph
 from core.logging.logging import get_logger
 
 from hublink.core.models.hub_link_settings import HubLinkSettings, ADDITIONAL_CONFIG_PARAMS
-from hublink.core.models.hub import IsHubOptions
-from hublink.indexing.hub_indexer import HubIndexer, HubIndexerOptions
 from hublink.retrieval.utils.hub_source_handler import HubSourceHandler
 from hublink.retrieval.strategies.base_retrieval_strategy import RetrievalStrategyData
 from hublink.retrieval.strategies.traversal_retrieval_strategy import TraversalRetrievalStrategy
 from hublink.retrieval.strategies.direct_retrieval_strategy import DirectRetrievalStrategy
-from hublink.core.hub_storage_manager import HubStorageManager
 from retrieval.config.kg_retrieval_config import KGRetrievalConfig
 
 logger = get_logger(__name__)
@@ -52,14 +48,12 @@ class HubLinkRetrieverForUser(KnowledgeGraphRetriever):
     """
     ADDITIONAL_CONFIG_PARAMS = ADDITIONAL_CONFIG_PARAMS
 
-    def __init__(self, config: KGRetrievalConfig, graph: KnowledgeGraph) -> None:
+    def __init__(self, config: KGRetrievalConfig, graph: KnowledgeGraph, hub_storage_manager) -> None:
         super().__init__(config, graph)
 
         self.settings: HubLinkSettings = HubLinkSettings.from_config(config)
+        self.hub_storage_manager = hub_storage_manager
         self._llm_provider = LLMProvider()
-
-        # Indexing LLM (used only for building index, should not change after indexing)
-        self._indexing_llm = self._llm_provider.get_llm_adapter(config.index_llm_config)
 
         # LLM cache for per-query LLM selection (avoids recreating adapters).
         # Populated immediately with the default config so the first query never
@@ -78,13 +72,7 @@ class HubLinkRetrieverForUser(KnowledgeGraphRetriever):
         self.embedding_model = self._llm_provider.get_embeddings(
             self.settings.embedding_config)
 
-        self._prepare_vector_store()
-        self.build_index(
-            root_entity_types=self.settings.indexing_root_entity_types,
-            root_entity_ids=self.settings.indexing_root_entity_ids
-        )
         self._prepare_source_handler()
-
 
     # ==================== Retrieval ====================
     def query(self,
@@ -199,94 +187,7 @@ class HubLinkRetrieverForUser(KnowledgeGraphRetriever):
         )
         return strategy.retrieval(query_text)
 
-
-    # ==================== Indexing ====================
-
-    def build_index(
-        self,
-        root_entity_types: Optional[List[str]] = None,
-        root_entity_ids: Optional[List[str]] = None,
-        force_update: bool = False
-    ):
-        """
-        Builds or updates the index for hub-based retrieval.
-
-        Args:
-            root_entity_types (Optional[List[str]]): Entity types to start indexing from.
-            root_entity_ids (Optional[List[str]]): Specific entity IDs to start indexing from.
-            force_update (bool): If True, forces re-indexing of all hubs.
-        """
-        if not root_entity_types and not root_entity_ids:
-            raise ValueError(
-                "Either root_entity_types or root_entity_ids must be specified."
-            )
-        if not self.hub_storage_manager:
-            raise ValueError("Vector store not initialized.")
-
-        logger.info("Building/Checking index for HubLink retriever")
-
-        # Use indexing LLM for building the index
-        hub_indexer = HubIndexer(
-            graph=self.graph,
-            options=HubIndexerOptions(
-                embedding_model=self.embedding_model,
-                is_hub_options=IsHubOptions(
-                    hub_edges=self.settings.hub_edges,
-                    types=self.settings.hub_types
-                ),
-                llm=self._indexing_llm,  # Always use indexing LLM
-                max_workers=self.settings.max_workers,
-                hub_storage_manager=self.hub_storage_manager,
-                max_indexing_depth=self.settings.max_indexing_depth,
-                max_hub_path_length=self.settings.max_hub_path_length,
-                distance_metric=self.settings.distance_metric
-            )
-        )
-
-        root_entities = []
-        if root_entity_ids:
-            for root_entity_id in root_entity_ids:
-                root_entity = self.graph.get_entity_by_id(root_entity_id)
-                if root_entity:
-                    root_entities.append(root_entity)
-                else:
-                    logger.warning(f"Root entity with ID {root_entity_id} not found")
-
-        if root_entity_types:
-            root_entities.extend(self.graph.get_entities_by_types(root_entity_types))
-
-        if not root_entities:
-            logger.warning(
-                f"No root entities found for indexing. Types: {root_entity_types}"
-            )
-        else:
-            logger.info(f"Indexing {len(root_entities)} root entities")
-            hub_indexer.run_indexing(
-                root_entities=root_entities,
-                force_index_update=force_update or self.settings.force_index_update
-            )
-
     # ==================== Internal Methods ====================
-
-    def _prepare_vector_store(self):
-        """
-        Prepares the main vector store for the retriever which stores the
-        HubPaths for each hub.
-        """
-        vector_store_name = (f"{self.graph.config.config_hash}_"
-                             f"{self.settings.embedding_config.config_hash}"
-                             f"{self._indexing_llm.llm_config.config_hash}")
-
-        vector_store = ChromaVectorStore(
-            store_name=vector_store_name,
-            distance_metric=self.settings.distance_metric
-        )
-
-        self.hub_storage_manager = HubStorageManager(
-            vector_store=vector_store,
-            embedding_model=self.embedding_model,
-            diversity_penalty=self.settings.diversity_ranking_penalty
-        )
 
     def _prepare_source_handler(self):
         """

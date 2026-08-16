@@ -2,7 +2,7 @@
 from pathlib import Path
 import json
 
-from backend.app.core.config import get_settings
+from backend.app.config.base_settings import get_settings
 from retrieval.config.kg_retrieval_config import KGRetrievalConfig
 
 

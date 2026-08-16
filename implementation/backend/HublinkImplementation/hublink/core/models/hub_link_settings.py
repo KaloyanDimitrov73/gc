@@ -21,10 +21,6 @@ _HUB_LINK_DEFAULTS = {
     # Its recommended to have this parameter set to to true as typically
     # hubs are the same amount of hops away from the topic entity
     "compare_hubs_with_same_hop_amount": True,
-    # This parameter is set to false by default as it increases the
-    # runtime. However, if dynamic updates are expected it may be
-    # useful to set it to true.
-    "check_updates_during_retrieval": False,
     # This values has been set arbitrarily to 5. It is entirely dependent on the 
     # underlying data.
     "max_level": 5,
@@ -246,18 +242,6 @@ ADDITIONAL_CONFIG_PARAMS: List[AdditionalConfigParameter] = [
             param_restriction=RestrictionType.GREQ_THAN_MINUS_1
         ),
         AdditionalConfigParameter(
-            name="check_updates_during_retrieval",
-            description=("This option allows to force update the hubs during the retrieval. "
-                         "This means, that at query time, each time a hub is accessed, it is "
-                         "checked whether it has been updated beyond what is indexed. "
-                         "This allows to ensure that the information is up to date without "
-                         "having to run the whole indexing process. This works ONLY when "
-                         "the `use_topic_if_given` setting is set to TRUE."),
-            param_type=bool,
-            available_values=[],
-            default_value=_HUB_LINK_DEFAULTS["check_updates_during_retrieval"]
-        ),
-        AdditionalConfigParameter(
             name="hub_types",
             description=(
                 "The entity types in the graph that are considered a hub. "
@@ -352,7 +336,6 @@ class HubLinkSettings(BaseModel):
     max_workers: int = _HUB_LINK_DEFAULTS["max_workers"]
     compare_hubs_with_same_hop_amount: bool = _HUB_LINK_DEFAULTS[
         "compare_hubs_with_same_hop_amount"]
-    check_updates_during_retrieval: bool = _HUB_LINK_DEFAULTS["check_updates_during_retrieval"]
     max_level: int = _HUB_LINK_DEFAULTS["max_level"]
     diversity_ranking_penalty: float = _HUB_LINK_DEFAULTS["diversity_ranking_penalty"]
     path_weight_alpha: int = _HUB_LINK_DEFAULTS["path_weight_alpha"]

@@ -6,7 +6,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, Header, HTTPException, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.app.core.config import get_settings
+from backend.app.config.base_settings import get_settings
 from backend.app.modules.conversations.infrastructure.database.db import get_db
 from backend.app.modules.stats.infrastructure.repository import StatsRepository
 
