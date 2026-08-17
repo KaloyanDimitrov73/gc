@@ -1,3 +1,5 @@
+import hashlib
+from datetime import datetime
 from typing import List, Optional, Dict, Tuple
 from threading import RLock
 import chromadb
@@ -8,11 +10,9 @@ from sklearn.metrics.pairwise import cosine_similarity
 from core.data.file_path_manager import FilePathManager
 from core.logging.logging import get_logger
 from core.data.models.triple import Triple
-
-import hashlib
-import json
-
-from retrieval.implementations.HubLink.models import HubPath
+from hublink.core.models.entity_with_direction import EntityWithDirection
+from hublink.core.models.hub_path import HubPath
+from language_model import EmbeddingAdapter
 
 logger = get_logger(__name__)
 
@@ -33,8 +33,11 @@ class ChromaVectorStoreOld:
     def __init__(self,
                  store_name: str,
                  diversity_penalty: float,
+                 store_path: str,
+                 embedding_model: EmbeddingAdapter,
                  collection_name: str = "novel_retriever",
-                 distance_metric: str = "cosine"):
+                 distance_metric: str = "cosine",
+                 ):
         """
         Initializes the ChromaVectorStore by setting up the client and collection.
 
@@ -52,10 +55,11 @@ class ChromaVectorStoreOld:
         self.diversity_penalty = diversity_penalty
         self.collection_name = collection_name
         self.distance_metric = distance_metric
+        self.embedding_model = embedding_model
         self._lock = RLock()
         self.client = None
         self.collection = None
-        self.store_path = None
+        self.store_path = store_path
         self._initialize()
 
     def _initialize(self):
@@ -72,18 +76,9 @@ class ChromaVectorStoreOld:
         Returns:
             chromadb.Client: Configured Chroma client instance.
         """
-        file_path_manager = FilePathManager()
-        novel_retriever_cache_dir = file_path_manager.combine_paths(
-            file_path_manager.CACHE_DIR, "hublink_retriever", self.store_name
-        )
 
-        # Ensure the persist directory exists
-        file_path_manager.ensure_dir_exists(novel_retriever_cache_dir)
-        logger.info(
-            f"Loading chroma vector store from: {novel_retriever_cache_dir}")
+        client = chromadb.PersistentClient(path=self.store_path)
 
-        client = chromadb.PersistentClient(path=novel_retriever_cache_dir)
-        self.store_path = novel_retriever_cache_dir
         return client
 
     def _initialize_collection(self) -> chromadb.Collection:
@@ -516,6 +511,161 @@ class ChromaVectorStoreOld:
                 hub_paths_by_id[hub_entity_id].append(hub_path)
 
         return hub_paths_by_id
+
+    def build_and_store_hubs(self,
+                         path_texts: List[str],
+                         paths: List[List[Triple]],
+                         hub_root_entity: EntityWithDirection) -> List[HubPath]:
+        """
+        Processes all paths of a hub in parallel and stores them in the vector store.
+
+        The LLM-based text conversion for each path is parallelized via a thread pool.
+        After conversion all texts are aggregated, deduplicated, embedded in a single
+        batch call, and written to the vector store in a single batch upsert.
+
+        Args:
+            path_texts: List[str] Path text
+            paths (List[List[Triple]]): List of paths where each path is a list of Triple objects.
+            hub_root_entity (EntityWithDirection): The hub entity that is the root/center of
+                these paths.
+            embeddings:
+
+        Returns:
+            List[HubPath]: The processed hub paths.
+        """
+
+        # Step 2: Collect texts / keys / metadatas across all paths.
+        all_texts: List[str] = []
+        all_keys: List[str] = []
+        all_metadatas: List[dict] = []
+        hub_paths: List[HubPath] = []
+
+        for path, path_text in zip(paths, path_texts):
+            if not path_text:
+                raise ValueError(f"Failed to convert path to text. Path: {path}")
+
+            path_hash = self.path_to_hash(path)
+            path_as_string = "$$$||$$$".join(
+                triple.model_dump_json() for triple in path)
+
+            base_metadata = {
+                "path_hash": path_hash,
+                "path_text": path_text,
+                "hub_entity": hub_root_entity.entity.uid,
+                "length": len(path),
+                "path": path_as_string,
+            }
+            timestamp = str(datetime.now())
+
+            # Full path text
+            all_texts.append(path_text)
+            all_keys.append(path_hash)
+            all_metadatas.append({
+                **base_metadata,
+                "embedded_text": path_text,
+                "added_timestamp": timestamp
+            })
+
+            # Entity texts (subject, object, predicate)
+            for triple in path:
+                for entity_text in [triple.entity_subject.text,
+                                    triple.entity_object.text,
+                                    triple.predicate]:
+                    entity_hash = hashlib.md5(
+                        (hub_root_entity.entity.uid + "_" + entity_text).encode()
+                    ).hexdigest()
+                    all_texts.append(entity_text)
+                    all_keys.append(entity_hash)
+                    all_metadatas.append({
+                        **base_metadata,
+                        "embedded_text": entity_text,
+                        "added_timestamp": timestamp
+                    })
+
+            # Triple texts
+            for triple in path:
+                triple_text = (
+                    f"({triple.entity_subject.text}, "
+                    f"{triple.predicate}, "
+                    f"{triple.entity_object.text})"
+                )
+                triple_hash = hashlib.md5(
+                    (path_hash + "_" + str(triple)).encode()
+                ).hexdigest()
+                all_texts.append(triple_text)
+                all_keys.append(triple_hash)
+                all_metadatas.append({
+                    **base_metadata,
+                    "embedded_text": triple_text,
+                    "added_timestamp": timestamp
+                })
+
+            hub_paths.append(HubPath(
+                path_text=path_text,
+                path_hash=path_hash,
+                path=path
+            ))
+
+        # Step 3: Deduplicate across all paths.
+        seen: set = set()
+        deduped_texts: List[str] = []
+        deduped_keys: List[str] = []
+        deduped_metadatas: List[dict] = []
+        for text, key, meta in zip(all_texts, all_keys, all_metadatas):
+            if key not in seen:
+                seen.add(key)
+                deduped_texts.append(text)
+                deduped_keys.append(key)
+                deduped_metadatas.append(meta)
+
+        # Step 4: Single batch embed + store for the entire hub.
+        logger.debug("Embedding %d texts for hub %s",
+                     len(deduped_texts), hub_root_entity.entity.uid)
+
+        embeddings = self._embed_texts(deduped_texts)
+
+        self.store_data_batch(
+            hash_keys=deduped_keys,
+            embeddings=embeddings,
+            metadatas=deduped_metadatas
+        )
+        return hub_paths
+
+    def path_to_hash(self, path: List[Triple]) -> str:
+        """
+        Generates a hash for a given path.
+
+        Args:
+            path (List[Triple]): The path to generate a hash for.
+
+        Returns:
+            str: The hash of the path.
+        """
+        path_str = ''.join([str(triple) for triple in path])
+        return hashlib.md5(path_str.encode()).hexdigest()
+
+    def _embed_texts(self, texts: List[str], retries: int = 8) -> List[List[float]]:
+        """
+        Embeds a list of texts using the embedding model.
+
+        Args:
+            texts (List[str]): The texts to embed.
+
+        Returns:
+            List[List[float]]: The embeddings of the texts.
+        """
+        for i in range(retries):
+            try:
+                embeddings = self.embedding_model.embed_batch(
+                    texts)
+                break
+            except Exception as e:
+                logger.error(f"Error during embedding: {e}")
+                if i == retries - 1:
+                    raise e
+        return embeddings
+
+
 
     def _process_query_results_to_hub_paths(self,
                                             results: QueryResult) -> List[HubPath]:

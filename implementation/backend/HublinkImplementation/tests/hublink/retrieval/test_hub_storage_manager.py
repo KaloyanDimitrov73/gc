@@ -1,5 +1,5 @@
 """
-test_chroma_vector_store.py
+test_hub_storage_manager.py
 """
 import pytest
 
@@ -179,7 +179,6 @@ def test_build_storage_record_form_path(
 ):
     texts, keys, metadatas = hub_storage_manager._build_storage_record_form_path(hub_root, [research_field_path_triple], research_field_hub_path.path_text)
 
-    triple_text = texts[-1]
     triple_metadata = metadatas[-1]
 
     assert len(texts) == 5
