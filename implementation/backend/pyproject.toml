@@ -34,7 +34,7 @@ where = [".."]
 include = ["backend*"]
 
 [tool.pytest.ini_options]
-testpaths = ["tests"]
+testpaths = ["tests", "HublinkImplementation/tests"]
 pythonpath = [".."]
 addopts = "-v -s"
 asyncio_mode = "auto"

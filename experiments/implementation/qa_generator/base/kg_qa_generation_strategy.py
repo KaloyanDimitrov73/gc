@@ -1,15 +1,12 @@
 ﻿from abc import ABC, abstractmethod
-from pathlib import Path
 from typing import List, Tuple, Optional
 from dataclasses import dataclass, field
-
-_PROMPTS_DIR = str(Path(__file__).parent.parent / "prompts")
 
 from langchain_core.prompts import PromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 
 
-from language_model.prompt_provider import PromptProvider
+from implementation.language_model import PromptProvider
 from knowledge_base.knowledge_graph.storage.utils.path_builder import PathBuilder
 from language_model.base.llm_adapter import LLMAdapter
 from knowledge_base.knowledge_graph.storage.base.knowledge_graph import KnowledgeGraph
@@ -57,7 +54,7 @@ class KGQAGenerationStrategy(ABC):
     def __init__(self, graph: KnowledgeGraph, llm_adapter: LLMAdapter, options: GenerationOptions):
         self.graph = graph
         self.llm_adapter = llm_adapter
-        self.prompt_provider = PromptProvider(prompt_dir=_PROMPTS_DIR)
+        self.prompt_provider = PromptProvider()
         self.options = options
 
     @abstractmethod

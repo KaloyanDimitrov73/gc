@@ -20,12 +20,14 @@ COPY backend/pyproject.toml backend/pyproject.toml
 # the editable install only registers packages that exist at build time.
 RUN install -d hublink_shared/config \
                backend/HublinkImplementation/core \
+               backend/HublinkImplementation/hublink \
                backend/HublinkImplementation/knowledge_base \
                backend/HublinkImplementation/language_model \
                backend/HublinkImplementation/retrieval \
                backend/app && \
     touch hublink_shared/config/__init__.py \
           backend/HublinkImplementation/core/__init__.py \
+          backend/HublinkImplementation/hublink/__init__.py \
           backend/HublinkImplementation/knowledge_base/__init__.py \
           backend/HublinkImplementation/language_model/__init__.py \
           backend/HublinkImplementation/retrieval/__init__.py \

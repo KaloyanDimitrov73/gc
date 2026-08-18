@@ -50,9 +50,10 @@ class CacheManager:
                 timeout=30,
                 check_same_thread=False
             )
-            # WAL improves concurrency by allowing read and write operations to occur
-            # simultaneously on the database. Read more here: https://www.sqlite.org/wal.html
-            conn.execute("PRAGMA journal_mode = WAL;")
+            # WAL requires mmap-based shared memory (-shm) that Docker Desktop's
+            # Windows bind mount doesn't support reliably, causing spurious
+            # "disk I/O error"s. DELETE mode works fine over the bind mount.
+            conn.execute("PRAGMA journal_mode = DELETE;")
             return conn
         except sqlite3.Error as e:
             logger.error(f"Error connecting to SQLite database: {e}")

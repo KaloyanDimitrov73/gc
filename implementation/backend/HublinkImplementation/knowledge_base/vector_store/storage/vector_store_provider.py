@@ -2,6 +2,7 @@ from enum import Enum
 
 from hublink.core.models.hub_link_settings import HubLinkSettings
 from knowledge_base.vector_store.storage.vector_store import VectorStore
+from language_model.config.llm_config import LLMConfig
 from retrieval.config.kg_retrieval_config import KGRetrievalConfig
 
 
@@ -26,7 +27,10 @@ class VectorStoreProvider:
     """
 
     @staticmethod
-    def compute_store_name(config: KGRetrievalConfig, settings: HubLinkSettings) -> str:
+    def compute_store_name(
+            config: KGRetrievalConfig,
+            settings: HubLinkSettings,
+            indexing_llm_config: LLMConfig | None = None) -> str:
         """
         Deterministic store name derived from the graph/embedding/indexing-LLM
         configs. Both the indexing and retrieval side MUST call this with
@@ -35,7 +39,9 @@ class VectorStoreProvider:
         """
 
         graph_hash = config.knowledge_graph_config.config_hash
-        llm_hash = config.llm_config.config_hash
+        if indexing_llm_config is None:
+            indexing_llm_config = config.llm_config
+        llm_hash = indexing_llm_config.config_hash
         embedding_hash = settings.embedding_config.config_hash
 
         return (

@@ -42,9 +42,23 @@ _HUB_LINK_DEFAULTS = {
     # depends on the data which value to use.
     "diversity_ranking_penalty": 0.05,
     # This parameter is set to 5 by default. During implementation we found during
-    # our debugging that this value is good compared to other values. However, it 
+    # our debugging that this value is good compared to other values. However, it
     # depends on the data which value to use.
     "path_weight_alpha": 5,
+    # When enabled for direct retrieval, rescore the paths retained by the
+    # first-stage candidate search before hubs are scored and pruned.
+    "use_cross_encoder": False,
+    # When enabled, BM25 adds candidate hubs and exact path evidence for the
+    # final path-level Reciprocal Rank Fusion score.
+    "use_bm25_hybrid_search": False,
+    # This parameter is set to 60 by default, which is a common default for
+    # Reciprocal Rank Fusion. It only has an effect when use_bm25_hybrid_search
+    # or use_splade_hybrid_search is enabled.
+    "rrf_k": 60,
+    # Whether SPLADE adds candidate hubs and expanded sparse path evidence for
+    # final path-level Reciprocal Rank Fusion. Independent of and stackable
+    # with BM25.
+    "use_splade_hybrid_search": False,
     # This parameter is arbitrarily set to 10. It is entirely dependent on the underlying data.
     "max_hub_path_length": 10,
     # This parameter is arbitrarily set to 5. It is entirely dependent on the underlying data.
@@ -182,6 +196,49 @@ ADDITIONAL_CONFIG_PARAMS: List[AdditionalConfigParameter] = [
             available_values=[],
             default_value=_HUB_LINK_DEFAULTS["path_weight_alpha"],
             param_restriction=RestrictionType.GREQ_TO_ZERO
+        ),
+        AdditionalConfigParameter(
+            name="use_cross_encoder",
+            description=(
+                "Whether to rescore retained HubPaths with a cross-encoder before "
+                "hub scoring and pruning. This applies only to direct retrieval."
+            ),
+            param_type=bool,
+            available_values=[],
+            default_value=_HUB_LINK_DEFAULTS["use_cross_encoder"]
+        ),
+        AdditionalConfigParameter(
+            name="use_bm25_hybrid_search",
+            description=(
+                "Whether BM25 adds candidate hubs and exact path evidence for "
+                "path-level Reciprocal Rank Fusion. Requires a BM25 index."
+            ),
+            param_type=bool,
+            available_values=[],
+            default_value=_HUB_LINK_DEFAULTS["use_bm25_hybrid_search"]
+        ),
+        AdditionalConfigParameter(
+            name="rrf_k",
+            description=(
+                "The k constant used in Reciprocal Rank Fusion when combining "
+                "dense and BM25/SPLADE path rankings. Only has an effect when "
+                "a sparse hybrid channel is enabled."
+            ),
+            param_type=int,
+            available_values=[],
+            default_value=_HUB_LINK_DEFAULTS["rrf_k"],
+            param_restriction=RestrictionType.GREATER_THAN_ZERO
+        ),
+        AdditionalConfigParameter(
+            name="use_splade_hybrid_search",
+            description=(
+                "Whether SPLADE adds candidate hubs and expanded sparse path "
+                "evidence for path-level Reciprocal Rank Fusion. Independent of "
+                "and stackable with BM25. Requires a SPLADE index."
+            ),
+            param_type=bool,
+            available_values=[],
+            default_value=_HUB_LINK_DEFAULTS["use_splade_hybrid_search"]
         ),
         AdditionalConfigParameter(
             name="diversity_ranking_penalty",
@@ -339,6 +396,10 @@ class HubLinkSettings(BaseModel):
     max_level: int = _HUB_LINK_DEFAULTS["max_level"]
     diversity_ranking_penalty: float = _HUB_LINK_DEFAULTS["diversity_ranking_penalty"]
     path_weight_alpha: int = _HUB_LINK_DEFAULTS["path_weight_alpha"]
+    use_cross_encoder: bool = _HUB_LINK_DEFAULTS["use_cross_encoder"]
+    use_bm25_hybrid_search: bool = _HUB_LINK_DEFAULTS["use_bm25_hybrid_search"]
+    rrf_k: int = _HUB_LINK_DEFAULTS["rrf_k"]
+    use_splade_hybrid_search: bool = _HUB_LINK_DEFAULTS["use_splade_hybrid_search"]
     force_index_update: bool = _HUB_LINK_DEFAULTS["force_index_update"]
     max_indexing_depth: int = _HUB_LINK_DEFAULTS["max_indexing_depth"]
     use_source_documents: bool = _HUB_LINK_DEFAULTS["use_source_documents"]

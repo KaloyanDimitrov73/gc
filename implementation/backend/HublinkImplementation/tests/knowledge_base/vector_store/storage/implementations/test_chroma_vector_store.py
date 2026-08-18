@@ -24,6 +24,100 @@ def test_initializes_client_and_collection(store):
     assert store.collection is not None
     assert store.count() == 0
 
+
+def test_rebuild_stops_chroma_before_offline_rebuild_and_reopens(store, monkeypatch):
+    events = []
+    original_system = store.client._system
+    original_stop = original_system.stop
+    original_initialize = store._initialize
+
+    def tracked_stop():
+        events.append("stop")
+        original_stop()
+
+    def tracked_rebuild(**options):
+        events.append("rebuild")
+        assert store.client is None
+        assert store.collection is None
+        assert options == {
+            "persist_dir": store.store_path,
+            "collection_name": store.collection_name,
+            "backup": False,
+            "yes": True,
+        }
+
+    def tracked_initialize():
+        events.append("initialize")
+        original_initialize()
+
+    monkeypatch.setattr(original_system, "stop", tracked_stop)
+    monkeypatch.setattr(
+        "knowledge_base.vector_store.storage.implementations.chroma_vector_store.hnsw.rebuild_hnsw",
+        tracked_rebuild,
+    )
+    monkeypatch.setattr(store, "_initialize", tracked_initialize)
+
+    store.rebuild()
+
+    assert events == ["stop", "rebuild", "initialize"]
+    assert store.client is not None
+    assert store.collection is not None
+    assert store.count() == 0
+
+
+def test_rebuild_with_open_persistent_index(store):
+    # Chroma's default HNSW sync threshold is 1,000. Exceed it so the
+    # persistent index files exist and chroma_ops performs a real rebuild.
+    record_count = 1_001
+    store.store_data_batch(
+        ids=[f"paper_{index}" for index in range(record_count)],
+        embeddings=[[0.1, 0.2, 0.3] for _ in range(record_count)],
+        metadatas=[None for _ in range(record_count)],
+    )
+
+    store.rebuild()
+
+    assert store.count() == record_count
+    result = store.get_records_with_metadata_by_ids(ids=["paper_0"])
+    assert result is not None
+    assert np.allclose(result.embeddings, [[0.1, 0.2, 0.3]])
+
+
+def test_rebuild_reopens_store_after_failure(store, monkeypatch):
+    def failed_rebuild(**_options):
+        raise RuntimeError("rebuild failed")
+
+    monkeypatch.setattr(
+        "knowledge_base.vector_store.storage.implementations.chroma_vector_store.hnsw.rebuild_hnsw",
+        failed_rebuild,
+    )
+
+    with pytest.raises(RuntimeError, match="rebuild failed"):
+        store.rebuild()
+
+    assert store.client is not None
+    assert store.collection is not None
+    assert store.count() == 0
+
+
+def test_distance_metric_rebuild_passes_space_and_updates_store(store, monkeypatch):
+    rebuild_options = {}
+
+    def tracked_rebuild(**options):
+        rebuild_options.update(options)
+
+    monkeypatch.setattr(
+        "knowledge_base.vector_store.storage.implementations.chroma_vector_store.hnsw.rebuild_hnsw",
+        tracked_rebuild,
+    )
+
+    store.ensure_distance_metric("l2")
+
+    assert rebuild_options["space"] == "l2"
+    assert store.distance_metric == "l2"
+    assert store.client is not None
+    assert store.collection is not None
+
 def test_get_by_id_returns_none_if_not_found(store):
     result = store.get_records_with_metadata_by_ids(ids=["nonexistent"])
     assert result is None

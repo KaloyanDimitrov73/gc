@@ -4,6 +4,7 @@ from typing import List, Optional, Dict, Tuple
 
 import hashlib
 from chromadb import QueryResult
+import numpy as np
 
 from core.logging.logging import get_logger
 from core.data.models.triple import Triple
@@ -163,6 +164,61 @@ class HubStorageManager:
 
         return result_map
 
+    def retrieve_scored_hub_paths_by_keys(
+            self,
+            path_hashes: List[str],
+            query_embeddings: List[List[float]]) -> Dict[str, HubPath]:
+        """Retrieves exact paths by hash and assigns dense cosine scores.
+
+        Sparse index stores use this method to turn path identifiers back into
+        concrete HubPath evidence. The stored full-path embedding is compared
+        with the question embeddings and assigned to both dense_score and score.
+        The direct retrieval strategy overwrites score with the hybrid result
+        after all enabled sparse channels have been considered.
+        """
+        if not path_hashes or not query_embeddings:
+            return {}
+
+        result = self.vector_store.get_records_with_metadata_by_ids(path_hashes)
+        if result is None or result.is_empty or result.embeddings is None:
+            return {}
+
+        query_matrix = np.atleast_2d(
+            np.asarray(query_embeddings, dtype=float)
+        )
+        query_norms = np.linalg.norm(query_matrix, axis=1)
+        scored_paths: Dict[str, HubPath] = {}
+
+        for record_id, metadata, embedding in zip(
+                result.ids, result.metadata, result.embeddings):
+            if not metadata or embedding is None:
+                continue
+
+            stored_vector = np.asarray(embedding, dtype=float)
+            stored_norm = np.linalg.norm(stored_vector)
+            denominators = query_norms * stored_norm
+            valid = denominators > 0
+
+            if np.any(valid):
+                similarities = (
+                    query_matrix[valid] @ stored_vector
+                ) / denominators[valid]
+                score = float(np.max(similarities))
+            else:
+                score = 0.0
+
+            hub_path = parse_hub_path(
+                path_hash=metadata.get("path_hash", record_id),
+                path_as_string=metadata.get("path"),
+                path_text=metadata.get("path_text")
+            )
+            hub_path.dense_score = score
+            hub_path.score = score
+            hub_path.embedded_text = metadata.get("embedded_text")
+            scored_paths[record_id] = hub_path
+
+        return scored_paths
+
 
     def get_all_hub_paths_from_hub(self, hub_entity_id: str) -> Tuple[List[HubPath], List[List[float]]]:
         """
@@ -196,6 +252,41 @@ class HubStorageManager:
             for record_id, metadata in zip(result.ids, result.metadata)
         ]
         return hub_paths, result.embeddings
+
+    def get_all_hub_paths(self) -> Dict[str, List[HubPath]]:
+        """Returns canonical cached paths grouped by hub entity.
+
+        Hub paths have several dense records (full path, entities and triples).
+        The full-path record is the one whose record id equals its ``path_hash``;
+        selecting it here prevents duplicate sparse-index documents.
+        """
+        result = self.vector_store.get_records_with_metadata_by_filter(
+            where_filter=FilterCondition(
+                field="length",
+                operator=FilterOperator.GREATER_THAN_OR_EQUAL,
+                value=0,
+            ),
+            limit=None,
+        )
+        if result is None or result.is_empty:
+            return {}
+
+        paths_by_hub: Dict[str, List[HubPath]] = {}
+        for record_id, metadata in zip(result.ids, result.metadata):
+            if not metadata or record_id != metadata.get("path_hash"):
+                continue
+            hub_id = metadata.get("hub_entity")
+            if not hub_id:
+                continue
+            paths_by_hub.setdefault(hub_id, []).append(
+                parse_hub_path(
+                    path_hash=record_id,
+                    path_as_string=metadata.get("path"),
+                    path_text=metadata.get("path_text"),
+                )
+            )
+
+        return paths_by_hub
 
 
     def similarity_search_by_hub_entity(self,
@@ -376,7 +467,8 @@ class HubStorageManager:
                     path_text=metadata.get("path_text"),
                 )
 
-                hub_path.score = 1 - distance
+                hub_path.dense_score = 1 - distance
+                hub_path.score = hub_path.dense_score
                 hub_path.embedded_text = metadata.get("embedded_text")
 
                 if hub_entity_id not in hub_paths_by_id:
@@ -405,7 +497,8 @@ class HubStorageManager:
             for metadata, distance in zip(result.metadata, result.distances):
                 path_hash = metadata.get("path_hash")
                 hub_path = parse_hub_path(path_hash=path_hash, path_as_string=metadata.get("path"), path_text=metadata.get("path_text"))
-                hub_path.score = 1 - distance
+                hub_path.dense_score = 1 - distance
+                hub_path.score = hub_path.dense_score
                 hub_path.embedded_text = metadata.get("embedded_text")
                 similar_paths.append(hub_path)
 
@@ -453,6 +546,7 @@ class HubStorageManager:
                 count = subject_appearance.get(subject, 0)
                 # Apply an increasing penalty
                 path.score -= self.diversity_penalty * count
+                path.dense_score = path.score
                 subject_appearance[subject] = count + 1
 
         paths.sort(key=lambda x: x.score, reverse=True)

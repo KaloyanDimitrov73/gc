@@ -110,6 +110,11 @@ cache_dir
 **/data/cache/microsoft_graphrag/
 **/data/cache/light_rag/
 
+# Ignore cache data (committing a live, frequently-rewritten SQLite WAL db
+# breaks WAL mode when git checkout/merge swaps the file out from under an
+# open container connection over the Docker Desktop bind mount)
+**/data/cache/**
+
 # Ignore all files in the following directories
 sqa-system/src/utils/
 **/ieee_pdfs/**

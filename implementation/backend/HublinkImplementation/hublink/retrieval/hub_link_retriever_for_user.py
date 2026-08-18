@@ -61,12 +61,12 @@ class HubLinkRetrieverForUser(KnowledgeGraphRetriever):
         # Cache key is the full llm_config hash, not just the model name.
         self._llm_cache: Dict[str, Any] = {}
         self._llm_cache_lock = threading.Lock()
-        _default_llm = self._llm_provider.get_llm_adapter(config.query_llm_config)
-        self._llm_cache[config.query_llm_config.config_hash] = _default_llm
+        _default_llm = self._llm_provider.get_llm_adapter(config.llm_config)
+        self._llm_cache[config.llm_config.config_hash] = _default_llm
 
         # Keep _retrieval_llm for the legacy retrieve_knowledge() override path.
         self._retrieval_llm = _default_llm
-        self._retrieval_llm_config = deepcopy(config.query_llm_config)
+        self._retrieval_llm_config = deepcopy(config.llm_config)
 
         # Embedding model (should not change - would require re-indexing)
         self.embedding_model = self._llm_provider.get_embeddings(

@@ -116,8 +116,6 @@ class HubIndexerOptions(BaseModel):
             max_hub_path_length=settings.max_hub_path_length,
             distance_metric=settings.distance_metric,
         )
-
-
 class HubIndexer:
     """
     Indexes hubs in a knowledge graph for efficient retrieval.
@@ -227,7 +225,7 @@ class HubIndexer:
         '''
     def _run_indexing_internal(self,
                                root_entities: List[Knowledge],
-                               force_index_update: bool = True):
+                               force_index_update: bool = True) -> None:
         """
         Internal method to run the indexing process.
 
@@ -236,6 +234,7 @@ class HubIndexer:
             force_index_update (bool): Whether to force update hubs that are already cached.
                 If set to True, each hub needs to be processed again allowing changes
                 inside of hubs to be reflected in the vector store.
+
         """
         max_indexing_depth = self.options.max_indexing_depth
         if max_indexing_depth == -1:

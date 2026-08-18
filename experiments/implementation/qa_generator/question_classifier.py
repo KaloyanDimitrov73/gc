@@ -1,13 +1,10 @@
-﻿from pathlib import Path
-from typing import List
+﻿from typing import List
 from pydantic import BaseModel, Field
 from langchain_core.prompts import PromptTemplate
 
-_PROMPTS_DIR = str(Path(__file__).parent / "prompts")
-
 from language_model.base.llm_adapter import LLMAdapter
 from .taxonomy.taxonomy_loader import TaxonomyLoader
-from language_model.prompt_provider import PromptProvider
+from implementation.language_model import PromptProvider
 from implementation.shared_models.qa_pair import QAPair
 from implementation.core.logging import get_logger
 
@@ -38,7 +35,7 @@ class QuestionClassifier:
 
     def __init__(self, llm_adapter: LLMAdapter):
         self.llm_adapter = llm_adapter
-        self.prompt_provider = PromptProvider(prompt_dir=_PROMPTS_DIR)
+        self.prompt_provider = PromptProvider()
         self.taxonomy_loader = TaxonomyLoader()
 
     def classify_qa_pair(self, qa_pair: QAPair) -> QAPair:
