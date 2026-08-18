@@ -8,13 +8,14 @@ This service is intentionally the ONLY place that constructs a ``HubStorageManag
 It is shared (via the DI layer) between the indexing write-path and the
 retrieval read-path, so those two stay decoupled from each other's internals.
 """
+from typing import Any
 
 from backend.app.config.base_settings import get_settings
 from backend.app.config.hublink.config_loader import HublinkConfigLoader
 from hublink.core.models.hub_link_settings import HubLinkSettings
 from hublink.core.hub_storage_manager import HubStorageManager
 from knowledge_base.vector_store.storage.vector_store_provider import VectorStoreProvider
-
+from retrieval.config.kg_retrieval_config import KGRetrievalConfig
 
 
 class HubStoreService:
@@ -23,19 +24,17 @@ class HubStoreService:
     ``HubStorageManager`` built on top of it.
     """
 
-    def __init__(self):
-        self.config_loader = HublinkConfigLoader()
+    def __init__(self, config: KGRetrievalConfig):
         self.settings = get_settings()
         self.hub_storage_manager: HubStorageManager
         self.store_name: str
-        self._prepare_vector_store()
+        self._prepare_vector_store(config)
 
-    def _prepare_vector_store(self) -> None:
+    def _prepare_vector_store(self, config: Any) -> None:
         """
         Loads the retrieval config, resolves the deterministic store name,
         and builds the backend vector store and initialize HubStorageManager.
         """
-        config = self.config_loader.load_kg_retrieval_config()
         hublink_settings = HubLinkSettings.from_config(config)
 
         store_name = VectorStoreProvider.compute_store_name(config, hublink_settings)

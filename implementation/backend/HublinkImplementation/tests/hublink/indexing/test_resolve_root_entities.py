@@ -28,31 +28,24 @@ def propagate_qasystem_logs(monkeypatch):
 
 
 @pytest.fixture
-def orkg_graph(tmp_path):
+def orkg_graph():
     """
-    Loads the real pipeline config (test_config), but overrides the
-    knowledge_graph_config so it's hydrated from local test JSON data
-    instead of hitting the ORKG sandbox / production cache.
+    Loads the test_config and overrides the
+    knowledge_graph_config so it's hydrated from local test JSON data.
     """
-    def _build(config_file_path: Path = CONFIG_PATH):
-        kg_retrieval_config = HublinkConfigLoader(
-            config_file_path=config_file_path
-        ).load_kg_retrieval_config()
+    kg_retrieval_config = HublinkConfigLoader(
+        config_file_path=CONFIG_PATH
+    ).load_kg_retrieval_config()
 
-        kg_config = kg_retrieval_config.knowledge_graph_config
+    kg_config = kg_retrieval_config.knowledge_graph_config
 
-        graph = ORKGRemoteGraph(kg_config)
+    graph = ORKGRemoteGraph(kg_config)
 
-        GraphLoader()._hydrate_orkg_cache_tables_from_json(graph, str(GRAPH_PATH))
+    GraphLoader()._hydrate_orkg_cache_tables_from_json(graph, str(GRAPH_PATH))
 
-        return graph
-
-    return _build
+    return graph
 
 
-# ---------------------------------------------------------------------------
-# Known entities in data/test_graph.json - adjust these to match your file!
-# ---------------------------------------------------------------------------
 PAPER_ID_1 = "R873379"  # "Predicting the Performance of Privacy-Preserving..."
 PAPER_ID_2 = "R873599"  # "Improving the Consistency and Usefulness..."
 RESEARCH_FIELD_ID = "R659055"  # "Software Architecture and Design"
@@ -61,26 +54,23 @@ NON_EXISTENT_ID = "R000000"
 
 class TestResolveRootEntitiesByIds:
     def test_resolves_single_valid_id(self, orkg_graph):
-        graph = orkg_graph()
-        result = resolve_root_entities(graph, root_entity_ids=[PAPER_ID_1])
+        result = resolve_root_entities(orkg_graph, root_entity_ids=[PAPER_ID_1])
 
         assert len(result) == 1
         assert result[0].uid == PAPER_ID_1
 
     def test_resolves_multiple_valid_ids(self, orkg_graph):
-        graph = orkg_graph()
         result = resolve_root_entities(
-            graph, root_entity_ids=[PAPER_ID_1, PAPER_ID_2]
+            orkg_graph, root_entity_ids=[PAPER_ID_1, PAPER_ID_2]
         )
 
         resolved_ids = {entity.uid for entity in result}
         assert resolved_ids == {PAPER_ID_1, PAPER_ID_2}
 
     def test_skips_and_warns_on_unknown_id(self, orkg_graph, caplog):
-        graph = orkg_graph()
         with caplog.at_level("WARNING", logger="QASystem"):
             result = resolve_root_entities(
-                graph, root_entity_ids=[PAPER_ID_1, NON_EXISTENT_ID]
+                orkg_graph, root_entity_ids=[PAPER_ID_1, NON_EXISTENT_ID]
             )
 
         # Only the valid id is resolved
@@ -90,9 +80,8 @@ class TestResolveRootEntitiesByIds:
         assert any(NON_EXISTENT_ID in record.getMessage() for record in caplog.records)
 
     def test_returns_empty_list_when_no_id_matches(self, orkg_graph, caplog):
-        graph = orkg_graph()
         with caplog.at_level("WARNING", logger="QASystem"):
-            result = resolve_root_entities(graph, root_entity_ids=[NON_EXISTENT_ID])
+            result = resolve_root_entities(orkg_graph, root_entity_ids=[NON_EXISTENT_ID])
 
         assert result == []
         assert any("No root entities found" in record.getMessage() for record in caplog.records)
@@ -100,8 +89,7 @@ class TestResolveRootEntitiesByIds:
 
 class TestResolveRootEntitiesByTypes:
     def test_resolves_entities_by_type(self, orkg_graph):
-        graph = orkg_graph()
-        result = resolve_root_entities(graph, root_entity_types=["Paper"])
+        result = resolve_root_entities(orkg_graph, root_entity_types=["Paper"])
 
         resolved_ids = {entity.uid for entity in result}
         # Both papers in the test graph should be found
@@ -109,16 +97,14 @@ class TestResolveRootEntitiesByTypes:
         assert PAPER_ID_2 in resolved_ids
 
     def test_resolves_entities_by_research_field_type(self, orkg_graph):
-        graph = orkg_graph()
-        result = resolve_root_entities(graph, root_entity_types=["ResearchField"])
+        result = resolve_root_entities(orkg_graph, root_entity_types=["ResearchField"])
 
         resolved_ids = {entity.uid for entity in result}
         assert RESEARCH_FIELD_ID in resolved_ids
 
     def test_returns_empty_list_for_unknown_type(self, orkg_graph, caplog):
-        graph = orkg_graph()
         with caplog.at_level("WARNING", logger="QASystem"):
-            result = resolve_root_entities(graph, root_entity_types=["NoSuchType"])
+            result = resolve_root_entities(orkg_graph, root_entity_types=["NoSuchType"])
 
         assert result == []
         assert any("No root entities found" in record.getMessage() for record in caplog.records)
@@ -126,9 +112,8 @@ class TestResolveRootEntitiesByTypes:
 
 class TestResolveRootEntitiesCombined:
     def test_union_of_ids_and_types(self, orkg_graph):
-        graph = orkg_graph()
         result = resolve_root_entities(
-            graph,
+            orkg_graph,
             root_entity_ids=[PAPER_ID_1],
             root_entity_types=["ResearchField"],
         )
@@ -138,6 +123,5 @@ class TestResolveRootEntitiesCombined:
         assert RESEARCH_FIELD_ID in resolved_ids
 
     def test_raises_when_neither_ids_nor_types_given(self, orkg_graph):
-        graph = orkg_graph()
         with pytest.raises(ValueError, match="Either root_entity_types or root_entity_ids"):
-            resolve_root_entities(graph)
+            resolve_root_entities(orkg_graph)

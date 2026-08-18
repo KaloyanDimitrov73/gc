@@ -74,7 +74,8 @@ def get_vector_store_service() -> HubStoreService:
     if _vector_store_service is None:
         with _vector_store_lock:
             if _vector_store_service is None:
-                _vector_store_service = HubStoreService()
+                config = HublinkConfigLoader().load_kg_retrieval_config()
+                _vector_store_service = HubStoreService(config)
     return _vector_store_service
 
 
@@ -89,9 +90,10 @@ def get_hub_indexing_service() -> HubIndexingService:
     if _hub_indexing_service is None:
         with _hub_indexing_lock:
             if _hub_indexing_service is None:
+                config = HublinkConfigLoader().load_kg_retrieval_config()
                 vector_store = get_vector_store_service()
                 graph_load = get_graph_load_service()
-                _hub_indexing_service = HubIndexingService(graph_load.graph, vector_store.hub_storage_manager)
+                _hub_indexing_service = HubIndexingService(config, graph_load.graph, vector_store.hub_storage_manager)
     return _hub_indexing_service
 
 

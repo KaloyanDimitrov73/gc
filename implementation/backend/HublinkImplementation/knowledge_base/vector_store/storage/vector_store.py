@@ -40,6 +40,14 @@ class VectorStore(ABC):
         ...
 
     @abstractmethod
+    def close(self) -> None:
+        """
+        Releases any underlying resources (open file handles, DB connections,
+        network clients, etc.) held by this store.
+        """
+        ...
+
+    @abstractmethod
     def store_data(self, record_id: str, embedding: List[float],
                    metadata: Optional[Dict] = None) -> None:
         """
