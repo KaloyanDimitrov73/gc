@@ -4,7 +4,7 @@ Setup for ORKG credentials and API keys.
 """
 from typing import Optional
 
-from backend.app.core.config import Settings, get_settings
+from backend.app.config.base_settings import Settings, get_settings
 from core.data.secret_manager import SecretManager, SecretType
 from language_model.enums.llm_enums import EndpointType
 

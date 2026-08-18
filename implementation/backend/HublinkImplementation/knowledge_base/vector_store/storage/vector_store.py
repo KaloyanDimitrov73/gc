@@ -40,6 +40,14 @@ class VectorStore(ABC):
         ...
 
     @abstractmethod
+    def close(self) -> None:
+        """
+        Releases any underlying resources (open file handles, DB connections,
+        network clients, etc.) held by this store.
+        """
+        ...
+
+    @abstractmethod
     def store_data(self, record_id: str, embedding: List[float],
                    metadata: Optional[Dict] = None) -> None:
         """
@@ -147,9 +155,17 @@ class VectorStore(ABC):
         ...
 
     @abstractmethod
+    def count(self) -> int:
+        """
+        Returns the total number of records currently stored.
+        """
+        ...
+
+    @abstractmethod
     def _translate_filter(self, where_filter: Optional[WhereFilter]) -> Any:
         """
         Translates a backend-independent WhereFilter into the native
         filter syntax of this vector store backend.
         """
         ...
+

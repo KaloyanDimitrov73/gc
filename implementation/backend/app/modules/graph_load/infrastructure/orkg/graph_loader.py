@@ -37,6 +37,7 @@ class GraphLoader:
 
         kg_config = config.knowledge_graph_config
         force_cache_update = kg_config.additional_params.get("force_cache_update", False)
+        logger.info("KG_config: %s.", kg_config.config_hash)
 
         graph = ORKGRemoteGraph(kg_config)
 
