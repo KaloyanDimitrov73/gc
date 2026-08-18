@@ -17,9 +17,8 @@ from hublink.indexing.hub_indexer import HubIndexer, HubIndexerOptions
 from hublink.indexing.util.root_entity_util import resolve_root_entities
 from knowledge_base.knowledge_graph.storage.base.knowledge_graph import KnowledgeGraph
 
-from backend.app.config.hublink.config_loader import HublinkConfigLoader
-
 from backend.app.shared.exceptions import AppError
+from retrieval.config.kg_retrieval_config import KGRetrievalConfig
 
 logger = get_logger(__name__)
 
@@ -45,20 +44,18 @@ class HubIndexingService:
     Use IndexingService to run it off the event loop via an executor.
     """
 
-    def __init__(self, graph: KnowledgeGraph, hub_storage_manager: HubStorageManager):
-        self.config_loader = HublinkConfigLoader()
+    def __init__(self, config: KGRetrievalConfig, graph: KnowledgeGraph, hub_storage_manager: HubStorageManager):
         self.settings = get_settings()
         self.hub_storage_manager = hub_storage_manager
         self.hublink_settings: HubLinkSettings
-        self.options = self._initialize_options()
+        self.options = self._initialize_options(config)
         self._ensure_indexed(graph)
 
 
-    def _initialize_options(self) -> HubIndexerOptions:
+    def _initialize_options(self, config: KGRetrievalConfig) -> HubIndexerOptions:
         """
         Loads the configs and HubStorageManager to build the indexing options.
         """
-        config = self.config_loader.load_kg_retrieval_config()
         self.hublink_settings = HubLinkSettings.from_config(config)
 
         if self.hub_storage_manager is None:

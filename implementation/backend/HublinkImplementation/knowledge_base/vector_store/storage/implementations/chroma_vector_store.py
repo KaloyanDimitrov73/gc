@@ -6,6 +6,7 @@ Contains only generic vector storage logic — no Hub/Triple domain knowledge.
 """
 import gc
 
+from chromadb.api.shared_system_client import SharedSystemClient
 from readerwriterlock import rwlock
 from typing import override, List, Optional, Dict
 
@@ -77,6 +78,23 @@ class ChromaVectorStore(VectorStore):
             self.client = self._initialize_client()
         if self.collection is None:
             self.collection = self._initialize_collection()
+
+    @override
+    def close(self) -> None:
+        with self._rw_lock.gen_wlock():
+            self._close_unlocked()
+
+
+    def _close_unlocked(self) -> None:
+        if self.client is not None:
+            system = getattr(self.client, "_system", None)
+            if system is not None:
+                system.stop()
+            self.client = None
+            self.collection = None
+            SharedSystemClient.clear_system_cache()
+            gc.collect()
+
 
     def _initialize_client(self) -> chromadb.ClientAPI:
         """
@@ -356,9 +374,7 @@ class ChromaVectorStore(VectorStore):
         with self._rw_lock.gen_wlock():
             # Drop the references of client/collection so nothing in
             # this process keeps the HNSW segment files.
-            self.collection = None
-            self.client = None
-            gc.collect()
+            self._close_unlocked()
 
             hnsw.rebuild_hnsw(
                 persist_dir=self.store_path,
@@ -388,9 +404,7 @@ class ChromaVectorStore(VectorStore):
             ProgressHandler().disable()
 
             with self._rw_lock.gen_wlock():
-                self.collection = None
-                self.client = None
-                gc.collect()
+                self._close_unlocked()
 
                 hnsw.rebuild_hnsw(
                     persist_dir=self.store_path,
