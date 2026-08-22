@@ -1,8 +1,8 @@
 from types import SimpleNamespace
 from unittest.mock import Mock, patch
 
-from hublink.indexing.experiment.hub_store_service_for_experiment import (
-    HubStoreServiceForExperiment,
+from backend.app.modules.indexing.infrastructure.hublink.hub_store_service import (
+    HubStoreService,
 )
 from hublink.indexing.experiment.sparse_store_service_for_experiment import (
     SparseStoreServiceForExperiment,
@@ -22,30 +22,47 @@ def _settings(**overrides):
 
 
 @patch(
-    "hublink.indexing.experiment.hub_store_service_for_experiment."
+    "backend.app.modules.indexing.infrastructure.hublink.hub_store_service."
     "HubStorageManager"
 )
 @patch(
-    "hublink.indexing.experiment.hub_store_service_for_experiment."
+    "backend.app.modules.indexing.infrastructure.hublink.hub_store_service."
     "VectorStoreProvider"
 )
 @patch(
-    "hublink.indexing.experiment.hub_store_service_for_experiment."
+    "backend.app.modules.indexing.infrastructure.hublink.hub_store_service."
     "HubLinkSettings"
 )
+@patch(
+    "backend.app.modules.indexing.infrastructure.hublink.hub_store_service."
+    "get_settings"
+)
 def test_hub_store_service_creates_only_dense_store(
+        get_settings,
         hub_link_settings,
         vector_store_provider,
         hub_storage_manager) -> None:
-    config = SimpleNamespace(index_llm_config=object())
+    indexing_llm_config = object()
+    config = SimpleNamespace(index_llm_config=indexing_llm_config)
     settings = _settings()
     vector_store = object()
+    get_settings.return_value = SimpleNamespace(vector_store_backend="chroma")
     hub_link_settings.from_config.return_value = settings
     vector_store_provider.compute_store_name.return_value = "dense-key"
     vector_store_provider.get_vector_store.return_value = vector_store
 
-    service = HubStoreServiceForExperiment(config)
+    service = HubStoreService(config)
 
+    vector_store_provider.compute_store_name.assert_called_once_with(
+        config,
+        settings,
+        indexing_llm_config=indexing_llm_config,
+    )
+    vector_store_provider.get_vector_store.assert_called_once_with(
+        backend="chroma",
+        store_name="dense-key",
+        distance_metric=settings.distance_metric,
+    )
     hub_storage_manager.assert_called_once_with(
         vector_store=vector_store,
         embedding_config=settings.embedding_config,

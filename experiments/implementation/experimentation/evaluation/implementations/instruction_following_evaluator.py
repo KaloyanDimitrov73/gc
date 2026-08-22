@@ -9,7 +9,7 @@ from language_model import LLMProvider, LLMAdapter
 from language_model import EndpointType
 from implementation.core import ProgressHandler
 from implementation.core import AdditionalConfigParameter
-from language_model import PromptProvider
+from implementation.language_model import PromptProvider
 from implementation.experimentation.evaluation.base.evaluator import Evaluator
 from implementation.core.logging import get_logger
 

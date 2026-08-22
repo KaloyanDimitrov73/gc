@@ -47,7 +47,7 @@ class RetrievalStrategyData:
         embedding_adapter (EmbeddingAdapter): The embedding adapter.
         settings (HubLinkSettings): The settings for the retrieval strategy.
         hub_storage_manager (HubStorageManager): The manager which manage the vector store for the retrieval.
-        source_handler (HubSourceHandler, optional): The source handler 
+        source_handler (HubSourceHandler, optional): The source handler
             for the retrieval that contains the linking data.
     """
     graph: KnowledgeGraph
@@ -285,7 +285,14 @@ class BaseRetrievalStrategy(ABC):
         processed_hub_data: List[Hub] = []
         for hub_scoring in hubs:
             scores = [
-                hub_path.score for hub_path in hub_scoring.paths]
+                hub_path.score
+                for hub_path in hub_scoring.paths
+                if hub_path.score is not None
+            ]
+            if not scores:
+                hub_scoring.hub_score = float("-inf")
+                processed_hub_data.append(hub_scoring)
+                continue
             # Compute weights using an exponential function of the scores
             weights = np.exp(alpha * np.array(scores))
             # Compute the weighted average score
@@ -335,48 +342,31 @@ class BaseRetrievalStrategy(ABC):
 
     def _get_hub_paths_for_hub(self,
                                processed_question: ProcessedQuestion,
-                               hub_id: str) -> List[HubPath]:
+                               hub_id: str,
+                               excluded_path_hashes: Optional[List[str]] = None
+                               ) -> List[HubPath]:
         """
         Retrieves the top paths for a given hub ranked and scored by their relevance
         to the question.
 
-        This function ensures, that for each hub the desired amount of top n paths
-        are retrieved if possible. Furthermore, it ensures that the paths are unique
-        and not duplicates of each other. This is because each HubPath is stored 
-        multiple times in the vector store each with different embeddings on the 
-        path text, triple, and entity level. With this function, we are returing only
-        one match to the HubPath by ensuring that the highest rated component of the 
-        path is returned.
+        The storage search is responsible for returning unique logical paths.
         
         Args:
             processed_question (ProcessedQuestion): The processed question
                 containing the question, components, and embeddings.
             hub_id (str): The ID of the hub for which to retrieve the paths.
+            excluded_path_hashes (List[str], optional): Paths that must not be
+                returned by the storage search.
             
         Returns:
             List[HubPath]: The list of unique hub paths for the given hub.
         """
-        unique_path_hashes = set()
-        result_paths = []
-        while len(unique_path_hashes) < self.settings.top_paths_to_keep:
-            hub_paths = self.hub_storage_manager.similarity_search_by_hub_entity(
-                query_embeddings=processed_question.embeddings,
-                hub_entity_id=hub_id,
-                n_results=self.settings.top_paths_to_keep,
-                excluded_path_hashs=list(unique_path_hashes),
-            )
-            # We break early if the hub has no more paths
-            if not hub_paths or len(hub_paths) == 0:
-                break
-            for path_with_score in hub_paths:
-                if path_with_score.path_hash in unique_path_hashes:
-                    continue
-                # We break early if the amount of paths has reached the limit
-                if len(unique_path_hashes) >= self.settings.top_paths_to_keep:
-                    break
-                unique_path_hashes.add(path_with_score.path_hash)
-                result_paths.append(path_with_score)
-        return result_paths
+        return self.hub_storage_manager.similarity_search_by_hub_entity(
+            query_embeddings=processed_question.embeddings,
+            hub_entity_id=hub_id,
+            n_results=self.settings.top_paths_to_keep,
+            excluded_path_hashs=excluded_path_hashes,
+        )
 
     def _get_question_components(self, question: str) -> List[str]:
         """

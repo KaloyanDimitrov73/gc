@@ -28,8 +28,8 @@ def main():
                             "use_topic_if_given": False,
                             "embedding_config":{
                                 "additional_params": {},
-                                "endpoint": "KitToolbox",
-                                "name_model": "kit.qwen3-embedding-8b"
+                                "endpoint": "VDL",
+                                "name_model": "qwen3-embedding:8b"
                             },
                             "top_paths_to_keep": 10,
                             "number_of_hubs": 10,
@@ -55,15 +55,15 @@ def main():
                         "retriever_type": "hublink",
                         "index_llm_config": {
                             "additional_params": {},
-                            "endpoint": "KitToolbox",
-                            "name_model": "kit.qwen3.5-397b-A17b",
+                            "endpoint": "VDL",
+                            "name_model": "qwen3:14b",
                             "temperature": None,
                             "max_tokens": -1
                         },
                         "query_llm_config": {
                             "additional_params": {},
-                            "endpoint": "KitToolbox",
-                            "name_model": "kit.qwen3.5-397b-A17b",
+                            "endpoint": "VDL",
+                            "name_model": "qwen3:14b",
                             "temperature": None,
                             "max_tokens": -1
                         },
@@ -109,8 +109,8 @@ def main():
                         "type": "generation",
                         "llm_config": {
                             "additional_params": {},
-                            "endpoint": "KitToolbox",
-                            "name_model": "kit.qwen3.5-397b-A17b",
+                            "endpoint": "VDL",
+                            "name_model": "qwen3:14b",
                             "temperature": None,
                             "max_tokens": -1
                         }

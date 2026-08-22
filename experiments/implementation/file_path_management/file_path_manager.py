@@ -35,6 +35,7 @@ class FilePathManager:
     ROOT_DIR = find_project_root()
     DATA_DIR = os.path.join(ROOT_DIR, "data")
     FILE_PATHS_JSON = os.path.join(DATA_DIR, "file_paths", "paths.json")
+    PROMPT_DIR = os.path.join(DATA_DIR, "prompts")
     RESULTS_DIR = os.path.join(DATA_DIR, "evaluation_results")
     ASSETS_DIR = os.path.abspath(os.path.join(ROOT_DIR, os.pardir, "assets"))
 

@@ -1,22 +1,99 @@
 template: >
   ### Task Description:
-  Please analyze the following question and break it down into its key components or claims. 
+  Analyze the following question for retrieval. Break it down into its key
+  components or claims, and identify keywords that indicate whether sparse
+  retrieval using BM25 and/or SPLADE could complement dense retrieval.
 
   ### Instructions:
-  - Break down the question into its key components or claims.
-  - Your output has to be a valid python list of strings.
-  - Do not use any external information, personal opinions, or interpretations beyond the given texts. Do not make any assumptions and do not answer the question.
-  - Do not include any additional explanations or commentary. Just provide the list of components.
+  - Extract the key components or claims from the question.
+  - Be conservative when extracting sparse-search keywords. The extracted
+    keywords are routing indicators for deciding whether sparse retrieval is
+    useful; they are not required to be exact-match search query terms.
+  - A non-empty keyword list switches retrieval from dense-only search to hybrid
+    search using the enabled BM25 and/or SPLADE channels.
+  - Common qualifying keyword types include, but are not limited to:
+    1. A numeric or date-like value explicitly written in the question, such as
+       a year, quantity, threshold, range endpoint, date, or version number.
+    2. A proper name explicitly written in the question, such as the full name
+       of a person, organization, publisher, venue, or place.
+    3. The full, specific title of an identifiable publication or other named
+       work explicitly presented as that work's title.
+    4. A persistent identifier or exact record locator explicitly written in
+       the question, such as a DOI, ORCID, ISBN, arXiv identifier, accession
+       number, or URL.
+    5. Another uniquely identifying literal code or label, but only when it
+       identifies a concrete entity or record rather than a subject category.
+  - Do not extract distinctive technical terms, research objects, research
+    fields, methods, approaches, properties, classifications, validity threats,
+    domain concepts, or other subject terminology merely because they are
+    specialized, capitalized, or enclosed in quotation marks.
+  - A short, generic, topic-like phrase is not a specific publication title,
+    even when it is quoted or described as a title in the question.
+  - Do not treat a requested answer type as a keyword. For example, a question
+    asking for an author, title, year, or number does not contain such a keyword
+    unless the actual name, title, or numeric value is written in the question.
+  - Do not include question words, generic relation labels, or broad domain
+    terms as keywords.
+  - Preserve their original spelling and casing.
+  - The examples above are not an exhaustive allowlist. Other keywords may be
+    extracted when they are high-precision indicators for a concrete entity,
+    work, record, or value and are likely to benefit sparse retrieval.
+  - If a candidate is merely descriptive or is not clearly useful as a
+    high-precision routing indicator, exclude it. When uncertain, return an
+    empty keyword list.
+  - When the question contains a short inclusive numeric range, expand it into every value in that range. Do not expand large or open-ended ranges.
+  - An empty keyword list means that only dense search should be used.
+  - Return a valid Python dictionary with exactly two keys:
+    "components" and "keywords".
+  - Both values must be lists of strings.
+  - Do not answer the question.
+  - Do not include explanations, Markdown, or commentary.
 
   ### Examples:
-  Question: What are the research questions in the paper titled 'Artificial Intelligence in Healthcare'?
-  Components: ['Research Questions', 'Artificial Intelligence in Healthcare']
+
+  #### Dense-only: quoted or technical terms are not automatically keywords
+
+  Question: What are the research questions concerning 'Artificial Intelligence in Healthcare'?
+  Output: {{"components": ["Research Questions", "Artificial Intelligence in Healthcare"], "keywords": []}}
+
   Question: Which publications include the research object 'Architecture Analysis Method'?
-  Components: ['Research Object', 'Architecture Analysis Method']
-  Question: Which papers have been published by SpringerLink in 2020?
-  Components: ['Publisher', 'SpringerLink', '2020']
+  Output: {{"components": ["Research Object", "Architecture Analysis Method"], "keywords": []}}
+
+  #### Dense-only: the requested answer type is not a keyword
+
+  Question: What is the title of the paper that investigates the research object Architecture Decision Making and has the paper class philosophical paper?
+  Output: {{"components": ["Paper Title", "Architecture Decision Making", "Philosophical Paper"], "keywords": []}}
+
+  #### Hybrid: proper name
+
+  Question: How many papers did Manar Mazkatli publish?
+  Output: {{"components": ["Paper Count", "Manar Mazkatli"], "keywords": ["Manar Mazkatli"]}}
+
+  #### Hybrid: specific publication title
+
+  Question: In which venue has the paper with the title 'Availability-Driven Architectural Change Propagation Through Bidirectional Model Transformations Between UML and Petri Net Models' been published?
+  Output: {{"components": ["Venue", "Availability-Driven Architectural Change Propagation Through Bidirectional Model Transformations Between UML and Petri Net Models"], "keywords": ["Availability-Driven Architectural Change Propagation Through Bidirectional Model Transformations Between UML and Petri Net Models"]}}
+
+  #### Hybrid: persistent identifier
+
+  Question: Which paper has the DOI 10.1109/ICSA.2018.00022?
+  Output: {{"components": ["Paper", "10.1109/ICSA.2018.00022"], "keywords": ["10.1109/ICSA.2018.00022"]}}
+
+  #### Hybrid: multiple qualifying keywords
+
+  Question: Which papers were published by SpringerLink in 2020?
+  Output: {{"components": ["Publisher", "SpringerLink", "2020"], "keywords": ["SpringerLink", "2020"]}}
+
+  #### Boundary pair: extract only the qualifying anchor
+
+  Question: Which papers investigate the research object Technical Debt in the publication year 2017?
+  Output: {{"components": ["Research Object", "Technical Debt", "2017"], "keywords": ["2017"]}}
+
+  Question: Which papers investigate the research object Technical Debt?
+  Output: {{"components": ["Research Object", "Technical Debt"], "keywords": []}}
 
   ### Start Your Task:
+
   Question: {question}
 
 input_variables:

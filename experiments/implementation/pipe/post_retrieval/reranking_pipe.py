@@ -6,7 +6,7 @@ from langchain_core.prompts import PromptTemplate
 from langchain_core.output_parsers import PydanticOutputParser
 
 from implementation.pipe.base.pipe import Pipe
-from language_model.prompt_provider import PromptProvider
+from implementation.language_model import PromptProvider
 from implementation.config.config_models.pipe.post_retrieval_config import PostRetrievalConfig
 from language_model.llm_provider import LLMProvider
 from implementation.shared_models.pipe_io_data import PipeIOData

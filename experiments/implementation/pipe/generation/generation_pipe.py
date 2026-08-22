@@ -7,7 +7,7 @@ from langchain.schema.output_parser import StrOutputParser
 
 from core.data.models import ContextType
 from implementation.pipe.base.pipe import Pipe
-from language_model.prompt_provider import PromptProvider
+from implementation.language_model import PromptProvider
 from implementation.config.config_models.pipe.generation_config import GenerationConfig
 from language_model.llm_provider import LLMProvider
 from implementation.shared_models.pipe_io_data import PipeIOData

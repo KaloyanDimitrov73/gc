@@ -4,11 +4,27 @@ from typing_extensions import override
 from core.data.models import RetrievalAnswer
 from core.logging.logging import get_logger
 
-from .base_retrieval_strategy import BaseRetrievalStrategy
+from ..candidate_hub_finder.ann_hub_finder import ANNHubFinder
+from ..candidate_hub_finder.candidate_hubs_finder import CandidateHubsFinder
+from ..candidate_hub_finder.hybrid_search.bm25_fusion_decorator import (
+    Bm25FusionDecorator,
+)
+from ..candidate_hub_finder.hybrid_search.splade_fusion_decorator import (
+    SpladeFusionDecorator,
+)
+from ..candidate_hub_finder.hybrid_search.sparse_evidence_merger import (
+    SparseEvidenceMerger,
+)
+from ..candidate_hub_finder.hybrid_search.rrf import (
+    normalize_rrf_score,
+    rrf_score_from_ranks,
+)
+from ...core.sparse_index.sparse_storage_manager import SparseStorageManager
 from ..models.processed_question import ProcessedQuestion
 from ...core.models.entity_with_direction import EntityWithDirection
 from ...core.models.hub import Hub
 from ...core.models.hub_path import HubPath
+from .base_retrieval_strategy import BaseRetrievalStrategy, RetrievalStrategyData
 
 logger = get_logger(__name__)
 
@@ -16,9 +32,57 @@ logger = get_logger(__name__)
 class DirectRetrievalStrategy(BaseRetrievalStrategy):
     """
     This retrieval strategy directly retrieves the HubPaths based on the embeddings
-    from the question from the vector store without considering the hubs beeing 
-    reachable from a topic entity.
+    from the question from the vector store without considering the hubs beeing
+    reachable from a topic entity. Candidate hub finding is delegated to a
+    pluggable CandidateHubsFinder component, defaulting to ANNHubFinder
+    (dense ANN search over the question embeddings).
+
+    Args:
+        retrieval_data (RetrievalStrategyData): The data required for the
+            retrieval strategy.
+        sparse_storage_manager: Loaded sparse-index storage manager.
     """
+
+    def __init__(
+            self,
+            retrieval_data: RetrievalStrategyData,
+            sparse_storage_manager: Optional[SparseStorageManager] = None
+    ) -> None:
+        super().__init__(retrieval_data)
+        self.sparse_storage_manager = sparse_storage_manager
+        self.candidate_hub_finder: CandidateHubsFinder = ANNHubFinder(
+            hub_storage_manager=self.hub_storage_manager,
+            number_of_hubs=self.settings.number_of_hubs,
+            top_paths_to_keep=self.settings.top_paths_to_keep
+        )
+        evidence_merger = SparseEvidenceMerger(
+            hub_storage_manager=self.hub_storage_manager,
+            rrf_k=self.settings.rrf_k
+        )
+        if (self.settings.use_bm25_hybrid_search
+                and self.sparse_storage_manager is not None
+                and self.sparse_storage_manager.has_bm25):
+            self.candidate_hub_finder = Bm25FusionDecorator(
+                candidate_hub_finder=self.candidate_hub_finder,
+                hub_storage_manager=self.hub_storage_manager,
+                sparse_storage_manager=self.sparse_storage_manager,
+                top_paths_to_keep=self.settings.top_paths_to_keep,
+                number_of_hubs=self.settings.number_of_hubs,
+                rrf_k=self.settings.rrf_k,
+                evidence_merger=evidence_merger
+            )
+        if (self.settings.use_splade_hybrid_search
+                and self.sparse_storage_manager is not None
+                and self.sparse_storage_manager.has_splade):
+            self.candidate_hub_finder = SpladeFusionDecorator(
+                candidate_hub_finder=self.candidate_hub_finder,
+                hub_storage_manager=self.hub_storage_manager,
+                sparse_storage_manager=self.sparse_storage_manager,
+                top_paths_to_keep=self.settings.top_paths_to_keep,
+                number_of_hubs=self.settings.number_of_hubs,
+                rrf_k=self.settings.rrf_k,
+                evidence_merger=evidence_merger
+            )
 
     @override
     def _run_retrieval(self, processed_question: ProcessedQuestion) -> Optional[RetrievalAnswer]:
@@ -108,9 +172,8 @@ class DirectRetrievalStrategy(BaseRetrievalStrategy):
 
     def _find_candidate_hubs(self, processed_question: ProcessedQuestion) -> dict[str, List[HubPath]]:
         """
-        The main retrieval algorithm for gathering HubPaths from the vector store
-        based on the direct strategy. It uses the embeddings from the question
-        to find the candidate hubs and their paths directly from the vector store.
+        Finds candidate hubs by delegating to the configured CandidateHubsFinder
+        component.
 
         Args:
             processed_question (ProcessedQuestion): The processed question
@@ -120,47 +183,7 @@ class DirectRetrievalStrategy(BaseRetrievalStrategy):
             dict[str, List[HubPath]]: A dictionary mapping hub IDs to lists
                 of HubPaths.
         """
-        candidate_hubs: dict[str, List[HubPath]] = {}
-        unique_path_hashes = set()
-        while len(candidate_hubs) < self.settings.number_of_hubs:
-            retrieval_amount = self.settings.top_paths_to_keep
-
-            try:
-                hubs_to_exclude = list(candidate_hubs.keys())
-
-                logger.info("Use the embeddings from the question to find the candidate hubs")
-                logger.info("List of candidate hubs: %s", len(hubs_to_exclude))
-                logger.info("Question Components: %s", processed_question.components)
-                results = self.hub_storage_manager.similarity_search_hubs(
-                    query_embeddings=processed_question.embeddings,
-                    excluded_hub_ids=hubs_to_exclude,
-                    n_results=retrieval_amount
-                )
-            except Exception as e:
-                logger.error(f"Error during similarity_search_hubs: {e}")
-                break
-
-            if not results or len(results) == 0:
-                logger.debug(
-                    "No more results returned from similarity_search_hubs.")
-                break
-
-            for hub_id, hub_paths in results.items():
-                if hub_id in candidate_hubs:
-                    logger.debug(
-                        f"Hub {hub_id} already in candidate_hubs; skipping.")
-                    continue
-
-                if hub_id not in candidate_hubs:
-                    candidate_hubs[hub_id] = []
-
-                for hub_path in hub_paths:
-                    if hub_path.path_hash in unique_path_hashes:
-                        continue
-                    unique_path_hashes.add(hub_path.path_hash)
-                    candidate_hubs[hub_id].append(hub_path)
-
-        return candidate_hubs
+        return self.candidate_hub_finder.find_candidate_hubs(processed_question)
 
     def _fill_or_remove_paths(self,
                               processed_question: ProcessedQuestion,
@@ -170,7 +193,7 @@ class DirectRetrievalStrategy(BaseRetrievalStrategy):
         For the given candidate hubs, this function ensures that each hub has
         the amount of paths specified in the threshold. If the hub has more
         paths than the threshold, it will be truncated. If it has less, it will
-        try to fill the paths by searching for more paths in the vector store.         
+        try to fill the paths by searching for more paths in the vector store.
 
         Args:
             processed_question (ProcessedQuestion): The processed question
@@ -184,30 +207,109 @@ class DirectRetrievalStrategy(BaseRetrievalStrategy):
                 of HubPaths, ensuring that each hub has the desired number
                 of paths.
         """
-        # Now we make sure that for each candidate hub, we have the desired amount
-        # of paths
+        # First collect a sufficiently large path pool for every candidate hub.
+        # CandidateHubsFinder and the storage searches guarantee unique logical
+        # paths. Existing paths are excluded from the supplemental dense search.
+        # Path ranking and truncation happen globally afterwards so hybrid path
+        # scores remain comparable across hubs.
         prepared_candidate_hubs = {}
         for hub_id, current_hub_paths in list(candidate_hubs.items()):
-
-            if len(current_hub_paths) > path_threshold:
-                prepared_candidate_hubs[hub_id] = current_hub_paths[:path_threshold]
-                continue
-            if len(current_hub_paths) == path_threshold:
+            if len(current_hub_paths) >= path_threshold:
                 prepared_candidate_hubs[hub_id] = current_hub_paths
                 continue
             # If we have less paths than desired, we need to get more
             try:
-                paths = self._get_hub_paths_for_hub(
+                additional_paths = self._get_hub_paths_for_hub(
                     processed_question=processed_question,
-                    hub_id=hub_id
+                    hub_id=hub_id,
+                    excluded_path_hashes=[
+                        path.path_hash for path in current_hub_paths
+                    ],
                 )
-                if len(paths) > path_threshold:
-                    prepared_candidate_hubs[hub_id] = paths[:path_threshold]
-                else:
-                    prepared_candidate_hubs[hub_id] = paths
+                prepared_candidate_hubs[hub_id] = (
+                    list(current_hub_paths) + additional_paths
+                )
 
             except Exception as e:
                 logger.error(
                     f"Error during similarity_search_by_hub_entity: {e}")
-                continue
-        return prepared_candidate_hubs
+                if current_hub_paths:
+                    prepared_candidate_hubs[hub_id] = current_hub_paths
+        return self._score_and_limit_paths(
+            candidate_hubs=prepared_candidate_hubs,
+            path_threshold=path_threshold,
+        )
+
+    def _score_and_limit_paths(
+            self,
+            candidate_hubs: dict[str, List[HubPath]],
+            path_threshold: int) -> dict[str, List[HubPath]]:
+        """Assigns globally comparable path scores and applies the per-hub cap."""
+        identified_paths = [
+            (hub_id, path)
+            for hub_id, paths in candidate_hubs.items()
+            for path in paths
+        ]
+        if not identified_paths:
+            return candidate_hubs
+
+        sparse_channels = sorted({
+            channel
+            for _, path in identified_paths
+            for channel in path.sparse_ranks
+        })
+        if not sparse_channels:
+            for _, path in identified_paths:
+                path.score = path.dense_score
+        else:
+            dense_ranking = sorted(
+                (
+                    (hub_id, path)
+                    for hub_id, path in identified_paths
+                    if path.dense_score is not None
+                ),
+                key=lambda item: item[1].dense_score,
+                reverse=True,
+            )
+            dense_rank_by_path = {
+                (hub_id, path.path_hash): rank
+                for rank, (hub_id, path) in enumerate(dense_ranking)
+            }
+            channel_count = 1 + len(sparse_channels)
+
+            for hub_id, path in identified_paths:
+                ranks = []
+                dense_rank = dense_rank_by_path.get((hub_id, path.path_hash))
+                if dense_rank is not None:
+                    ranks.append(dense_rank)
+                ranks.extend(
+                    path.sparse_ranks[channel]
+                    for channel in sparse_channels
+                    if channel in path.sparse_ranks
+                )
+                raw_score = rrf_score_from_ranks(
+                    ranks=ranks,
+                    k=self.settings.rrf_k,
+                )
+                path.score = normalize_rrf_score(
+                    score=raw_score,
+                    channel_count=channel_count,
+                    k=self.settings.rrf_k,
+                )
+
+        scored_candidate_hubs: dict[str, List[HubPath]] = {}
+        for hub_id, paths in candidate_hubs.items():
+            paths.sort(
+                key=lambda path: (
+                    path.score
+                    if path.score is not None
+                    else float("-inf"),
+                    path.dense_score
+                    if path.dense_score is not None
+                    else float("-inf"),
+                    path.path_hash,
+                ),
+                reverse=True,
+            )
+            scored_candidate_hubs[hub_id] = paths[:path_threshold]
+        return scored_candidate_hubs
