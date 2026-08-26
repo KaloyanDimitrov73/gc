@@ -3,6 +3,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
+from core.data.models import RetrievalAnswer
 from hublink.retrieval.candidate_hub_finder.ann_hub_finder import ANNHubFinder
 from hublink.retrieval.candidate_hub_finder.hybrid_search.bm25_fusion_decorator import (
     Bm25FusionDecorator,
@@ -16,6 +17,7 @@ from hublink.retrieval.strategies.base_retrieval_strategy import (
 from hublink.retrieval.strategies.direct_retrieval_strategy import (
     DirectRetrievalStrategy,
 )
+from hublink.retrieval.models.processed_question import ProcessedQuestion
 
 
 def test_question_processing_parser_uses_last_valid_dictionary():
@@ -32,6 +34,24 @@ def test_question_processing_parser_uses_last_valid_dictionary():
 
     assert components == ["Research Object", "Technical Debt"]
     assert keywords == ["2017"]
+
+
+def test_retrieval_adds_extracted_keywords_to_answer():
+    strategy = object.__new__(DirectRetrievalStrategy)
+    processed_question = ProcessedQuestion(
+        question="Who published in 2017?",
+        keywords=["2017"],
+        embeddings=[[1.0, 0.0]],
+    )
+    strategy._process_question = MagicMock(return_value=processed_question)
+    strategy._run_retrieval = MagicMock(
+        return_value=RetrievalAnswer(contexts=[])
+    )
+
+    result = strategy.retrieval("Who published in 2017?")
+
+    assert result is not None
+    assert result.extracted_keywords == ["2017"]
 
 
 @pytest.mark.parametrize("output", [

@@ -94,7 +94,12 @@ class BaseRetrievalStrategy(ABC):
         processed_question = self._process_question(question)
         if not processed_question:
             return None
-        return self._run_retrieval(processed_question)
+        retrieval_answer = self._run_retrieval(processed_question)
+        if retrieval_answer is not None:
+            retrieval_answer.extracted_keywords = list(
+                processed_question.keywords
+            )
+        return retrieval_answer
 
     @abstractmethod
     def _run_retrieval(self, processed_question: ProcessedQuestion) -> Optional[RetrievalAnswer]:

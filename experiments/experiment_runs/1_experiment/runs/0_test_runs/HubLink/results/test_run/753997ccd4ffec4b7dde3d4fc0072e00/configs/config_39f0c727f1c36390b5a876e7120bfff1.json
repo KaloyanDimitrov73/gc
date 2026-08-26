@@ -1,5 +1,5 @@
 {
-    "name": "pipeline_0100d302bfcf31c9ede2746777b4e8eb",
+    "name": "pipeline_39f0c727f1c36390b5a876e7120bfff1",
     "additional_params": {},
     "pipes": [
         {
@@ -34,8 +34,9 @@
                 "hub_types": [
                     "Paper"
                 ],
-                "use_bm25_hybrid_search": false,
-                "use_splade_hybrid_search": true
+                "use_bm25_hybrid_search": true,
+                "use_splade_hybrid_search": false,
+                "use_cross_encoder": false
             },
             "type": "kg_retrieval",
             "retriever_type": "hublink",

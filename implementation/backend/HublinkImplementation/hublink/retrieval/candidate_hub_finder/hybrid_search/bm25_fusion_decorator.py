@@ -28,17 +28,14 @@ class Bm25FusionDecorator(CandidateHubsFinderDecorator):
                  sparse_storage_manager: SparseStorageManager,
                  top_paths_to_keep: int,
                  number_of_hubs: int,
-                 rrf_k: int = 60,
                  evidence_merger: Optional[SparseEvidenceMerger] = None):
         super().__init__(candidate_hub_finder)
         self.hub_storage_manager = hub_storage_manager
         self.sparse_storage_manager = sparse_storage_manager
         self.top_paths_to_keep = top_paths_to_keep
         self.number_of_hubs = number_of_hubs
-        self.rrf_k = rrf_k
         self.evidence_merger = evidence_merger or SparseEvidenceMerger(
             hub_storage_manager=hub_storage_manager,
-            rrf_k=rrf_k
         )
 
     @override
@@ -77,25 +74,7 @@ class Bm25FusionDecorator(CandidateHubsFinderDecorator):
         candidate_hubs: dict[str, List[HubPath]] = {}
         for hub_id in candidate_hub_ids:
             existing_paths = dense_hubs.get(hub_id, [])
-            if not existing_paths:
-                try:
-                    existing_paths = (
-                        self.hub_storage_manager
-                        .similarity_search_by_hub_entity(
-                            query_embeddings=processed_question.embeddings,
-                            hub_entity_id=hub_id,
-                            n_results=self.top_paths_to_keep
-                        )
-                    )
-                except Exception as error:
-                    logger.error(
-                        "Error fetching dense paths for BM25-only hub %s: %s",
-                        hub_id,
-                        error
-                    )
-
             merged_paths = self.evidence_merger.merge(
-                processed_question=processed_question,
                 existing_paths=existing_paths,
                 sparse_hits=bm25_result.hits_by_hub.get(hub_id, []),
                 sparse_channel="bm25",

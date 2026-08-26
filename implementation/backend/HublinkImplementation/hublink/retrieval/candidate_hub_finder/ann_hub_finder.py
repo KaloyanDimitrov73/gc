@@ -72,4 +72,65 @@ class ANNHubFinder(CandidateHubsFinder):
 
                 candidate_hubs[hub_id] = hub_paths
 
+        self._fill_and_rank_dense_paths(
+            candidate_hubs=candidate_hubs,
+            processed_question=processed_question,
+        )
         return candidate_hubs
+
+    def _fill_and_rank_dense_paths(
+            self,
+            candidate_hubs: dict[str, List[HubPath]],
+            processed_question: ProcessedQuestion) -> None:
+        """Completes and freezes the independently retrieved dense path list."""
+        for hub_id, paths in candidate_hubs.items():
+            paths_by_hash = {
+                path.path_hash: path
+                for path in paths
+            }
+            if len(paths_by_hash) < self.top_paths_to_keep:
+                try:
+                    additional_paths = (
+                        self.hub_storage_manager
+                        .similarity_search_by_hub_entity(
+                            query_embeddings=processed_question.embeddings,
+                            hub_entity_id=hub_id,
+                            n_results=self.top_paths_to_keep,
+                            excluded_path_hashs=list(paths_by_hash),
+                        )
+                    )
+                    for path in additional_paths:
+                        paths_by_hash.setdefault(path.path_hash, path)
+                except Exception as error:
+                    logger.error(
+                        "Error filling dense paths for hub %s: %s",
+                        hub_id,
+                        error,
+                    )
+
+            ranked_paths = sorted(
+                paths_by_hash.values(),
+                key=lambda path: (
+                    -path.dense_score
+                    if path.dense_score is not None
+                    else float("inf"),
+                    path.path_hash,
+                ),
+            )[:self.top_paths_to_keep]
+            candidate_hubs[hub_id] = ranked_paths
+
+        globally_ranked_paths = sorted(
+            (
+                (hub_id, path)
+                for hub_id, paths in candidate_hubs.items()
+                for path in paths
+                if path.dense_score is not None
+            ),
+            key=lambda item: (
+                -item[1].dense_score,
+                item[0],
+                item[1].path_hash,
+            ),
+        )
+        for dense_rank, (_, path) in enumerate(globally_ranked_paths):
+            path.dense_rank = dense_rank

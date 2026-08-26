@@ -63,6 +63,9 @@ class KGRetrievalPipe(RetrievalPipe[KGRetrievalConfig]):
         input_data.retrieved_context.extend(retrieval_answer.contexts)
         if retrieval_answer.retriever_answer:
             input_data.generated_answer = retrieval_answer.retriever_answer
+        input_data.extracted_keywords = list(
+            retrieval_answer.extracted_keywords
+        )
         return input_data
 
     def _prepare(self):

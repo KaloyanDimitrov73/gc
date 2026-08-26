@@ -16,7 +16,7 @@ logger = get_logger(__name__)
 class CrossEncoderDirectRetrievalStrategy(DirectRetrievalStrategy):
     """
     Extends DirectRetrievalStrategy by rescoring each candidate hub's
-    paths with a cross-encoder after they are filled/truncated, so that
+    paths with a cross-encoder after fusion and truncation, so that
     downstream pruning uses cross-encoder relevance scores instead of the
     raw candidate-hub-finder scores.
     """

@@ -15,11 +15,9 @@ from hublink.core.sparse_index.sparse_search_result import (
     SparseSearchResult,
 )
 from hublink.indexing.sparse_index.splade_indexer import SpladeIndexer
+from hublink.retrieval.candidate_hub_finder.ann_hub_finder import ANNHubFinder
 from hublink.retrieval.candidate_hub_finder.hybrid_search.splade_fusion_decorator import (
     SpladeFusionDecorator,
-)
-from hublink.retrieval.candidate_hub_finder.hybrid_search.rrf import (
-    two_way_rrf,
 )
 from hublink.retrieval.candidate_hub_finder.hybrid_search.sparse_evidence_merger import (
     SparseEvidenceMerger,
@@ -321,31 +319,20 @@ def test_splade_store_loads_current_tensor_index_payload():
     assert store._model_name == "naver/test-splade"
 
 
-def test_two_way_rrf_rewards_ids_found_by_both_rankings():
-    fused = two_way_rrf(
-        wrapped_ranking=["dense-1", "shared", "dense-2"],
-        sparse_ranking=["shared", "sparse-1"]
-    )
-
-    assert fused == ["shared", "dense-1", "sparse-1", "dense-2"]
-
-
 def test_sparse_evidence_merger_combines_dense_and_sparse_path_evidence():
     existing_shared = _path("shared", 0.91)
-    sparse_only = _path("sparse-only", 0.72)
+    sparse_only = HubPath(
+        path_text="path sparse-only",
+        path_hash="sparse-only",
+        path=[],
+    )
     storage_manager = MagicMock()
-    storage_manager.retrieve_scored_hub_paths_by_keys.return_value = {
-        "shared": _path("shared", 0.50),
+    storage_manager.retrieve_hub_paths_by_keys.return_value = {
         "sparse-only": sparse_only
     }
     merger = SparseEvidenceMerger(storage_manager)
-    question = ProcessedQuestion(
-        question="question",
-        embeddings=[[1.0, 0.0]]
-    )
 
     merged = merger.merge(
-        processed_question=question,
         existing_paths=[_path("dense-only", 0.80), existing_shared],
         sparse_hits=[
             SparsePathHit(
@@ -356,15 +343,20 @@ def test_sparse_evidence_merger_combines_dense_and_sparse_path_evidence():
     )
 
     assert [path.path_hash for path in merged] == [
-        "shared", "dense-only", "sparse-only"
+        "dense-only", "shared", "sparse-only"
     ]
-    assert merged[0] is existing_shared
-    assert merged[0].score == 0.91
-    assert merged[0].dense_score == 0.91
-    assert merged[0].sparse_scores == {"sparse": 3.0}
-    assert merged[0].sparse_ranks == {"sparse": 0}
+    assert merged[1] is existing_shared
+    assert existing_shared.score == 0.91
+    assert existing_shared.dense_score == 0.91
+    assert existing_shared.sparse_scores == {"sparse": 3.0}
+    assert existing_shared.sparse_ranks == {"sparse": 0}
+    assert sparse_only.dense_score is None
+    assert sparse_only.dense_rank is None
     assert sparse_only.sparse_scores == {"sparse": 2.0}
     assert sparse_only.sparse_ranks == {"sparse": 1}
+    storage_manager.retrieve_hub_paths_by_keys.assert_called_once_with(
+        hash_keys=["sparse-only"],
+    )
 
 
 def test_exact_sparse_path_is_rescored_with_dense_cosine_similarity():
@@ -437,7 +429,7 @@ def test_dense_diversity_penalty_keeps_dense_and_final_scores_equal():
     assert paths[1].dense_score == paths[1].score == pytest.approx(0.6)
 
 
-def test_path_filling_tops_up_without_replacing_sparse_evidence():
+def test_post_union_path_processing_does_not_retrieve_more_paths():
     strategy = object.__new__(DirectRetrievalStrategy)
     strategy._get_hub_paths_for_hub = MagicMock(return_value=[
         _path("dense-new", 0.50)
@@ -455,29 +447,29 @@ def test_path_filling_tops_up_without_replacing_sparse_evidence():
     )
 
     assert [path.path_hash for path in result["hub"]] == [
-        "sparse-hit", "dense-duplicate", "dense-new"
+        "sparse-hit", "dense-duplicate"
     ]
     assert all(path.score == path.dense_score for path in result["hub"])
-    strategy._get_hub_paths_for_hub.assert_called_once_with(
-        processed_question=ProcessedQuestion(
-            question="question",
-            embeddings=[[1.0, 0.0]],
-        ),
-        hub_id="hub",
-        excluded_path_hashes=["sparse-hit", "dense-duplicate"],
-    )
+    strategy._get_hub_paths_for_hub.assert_not_called()
 
 
-def test_global_path_rrf_scores_sparse_evidence_before_per_hub_limit():
+def test_path_rrf_uses_only_independent_channel_membership():
     strategy = object.__new__(DirectRetrievalStrategy)
-    strategy.settings = SimpleNamespace(rrf_k=60, top_paths_to_keep=2)
-    strategy._get_hub_paths_for_hub = MagicMock(return_value=[])
+    strategy.settings = SimpleNamespace(rrf_k=60)
 
-    sparse_path = _path("sparse", 0.10)
-    sparse_path.sparse_scores["splade"] = 12.0
-    sparse_path.sparse_ranks["splade"] = 0
     dense_path = _path("dense", 0.99)
-    other_path = _path("other", 0.80)
+    dense_path.dense_rank = 0
+    shared_path = _path("shared", 0.80)
+    shared_path.dense_rank = 1
+    shared_path.sparse_scores["splade"] = 12.0
+    shared_path.sparse_ranks["splade"] = 0
+    sparse_path = HubPath(
+        path_text="path sparse",
+        path_hash="sparse",
+        path=[],
+        sparse_scores={"splade": 10.0},
+        sparse_ranks={"splade": 1},
+    )
 
     result = strategy._fill_or_remove_paths(
         processed_question=ProcessedQuestion(
@@ -485,20 +477,95 @@ def test_global_path_rrf_scores_sparse_evidence_before_per_hub_limit():
             embeddings=[[1.0, 0.0]],
         ),
         candidate_hubs={
-            "hub-a": [dense_path, sparse_path],
-            "hub-b": [other_path],
+            "hub-a": [dense_path, shared_path, sparse_path],
         },
         path_threshold=2,
     )
 
     assert [path.path_hash for path in result["hub-a"]] == [
-        "sparse", "dense"
+        "shared", "dense"
     ]
-    assert sparse_path.score > dense_path.score
-    assert 0.0 < dense_path.score <= 1.0
-    assert 0.0 < sparse_path.score <= 1.0
-    assert sparse_path.dense_score == pytest.approx(0.10)
-    assert dense_path.dense_score == pytest.approx(0.99)
+    best_per_channel = 2.0 / 61.0
+    assert shared_path.score == pytest.approx(
+        ((1.0 / 62.0) + (1.0 / 61.0)) / best_per_channel
+    )
+    assert dense_path.score == pytest.approx((1.0 / 61.0) / best_per_channel)
+    assert sparse_path.score == pytest.approx((1.0 / 62.0) / best_per_channel)
+    assert sparse_path.dense_score is None
+    assert sparse_path.dense_rank is None
+
+
+def test_path_rrf_uses_all_three_non_empty_channel_rankings():
+    strategy = object.__new__(DirectRetrievalStrategy)
+    strategy.settings = SimpleNamespace(rrf_k=60)
+
+    shared_path = _path("shared", 0.90)
+    shared_path.dense_rank = 0
+    shared_path.sparse_ranks = {
+        "bm25": 0,
+        "splade": 0,
+    }
+    dense_only = _path("dense-only", 0.80)
+    dense_only.dense_rank = 1
+    bm25_only = HubPath(
+        path_text="path bm25-only",
+        path_hash="bm25-only",
+        path=[],
+        sparse_ranks={"bm25": 1},
+    )
+    splade_only = HubPath(
+        path_text="path splade-only",
+        path_hash="splade-only",
+        path=[],
+        sparse_ranks={"splade": 1},
+    )
+
+    result = strategy._score_and_limit_paths(
+        candidate_hubs={
+            "hub": [shared_path, dense_only, bm25_only, splade_only],
+        },
+        path_threshold=4,
+    )
+
+    assert result["hub"][0] is shared_path
+    assert shared_path.score == pytest.approx(1.0)
+    best_per_channel = 3.0 / 61.0
+    expected_single_channel_score = (1.0 / 62.0) / best_per_channel
+    assert dense_only.score == pytest.approx(expected_single_channel_score)
+    assert bm25_only.score == pytest.approx(expected_single_channel_score)
+    assert splade_only.score == pytest.approx(expected_single_channel_score)
+
+
+def test_ann_finder_fills_dense_hubs_before_assigning_global_ranks():
+    storage_manager = MagicMock()
+    storage_manager.similarity_search_hubs.return_value = {
+        "hub": [_path("dense-low", 0.80)]
+    }
+    storage_manager.similarity_search_by_hub_entity.return_value = [
+        _path("dense-high", 0.90)
+    ]
+    finder = ANNHubFinder(
+        hub_storage_manager=storage_manager,
+        number_of_hubs=1,
+        top_paths_to_keep=2,
+    )
+    question = ProcessedQuestion(
+        question="question",
+        embeddings=[[1.0, 0.0]],
+    )
+
+    result = finder.find_candidate_hubs(question)
+
+    assert [path.path_hash for path in result["hub"]] == [
+        "dense-high", "dense-low"
+    ]
+    assert [path.dense_rank for path in result["hub"]] == [0, 1]
+    storage_manager.similarity_search_by_hub_entity.assert_called_once_with(
+        query_embeddings=question.embeddings,
+        hub_entity_id="hub",
+        n_results=2,
+        excluded_path_hashs=["dense-low"],
+    )
 
 
 def test_prune_hubs_aggregates_final_path_score():

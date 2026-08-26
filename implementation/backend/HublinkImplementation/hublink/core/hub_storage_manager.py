@@ -170,11 +170,10 @@ class HubStorageManager:
             query_embeddings: List[List[float]]) -> Dict[str, HubPath]:
         """Retrieves exact paths by hash and assigns dense cosine scores.
 
-        Sparse index stores use this method to turn path identifiers back into
-        concrete HubPath evidence. The stored full-path embedding is compared
-        with the question embeddings and assigned to both dense_score and score.
-        The direct retrieval strategy overwrites score with the hybrid result
-        after all enabled sparse channels have been considered.
+        This utility is for callers that explicitly need to rescore known paths
+        with dense similarity. Hybrid sparse retrieval intentionally uses the
+        unscored exact-path lookup so sparse-only paths do not acquire dense
+        channel membership.
         """
         if not path_hashes or not query_embeddings:
             return {}

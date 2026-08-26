@@ -22,7 +22,7 @@ class CandidateHubsFinder(ABC):
         Returns:
             dict[str, List[HubPath]]: A dictionary mapping hub IDs to lists
                 of HubPaths. Each list contains unique logical paths by
-                path_hash, with dense_score and the current final score
-                populated for every scored path.
+                path_hash. Paths carry the scores and ranks assigned by the
+                retrieval channels in which they actually appeared.
         """
         ...

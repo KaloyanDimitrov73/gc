@@ -57,7 +57,6 @@ class DirectRetrievalStrategy(BaseRetrievalStrategy):
         )
         evidence_merger = SparseEvidenceMerger(
             hub_storage_manager=self.hub_storage_manager,
-            rrf_k=self.settings.rrf_k
         )
         if (self.settings.use_bm25_hybrid_search
                 and self.sparse_storage_manager is not None
@@ -68,7 +67,6 @@ class DirectRetrievalStrategy(BaseRetrievalStrategy):
                 sparse_storage_manager=self.sparse_storage_manager,
                 top_paths_to_keep=self.settings.top_paths_to_keep,
                 number_of_hubs=self.settings.number_of_hubs,
-                rrf_k=self.settings.rrf_k,
                 evidence_merger=evidence_merger
             )
         if (self.settings.use_splade_hybrid_search
@@ -80,7 +78,6 @@ class DirectRetrievalStrategy(BaseRetrievalStrategy):
                 sparse_storage_manager=self.sparse_storage_manager,
                 top_paths_to_keep=self.settings.top_paths_to_keep,
                 number_of_hubs=self.settings.number_of_hubs,
-                rrf_k=self.settings.rrf_k,
                 evidence_merger=evidence_merger
             )
 
@@ -93,14 +90,14 @@ class DirectRetrievalStrategy(BaseRetrievalStrategy):
         candidate_hubs = self._find_candidate_hubs(processed_question)
         self.progress_handler.finish_by_string_id("candidate_hub_search")
 
-        logger.info("Filling paths")
-        self.progress_handler.add_task(string_id="path_filling", description="Filling paths", total=len(candidate_hubs), reset=True)
+        logger.info("Scoring and limiting candidate paths")
+        self.progress_handler.add_task(string_id="path_scoring", description="Scoring candidate paths", total=len(candidate_hubs), reset=True)
         candidate_hubs = self._fill_or_remove_paths(
             processed_question=processed_question,
             candidate_hubs=candidate_hubs,
             path_threshold=self.settings.top_paths_to_keep
         )
-        self.progress_handler.finish_by_string_id("path_filling")
+        self.progress_handler.finish_by_string_id("path_scoring")
 
         hubs = self._convert_to_hubs(
             candidate_hubs=candidate_hubs
@@ -189,11 +186,12 @@ class DirectRetrievalStrategy(BaseRetrievalStrategy):
                               processed_question: ProcessedQuestion,
                               candidate_hubs: dict[str, List[HubPath]],
                               path_threshold: int) -> dict[str, List[HubPath]]:
-        """
-        For the given candidate hubs, this function ensures that each hub has
-        the amount of paths specified in the threshold. If the hub has more
-        paths than the threshold, it will be truncated. If it has less, it will
-        try to fill the paths by searching for more paths in the vector store.
+        """Scores candidate paths and applies the per-hub path limit.
+
+        Dense candidate hubs are already filled and assigned immutable dense
+        ranks by ``ANNHubFinder`` before any sparse channel runs. No retrieval
+        is performed here because doing so would add dense evidence after the
+        independent channel rankings have been frozen.
 
         Args:
             processed_question (ProcessedQuestion): The processed question
@@ -207,36 +205,8 @@ class DirectRetrievalStrategy(BaseRetrievalStrategy):
                 of HubPaths, ensuring that each hub has the desired number
                 of paths.
         """
-        # First collect a sufficiently large path pool for every candidate hub.
-        # CandidateHubsFinder and the storage searches guarantee unique logical
-        # paths. Existing paths are excluded from the supplemental dense search.
-        # Path ranking and truncation happen globally afterwards so hybrid path
-        # scores remain comparable across hubs.
-        prepared_candidate_hubs = {}
-        for hub_id, current_hub_paths in list(candidate_hubs.items()):
-            if len(current_hub_paths) >= path_threshold:
-                prepared_candidate_hubs[hub_id] = current_hub_paths
-                continue
-            # If we have less paths than desired, we need to get more
-            try:
-                additional_paths = self._get_hub_paths_for_hub(
-                    processed_question=processed_question,
-                    hub_id=hub_id,
-                    excluded_path_hashes=[
-                        path.path_hash for path in current_hub_paths
-                    ],
-                )
-                prepared_candidate_hubs[hub_id] = (
-                    list(current_hub_paths) + additional_paths
-                )
-
-            except Exception as e:
-                logger.error(
-                    f"Error during similarity_search_by_hub_entity: {e}")
-                if current_hub_paths:
-                    prepared_candidate_hubs[hub_id] = current_hub_paths
         return self._score_and_limit_paths(
-            candidate_hubs=prepared_candidate_hubs,
+            candidate_hubs=candidate_hubs,
             path_threshold=path_threshold,
         )
 
@@ -262,26 +232,16 @@ class DirectRetrievalStrategy(BaseRetrievalStrategy):
             for _, path in identified_paths:
                 path.score = path.dense_score
         else:
-            dense_ranking = sorted(
-                (
-                    (hub_id, path)
-                    for hub_id, path in identified_paths
-                    if path.dense_score is not None
-                ),
-                key=lambda item: item[1].dense_score,
-                reverse=True,
+            has_dense_ranking = any(
+                path.dense_rank is not None
+                for _, path in identified_paths
             )
-            dense_rank_by_path = {
-                (hub_id, path.path_hash): rank
-                for rank, (hub_id, path) in enumerate(dense_ranking)
-            }
-            channel_count = 1 + len(sparse_channels)
+            channel_count = len(sparse_channels) + int(has_dense_ranking)
 
-            for hub_id, path in identified_paths:
+            for _, path in identified_paths:
                 ranks = []
-                dense_rank = dense_rank_by_path.get((hub_id, path.path_hash))
-                if dense_rank is not None:
-                    ranks.append(dense_rank)
+                if path.dense_rank is not None:
+                    ranks.append(path.dense_rank)
                 ranks.extend(
                     path.sparse_ranks[channel]
                     for channel in sparse_channels
@@ -301,15 +261,11 @@ class DirectRetrievalStrategy(BaseRetrievalStrategy):
         for hub_id, paths in candidate_hubs.items():
             paths.sort(
                 key=lambda path: (
-                    path.score
+                    -path.score
                     if path.score is not None
-                    else float("-inf"),
-                    path.dense_score
-                    if path.dense_score is not None
-                    else float("-inf"),
+                    else float("inf"),
                     path.path_hash,
                 ),
-                reverse=True,
             )
             scored_candidate_hubs[hub_id] = paths[:path_threshold]
         return scored_candidate_hubs

@@ -25,6 +25,13 @@ class HubPath(BaseModel):
             "The dense semantic similarity score of the path for the given "
             "question."
         ))
+    dense_rank: Optional[int] = Field(
+        default=None,
+        description=(
+            "Zero-based global rank in the independently retrieved dense "
+            "candidate list. None when the path was not retrieved by the "
+            "dense channel."
+        ))
     score: Optional[float] = Field(
         default=None,
         description=(
