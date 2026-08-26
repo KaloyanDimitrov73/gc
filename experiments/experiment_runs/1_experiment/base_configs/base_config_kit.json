@@ -30,8 +30,8 @@
                 "indexing_root_entity_ids": ["R659055"],
                 "hub_types": ["Paper"],
                 "use_bm25_hybrid_search": false,
-                "use_splade_hybrid_search": false,
-                "use_cross_encoder": true
+                "use_splade_hybrid_search": true,
+                "use_cross_encoder": false
             },
             "type": "kg_retrieval",
             "retriever_type": "hublink",

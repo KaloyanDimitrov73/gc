@@ -1,8 +1,38 @@
 template: >
   ### Task Description:
-  Analyze the following question for retrieval. Break it down into its key
-  components or claims, and identify keywords that indicate whether sparse
-  retrieval using BM25 and/or SPLADE could complement dense retrieval.
+  Analyze the question to support retrieval from a knowledge graph. Information
+  in the graph is represented as entities, relationships, and values according
+  to an ontology. The Knowledge Graph Context below provides an example of how
+  such information may be structured, but it must not limit extraction to the
+  listed entities or relationships.
+
+  Extract semantic components directly from the question to improve matching
+  against relevant graph entities, relationships, and paths. Also extract
+  keywords that indicate whether sparse retrieval using BM25 and/or SPLADE
+  could complement dense retrieval. Follow the component and keyword extraction
+  rules below.
+
+  ### Knowledge Graph Context Example:
+  The knowledge graph represents scientific publications.
+
+  - A "Paper" node represents a publication, and its node text is the paper title.
+  - Papers can have direct metadata through:
+    - "authors" -> an author list whose names use "has list element"
+    - "doi" -> DOI value
+    - "publication year" -> year value
+    - "venue" -> publication venue
+    - "research field" -> broader research field
+  - Papers connect through "contribution" to information described by:
+    - "paper class"
+    - "research level"
+    - "Research Object"
+    - "Evaluation method"
+    - "Evaluation Property"
+    - "Evaluation Sub-Property"
+    - "threat to validity"
+    - "Uses Input Data"
+    - "Uses Tool Support"
+    - "Provides Replication Package"
 
   ### Instructions:
   - Extract the key components or claims from the question.

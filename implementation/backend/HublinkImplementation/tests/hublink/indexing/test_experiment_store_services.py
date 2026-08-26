@@ -42,8 +42,7 @@ def test_hub_store_service_creates_only_dense_store(
         hub_link_settings,
         vector_store_provider,
         hub_storage_manager) -> None:
-    indexing_llm_config = object()
-    config = SimpleNamespace(index_llm_config=indexing_llm_config)
+    config = SimpleNamespace(index_llm_config=object())
     settings = _settings()
     vector_store = object()
     get_settings.return_value = SimpleNamespace(vector_store_backend="chroma")
@@ -53,11 +52,7 @@ def test_hub_store_service_creates_only_dense_store(
 
     service = HubStoreService(config)
 
-    vector_store_provider.compute_store_name.assert_called_once_with(
-        config,
-        settings,
-        indexing_llm_config=indexing_llm_config,
-    )
+    vector_store_provider.compute_store_name.assert_called_once_with(config, settings)
     vector_store_provider.get_vector_store.assert_called_once_with(
         backend="chroma",
         store_name="dense-key",

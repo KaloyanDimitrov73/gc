@@ -128,7 +128,6 @@ def _load_path_texts(config, path_hashes: list[str]) -> dict[str, str]:
     store_name = VectorStoreProvider.compute_store_name(
         config=config,
         settings=settings,
-        indexing_llm_config=config.index_llm_config,
     )
     store_path = Path(
         FilePathManager().CACHE_DIR,
@@ -155,7 +154,6 @@ def _load_dense_collection(config):
     store_name = VectorStoreProvider.compute_store_name(
         config=config,
         settings=settings,
-        indexing_llm_config=config.index_llm_config,
     )
     store_path = Path(
         FilePathManager().CACHE_DIR,

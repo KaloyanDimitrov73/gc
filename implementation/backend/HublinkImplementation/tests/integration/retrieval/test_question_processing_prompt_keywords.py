@@ -21,7 +21,7 @@ QA_DATASET_PATH = (
     / "1_experiment"
     / "runs"
     / "0_test_runs"
-    / "test_qa_dataset_question_14.csv"
+    / "test_qa_dataset.csv"
 )
 PROMPT_PATH = (
     REPOSITORY_ROOT

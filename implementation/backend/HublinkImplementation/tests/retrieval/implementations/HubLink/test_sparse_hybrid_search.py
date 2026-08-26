@@ -12,8 +12,12 @@ from hublink.core.sparse_index.sparse_ranking import (
 )
 from hublink.core.sparse_index.sparse_search_result import (
     SparsePathHit,
+    SparseSearchResult,
 )
 from hublink.indexing.sparse_index.splade_indexer import SpladeIndexer
+from hublink.retrieval.candidate_hub_finder.hybrid_search.splade_fusion_decorator import (
+    SpladeFusionDecorator,
+)
 from hublink.retrieval.candidate_hub_finder.hybrid_search.rrf import (
     two_way_rrf,
 )
@@ -41,6 +45,61 @@ def _path(path_hash: str, score: float) -> HubPath:
         path=[],
         dense_score=score,
         score=score
+    )
+
+
+def test_splade_decorator_skips_sparse_search_without_keywords():
+    dense_hubs = {"dense-hub": [_path("dense-path", 0.9)]}
+    wrapped_finder = MagicMock()
+    wrapped_finder.find_candidate_hubs.return_value = dense_hubs
+    sparse_storage_manager = MagicMock()
+    decorator = SpladeFusionDecorator(
+        candidate_hub_finder=wrapped_finder,
+        hub_storage_manager=MagicMock(),
+        sparse_storage_manager=sparse_storage_manager,
+        top_paths_to_keep=2,
+        number_of_hubs=2,
+    )
+
+    result = decorator.find_candidate_hubs(ProcessedQuestion(
+        question="conceptual query",
+        keywords=[],
+        embeddings=[[1.0, 0.0]],
+    ))
+
+    assert result == dense_hubs
+    wrapped_finder.find_candidate_hubs.assert_called_once()
+    sparse_storage_manager.search_splade.assert_not_called()
+
+
+def test_splade_decorator_searches_full_question_with_keywords():
+    dense_hubs = {"dense-hub": [_path("dense-path", 0.9)]}
+    wrapped_finder = MagicMock()
+    wrapped_finder.find_candidate_hubs.return_value = dense_hubs
+    sparse_storage_manager = MagicMock()
+    sparse_storage_manager.search_splade.return_value = SparseSearchResult(
+        ranked_hub_ids=[],
+        hits_by_hub={},
+    )
+    decorator = SpladeFusionDecorator(
+        candidate_hub_finder=wrapped_finder,
+        hub_storage_manager=MagicMock(),
+        sparse_storage_manager=sparse_storage_manager,
+        top_paths_to_keep=2,
+        number_of_hubs=2,
+    )
+
+    result = decorator.find_candidate_hubs(ProcessedQuestion(
+        question="papers by Georg Buchgeher",
+        keywords=["Georg Buchgeher"],
+        embeddings=[[1.0, 0.0]],
+    ))
+
+    assert result == dense_hubs
+    sparse_storage_manager.search_splade.assert_called_once_with(
+        query_text="papers by Georg Buchgeher",
+        top_hubs=2,
+        paths_per_hub=2,
     )
 
 

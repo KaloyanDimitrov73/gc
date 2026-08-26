@@ -20,7 +20,7 @@ logger = get_logger(__name__)
 
 
 class SpladeFusionDecorator(CandidateHubsFinderDecorator):
-    """Adds SPLADE candidates and path evidence to wrapped candidates."""
+    """Adds SPLADE evidence when the processed question contains keywords."""
 
     def __init__(self,
                  candidate_hub_finder: CandidateHubsFinder,
@@ -47,6 +47,13 @@ class SpladeFusionDecorator(CandidateHubsFinderDecorator):
             processed_question: ProcessedQuestion) -> dict[str, List[HubPath]]:
         wrapped_hubs = self.candidate_hub_finder.find_candidate_hubs(
             processed_question)
+
+        if not processed_question.keywords:
+            logger.info(
+                "Skipping SPLADE sparse search: no sparse routing keywords "
+                "were extracted."
+            )
+            return wrapped_hubs
 
         logger.info(
             "Running SPLADE sparse search (number_of_hubs=%d)",

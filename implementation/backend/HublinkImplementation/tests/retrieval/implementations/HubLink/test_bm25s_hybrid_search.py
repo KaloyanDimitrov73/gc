@@ -149,11 +149,17 @@ def test_hybrid_decorator_always_merges_sparse_path_evidence():
 
     result = decorator.find_candidate_hubs(ProcessedQuestion(
         question="rare query",
+        keywords=["rare"],
         embeddings=[[1.0, 0.0]],
     ))
 
     assert result["dense-hub"] == [dense_path]
     assert result["sparse-hub"] == [ann_path]
+    sparse_storage_manager.search_bm25.assert_called_once_with(
+        query_text="rare query",
+        top_hubs=2,
+        paths_per_hub=2,
+    )
     assert evidence_merger.merge.call_count == 2
     sparse_call = evidence_merger.merge.call_args_list[1]
     assert sparse_call.kwargs["existing_paths"] == [ann_path]
@@ -192,9 +198,34 @@ def test_hybrid_candidate_union_does_not_rerank_hubs():
 
     result = decorator.find_candidate_hubs(ProcessedQuestion(
         question="query",
+        keywords=["query"],
         embeddings=[[1.0, 0.0]],
     ))
 
     assert list(result) == [
         "dense-hub", "shared-hub", "sparse-only-hub"
     ]
+
+
+def test_bm25_decorator_skips_sparse_search_without_keywords():
+    dense_hubs = {"dense-hub": [MagicMock(path_hash="dense-path")]}
+    wrapped_finder = MagicMock()
+    wrapped_finder.find_candidate_hubs.return_value = dense_hubs
+    sparse_storage_manager = MagicMock()
+    decorator = Bm25FusionDecorator(
+        candidate_hub_finder=wrapped_finder,
+        hub_storage_manager=MagicMock(),
+        sparse_storage_manager=sparse_storage_manager,
+        top_paths_to_keep=2,
+        number_of_hubs=2,
+    )
+
+    result = decorator.find_candidate_hubs(ProcessedQuestion(
+        question="conceptual query",
+        keywords=[],
+        embeddings=[[1.0, 0.0]],
+    ))
+
+    assert result == dense_hubs
+    wrapped_finder.find_candidate_hubs.assert_called_once()
+    sparse_storage_manager.search_bm25.assert_not_called()

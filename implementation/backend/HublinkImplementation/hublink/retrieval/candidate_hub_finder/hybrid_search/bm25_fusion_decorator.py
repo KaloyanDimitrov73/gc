@@ -20,7 +20,7 @@ logger = get_logger(__name__)
 
 
 class Bm25FusionDecorator(CandidateHubsFinderDecorator):
-    """Adds BM25 candidates and path evidence to wrapped candidates."""
+    """Adds BM25 evidence when the processed question contains keywords."""
 
     def __init__(self,
                  candidate_hub_finder: CandidateHubsFinder,
@@ -47,6 +47,13 @@ class Bm25FusionDecorator(CandidateHubsFinderDecorator):
             processed_question: ProcessedQuestion) -> dict[str, List[HubPath]]:
         dense_hubs = self.candidate_hub_finder.find_candidate_hubs(
             processed_question)
+
+        if not processed_question.keywords:
+            logger.info(
+                "Skipping BM25 sparse search: no sparse routing keywords "
+                "were extracted."
+            )
+            return dense_hubs
 
         logger.info(
             "Running BM25 sparse search (number_of_hubs=%d)",

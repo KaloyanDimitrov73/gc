@@ -151,9 +151,11 @@ ADDITIONAL_CONFIG_PARAMS: List[AdditionalConfigParameter] = [
         AdditionalConfigParameter(
             name="extract_question_components",
             description=(
-                "When enabled, the LLM extracts the components from the question and embeds them "
-                "separately. These embeddings will then be used together with the question embedding "
-                "to find the relevant hubs. "
+                "When enabled, the LLM extracts semantic components and sparse-search "
+                "routing keywords from the question. Components are embedded separately "
+                "and used together with the question embedding. A non-empty keyword list "
+                "allows the configured BM25 and/or SPLADE channel to run; an empty list "
+                "keeps retrieval dense-only."
             ),
             param_type=bool,
             available_values=[],
@@ -211,7 +213,8 @@ ADDITIONAL_CONFIG_PARAMS: List[AdditionalConfigParameter] = [
             name="use_bm25_hybrid_search",
             description=(
                 "Whether BM25 adds candidate hubs and exact path evidence for "
-                "path-level Reciprocal Rank Fusion. Requires a BM25 index."
+                "path-level Reciprocal Rank Fusion when question processing "
+                "extracts at least one keyword. Requires a BM25 index."
             ),
             param_type=bool,
             available_values=[],
@@ -233,8 +236,9 @@ ADDITIONAL_CONFIG_PARAMS: List[AdditionalConfigParameter] = [
             name="use_splade_hybrid_search",
             description=(
                 "Whether SPLADE adds candidate hubs and expanded sparse path "
-                "evidence for path-level Reciprocal Rank Fusion. Independent of "
-                "and stackable with BM25. Requires a SPLADE index."
+                "evidence for path-level Reciprocal Rank Fusion when question "
+                "processing extracts at least one keyword. Independent of and "
+                "stackable with BM25. Requires a SPLADE index."
             ),
             param_type=bool,
             available_values=[],
