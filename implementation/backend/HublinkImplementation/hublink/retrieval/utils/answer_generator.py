@@ -1,3 +1,5 @@
+import json
+import threading
 from typing import List, Optional, Tuple
 import re
 import ast
@@ -6,7 +8,9 @@ from pydantic import BaseModel, Field
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import PromptTemplate
 
+from backend.app.contracts.schemas import MessageSchema
 from core.data.models import RetrievalAnswer, Triple, Context, ContextType
+from core.data.models.instant_answer import InstantAnswer
 from core.progress.progress_handler import ProgressHandler
 from hublink.core.models.entity_with_direction import EntityWithDirection
 from hublink.core.models.hub_link_settings import HubLinkSettings
@@ -623,3 +627,167 @@ class AnswerGenerator:
                 doi = triple.entity_object.text
                 break
         return doi
+
+    def generate_instant_response(
+        self,
+        question: str,
+        history: Optional[List[MessageSchema]] = None,
+    ) -> Optional[InstantAnswer]:
+        """
+        Attempts to answer the question directly via LLM, without triggering retrieval.
+
+        The LLM is instructed to answer only general/conversational questions or
+        questions it can confidently answer from general software-development
+        knowledge. If the question requires specific information from the
+        knowledge base, the LLM returns a sentinel value instead, signalling that
+        the retrieval pipeline should run.
+
+        Args:
+            question (str): The input question.
+            history (Optional[List[Message]]): Prior conversation turns, if any.
+            cancel_event (Optional[threading.Event]): Abort signal, checked before
+                the LLM call.
+
+        Returns:
+            Optional[InstantAnswer]: The direct answer, or None if retrieval is needed.
+        """
+
+        _ph = ProgressHandler()
+        _ph.add_task(
+            string_id="instant_response_generation",
+            description="Checking for instant answer",
+            total=1,
+            reset=True,
+        )
+
+        logger.info("AnswerGenerator: Checking for instant response")
+
+        prompt_text, _, _ = self.prompt_provider.get_prompt(
+            "novel_retriever/instant_answer_generation_prompt.yaml")
+
+        history_text = ""
+        if history:
+            for turn in history:
+                history_text += f"{turn.role}: {turn.content}\n"
+
+        parser = StrOutputParser()
+        prompt = PromptTemplate(
+            template=prompt_text,
+            input_variables=["question"],
+        )
+
+        chain = prompt | self.llm.llm | parser
+        raw_response = chain.invoke(
+            {"question": question},
+            config=_llm_call_config("hublink.instant_response_generation"))
+
+        _ph.finish_by_string_id("instant_response_generation")
+
+        logger.debug(f"The instant-response history context was: {history_text}")
+        logger.info(f"The raw response from the LLM is: {raw_response}")
+
+        try:
+            parsed = json.loads(raw_response.strip())
+        except json.JSONDecodeError:
+            logger.warning(
+                "AnswerGenerator: Instant response was not valid JSON, falling back to retrieval. "
+                "Raw response: %s", raw_response,
+            )
+            return None
+
+        answer = parsed.get("answer")
+        if answer is None:
+            return None
+
+        logger.info(f"The instant response from the LLM is: {answer.strip()}")
+
+        return answer.strip()
+
+    def generate_instant_history_response(
+        self,
+        question: str,
+        history: Optional[List[MessageSchema]] = None,
+    ) -> Optional[InstantAnswer]:
+        """
+        Attempts to answer the question directly via LLM, without triggering retrieval.
+
+        The LLM is instructed to answer only general/conversational questions or
+        questions it can confidently answer from general software-development
+        knowledge. If the question requires specific information from the
+        knowledge base, the LLM returns a sentinel value instead, signalling that
+        the retrieval pipeline should run.
+
+        Args:
+            question (str): The input question.
+            history (Optional[List[Message]]): Prior conversation turns, if any.
+            cancel_event (Optional[threading.Event]): Abort signal, checked before
+                the LLM call.
+
+        Returns:
+            Optional[InstantAnswer]: The direct answer, or None if retrieval is needed.
+        """
+
+        _ph = ProgressHandler()
+        _ph.add_task(
+            string_id="instant_response_generation",
+            description="Checking for instant answer",
+            total=1,
+            reset=True,
+        )
+
+        logger.info("AnswerGenerator: Checking for instant response")
+
+        prompt_text, _, _ = self.prompt_provider.get_prompt(
+            "novel_retriever/reuse_from_history_prompt.yaml")
+
+        history_text = _build_history_text(history)
+
+        parser = StrOutputParser()
+        prompt = PromptTemplate(
+            template=prompt_text,
+            input_variables=["question", "history"],
+        )
+
+        chain = prompt | self.llm.llm | parser
+        raw_response = chain.invoke(
+            {"question": question, "history": history_text},
+            config=_llm_call_config("hublink.instant_response_generation"))
+
+        _ph.finish_by_string_id("instant_response_generation")
+
+        logger.debug(f"The instant-response history context was: {history_text}")
+        logger.info(f"The raw response from the LLM is: {raw_response}")
+
+        try:
+            parsed = json.loads(raw_response.strip())
+        except json.JSONDecodeError:
+            logger.warning(
+                "AnswerGenerator: Instant response was not valid JSON, falling back to retrieval. "
+                "Raw response: %s", raw_response,
+            )
+            return None
+
+        answer = parsed.get("answer")
+        if answer is None:
+            return None
+
+        used_history_indices = parsed.get("answer")
+        if used_history_indices is None:
+            return None
+
+        logger.info(f"The instant response from the LLM is: {used_history_indices}")
+
+        return answer.strip()
+
+def _build_history_text(history: Optional[List[MessageSchema]]) -> str:
+    if not history:
+        return ""
+    lines = []
+    for i, turn in enumerate(history):
+        line = f"[{i}] {turn.role}: {turn.content.strip()}"
+        if turn.nodes:
+            labels = [n.get("label", "") for n in turn.nodes if n.get("label")]
+            if labels:
+                line += f"\n    Related entities: {', '.join(labels)}"
+        lines.append(line)
+    return "\n".join(lines) + "\n"

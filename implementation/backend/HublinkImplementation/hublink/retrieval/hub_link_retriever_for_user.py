@@ -82,6 +82,7 @@ class HubLinkRetrieverForUser(KnowledgeGraphRetriever):
             llm_config: LLMConfig,
             topic_entity_id: Optional[str] = None,
             use_direct_final_answer: bool = False,
+            cancel_event: Optional[threading.Event] = None,
             ) -> RetrievalAnswer:
         """
         Main method to query the retriever with optional per-query settings overrides.
@@ -131,7 +132,7 @@ class HubLinkRetrieverForUser(KnowledgeGraphRetriever):
         else:
             strategy = DirectRetrievalStrategy(retrieval_data=retrieval_data)
 
-        return strategy.retrieval(query_text)
+        return strategy.retrieval(query_text, cancel_event)
 
     @override
     def retrieve_knowledge(

@@ -1,3 +1,4 @@
+import threading
 from typing import List, Optional, Tuple
 from typing_extensions import override
 
@@ -29,7 +30,7 @@ class TraversalRetrievalStrategy(BaseRetrievalStrategy):
         self.topic_entity_id = topic_entity_id
 
     @override
-    def _run_retrieval(self, processed_question: ProcessedQuestion) -> Optional[RetrievalAnswer]:
+    def _run_retrieval(self, processed_question: ProcessedQuestion, cancel_event: Optional[threading.Event] = None) -> Optional[RetrievalAnswer]:
         """
         This is the main loop of the retrieval strategy. First all HubPaths of the current
         level (the depth from the topic entity to the current traversal) are retrieved.
@@ -79,6 +80,8 @@ class TraversalRetrievalStrategy(BaseRetrievalStrategy):
                 logger.debug("No more entities to traverse")
                 break
 
+            if cancel_event is not None and cancel_event.is_set():
+                return None
             # Get the Hub candidates that are reachable from the root entities on the current level
             candidate_hubs, next_traversal_candidates = self._get_hubs_at_current_level(
                 processed_question=processed_question,
@@ -119,6 +122,9 @@ class TraversalRetrievalStrategy(BaseRetrievalStrategy):
             if len(partial_hub_answers) > 0:
                 logger.debug("Found answers in hubs: %s", [
                              answer.hub_answer for answer in partial_hub_answers])
+
+                if cancel_event is not None and cancel_event.is_set():
+                    return None
 
                 final_answer = self.answer_generator.get_final_answer(
                     question=processed_question.question,

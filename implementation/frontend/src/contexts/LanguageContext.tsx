@@ -68,6 +68,8 @@ const translations: Record<Language, Record<string, string>> = {
     'chat.startConversation': 'Start a conversation',
     'chat.retrievingAnswer': 'Retrieving answer...',
     'chat.step.input_validation': 'Validating input...',
+    'chat.step.checking_instant_response': 'Checking instant response...',
+    'chat.step.instant_response': 'Generating instant response...',
     'chat.step.retrieving': 'Searching knowledge graph...',
     'chat.step.preparing': 'Preparing research artifacts...',
     'chat.step.analyzing': 'Analyzing research artifacts...',

@@ -1,3 +1,4 @@
+import threading
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 import ast
@@ -84,20 +85,24 @@ class BaseRetrievalStrategy(ABC):
             llm=self.llm_adapter
         )
 
-    def retrieval(self, question: str) -> Optional[RetrievalAnswer]:
+    def retrieval(self, question: str, cancel_event: Optional[threading.Event] = None) -> Optional[RetrievalAnswer]:
         """
         Retrieves the answer for a question using the strategy.
 
         Args:
             question (str): The question to retrieve the answer for.
+            cancel_event (Optional[threading.Event]): Cancling of retrieval process
         """
         processed_question = self._process_question(question)
         if not processed_question:
             return None
-        return self._run_retrieval(processed_question)
+        if cancel_event is not None and cancel_event.is_set():
+            logger.info("Canceling after: Retrieval")
+            return None
+        return self._run_retrieval(processed_question, cancel_event)
 
     @abstractmethod
-    def _run_retrieval(self, processed_question: ProcessedQuestion) -> Optional[RetrievalAnswer]:
+    def _run_retrieval(self, processed_question: ProcessedQuestion, cancel_event: Optional[threading.Event] = None) -> Optional[RetrievalAnswer]:
         """
         The main retrieval function that is called by the retrieval method.
         This function has to be implemented by the subclass.

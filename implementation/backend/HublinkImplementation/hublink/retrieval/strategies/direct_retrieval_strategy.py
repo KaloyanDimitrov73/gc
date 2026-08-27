@@ -1,3 +1,4 @@
+import threading
 from typing import List, Optional
 from typing_extensions import override
 
@@ -21,13 +22,17 @@ class DirectRetrievalStrategy(BaseRetrievalStrategy):
     """
 
     @override
-    def _run_retrieval(self, processed_question: ProcessedQuestion) -> Optional[RetrievalAnswer]:
+    def _run_retrieval(self, processed_question: ProcessedQuestion, cancel_event: Optional[threading.Event] = None) -> Optional[RetrievalAnswer]:
         """Runs the main loop of the retrieval strategy."""
 
         logger.info("Searching candidate hubs")
         self.progress_handler.add_task(string_id="candidate_hub_search", description="Searching candidate hubs", total=1, reset=True)
         candidate_hubs = self._find_candidate_hubs(processed_question)
         self.progress_handler.finish_by_string_id("candidate_hub_search")
+
+        if cancel_event is not None and cancel_event.is_set():
+            logger.info("Canceling after: Searching candidate hubs")
+            return None
 
         logger.info("Filling paths")
         self.progress_handler.add_task(string_id="path_filling", description="Filling paths", total=len(candidate_hubs), reset=True)
@@ -42,6 +47,10 @@ class DirectRetrievalStrategy(BaseRetrievalStrategy):
             candidate_hubs=candidate_hubs
         )
 
+        if cancel_event is not None and cancel_event.is_set():
+            logger.info("Canceling after: Filling paths")
+            return None
+
         logger.info("Pruning hubs sorted by their weighted hub score")
         self.progress_handler.add_task(string_id="hub_pruning", description="Pruning hubs", total=1, reset=True)
         filtered_candidates = self._prune_hubs(
@@ -49,6 +58,10 @@ class DirectRetrievalStrategy(BaseRetrievalStrategy):
             alpha=self.settings.path_weight_alpha,
         )
         self.progress_handler.finish_by_string_id("hub_pruning")
+
+        if cancel_event is not None and cancel_event.is_set():
+            logger.info("Canceling after: Pruning hubs")
+            return None
 
         logger.info("Generate partial answers")
 
