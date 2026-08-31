@@ -2,14 +2,17 @@
 Orchestration service for retrieval and guardrails workflows.
 """
 import logging
+import threading
 from dataclasses import dataclass
 from typing import AsyncIterator, List, Optional, Dict, Any
+
+import asyncio as _asyncio
 
 from backend.app.modules.guardrails.application.service import GuardrailsService
 from backend.app.modules.qa.infrastructure.hublink.hublink_service import (
     HubLinkService,
 )
-from backend.app.contracts.schemas import GraphNode
+from backend.app.contracts.schemas import GraphNode, MessageSchema
 from backend.app.shared.exceptions import AppError, InputRejectedError, ServiceUnavailableError
 
 logger = logging.getLogger(__name__)
@@ -95,6 +98,7 @@ class RetrievalService:
         number_of_hubs: int,
         topic_entity_id: Optional[str] = None,
         use_direct_final_answer: bool = False,
+        conversation_history: Optional[List[MessageSchema]],
     ) -> AsyncIterator[Dict[str, Any]]:
         """
         Async generator that yields pipeline progress events and a final complete event.
@@ -104,7 +108,7 @@ class RetrievalService:
                           "sources": list, "guardrails_warning": str | None}
         Error events:    {"type": "error", "code": str, "detail": str}
         """
-        yield {"type": "progress", "step": "input_validation", "percent": 10}
+        yield {"type": "progress", "step": "input_validation", "percent": 5}
 
         is_valid, rejection_reason = await self._guardrails_service.validate_input(question)
         if not is_valid:
@@ -123,11 +127,20 @@ class RetrievalService:
             }
             return
 
-        yield {"type": "progress", "step": "retrieving", "percent": 10,
+        yield {"type": "progress", "step": "checking_instant_response", "percent": 10,
                "hubCompleted": None, "hubTotal": None}
 
-        import asyncio as _asyncio
+
         progress_queue: _asyncio.Queue = _asyncio.Queue()
+        cancel_event = threading.Event()
+
+        history_text = _build_history_text(conversation_history)
+
+        instant_task = _asyncio.create_task(
+            _asyncio.to_thread(
+                self._hublink_service.get_instant_response, question, history_text
+            )
+        )
 
         query_task = _asyncio.create_task(
             self._hublink_service.query_streaming(
@@ -138,6 +151,8 @@ class RetrievalService:
                 topic_entity_id=topic_entity_id,
                 use_direct_final_answer=use_direct_final_answer,
                 progress_queue=progress_queue,
+                conversation_history=history_text,
+                cancel_event=cancel_event,
             )
         )
 
@@ -152,12 +167,35 @@ class RetrievalService:
             }
 
         # Drain the progress queue while HubLink runs in its thread
-        while not query_task.done():
-            await _asyncio.sleep(0.1)
+        instant_answer: Optional[str] = None
+        instant_checked = False
+
+        pending = {query_task, instant_task}
+
+        while pending:
+            done, pending = await _asyncio.wait(
+                pending, timeout=0.1, return_when=_asyncio.FIRST_COMPLETED
+            )
+
             while not progress_queue.empty():
                 evt = progress_queue.get_nowait()
                 if evt and evt.get("type") == "hub_progress":
                     yield _queue_to_progress(evt)
+
+            if instant_task in done and not instant_checked:
+                instant_checked = True
+                instant_answer, sources = instant_task.result()
+
+                if instant_answer is not None:
+                    async for evt in self._finish_via_instant_answer(
+                            instant_answer, sources, query_task, instant_task, cancel_event, conversation_history
+                    ):
+                        yield evt
+                    return
+
+            if query_task in done:
+                break
+
 
         # Final drain — events that arrived in the last tick
         while not progress_queue.empty():
@@ -165,9 +203,53 @@ class RetrievalService:
             if evt and evt.get("type") == "hub_progress":
                 yield _queue_to_progress(evt)
 
+        async for evt in self._finish_via_query_task(query_task, instant_task):
+            yield evt
+
+    async def _finish_via_instant_answer(
+        self, instant_answer: str, sources: Optional[List[int]], query_task, instant_task, cancel_event: threading.Event, conversation_history: Optional[List[MessageSchema]]
+    ) -> AsyncIterator[Dict[str, Any]]:
+        cancel_event.set()
+        query_task.cancel()
+        nodes = []
+
+        try:
+            await query_task
+        except _asyncio.CancelledError:
+            pass
+
+        yield {"type": "progress", "step": "instant_response", "percent": 90,
+               "hubCompleted": None, "hubTotal": None}
+
+        if sources:
+            for i in sources:
+                try:
+                    idx = int(i)
+                except (ValueError, TypeError) as e:
+                    logger.warning(f"Invalid source index {i!r}: {e}")
+                    continue
+
+                if 0 <= idx < len(conversation_history):
+                    nodes.extend(conversation_history[idx].nodes)
+                else:
+                    logger.warning(f"Source index out of range: {idx}")
+
+
+        answer, validation_passed, warning = await self._guardrails_service.validate_output(instant_answer)
+        guardrails_warning = None if validation_passed else warning
+
+        yield {"type": "progress", "step": "saving", "percent": 95,
+               "hubCompleted": None, "hubTotal": None}
+
+        _assert_tasks_finished(query_task, instant_task, where="instant_answer_path")
+        yield {"type": "complete", "answer": answer, "nodes": nodes, "sources": [],
+               "guardrails_warning": guardrails_warning}
+
+    async def _finish_via_query_task(self, query_task, instant_task) -> AsyncIterator[Dict[str, Any]]:
         try:
             answer, nodes, sources = await query_task
         except Exception as e:
+            _assert_tasks_finished(query_task, instant_task, where="query_task_exception")
             yield {"type": "error", "code": "internal_error", "detail": str(e)}
             return
 
@@ -180,6 +262,7 @@ class RetrievalService:
         yield {"type": "progress", "step": "saving", "percent": 95,
                "hubCompleted": None, "hubTotal": None}
 
+        _assert_tasks_finished(query_task, instant_task, where="retrieval_completion")
         yield {
             "type": "complete",
             "answer": answer,
@@ -188,6 +271,8 @@ class RetrievalService:
             "guardrails_warning": guardrails_warning,
         }
 
+
+
     def get_status(self) -> Dict[str, Any]:
         """
         Return aggregated status for retrieval orchestration.
@@ -195,3 +280,26 @@ class RetrievalService:
         status = self._hublink_service.get_status()
         status["guardrails_available"] = self._guardrails_service.is_available()
         return status
+
+def _assert_tasks_finished(*tasks: _asyncio.Task, where: str) -> None:
+    unfinished = [t for t in tasks if not t.done()]
+    if unfinished:
+        logger.error(
+            "ask_streaming exiting at '%s' with %d unfinished task(s): %s",
+            where, len(unfinished), unfinished,
+        )
+    else:
+        logger.info("ask_streaming exiting at '%s': all tasks finished.", where)
+
+def _build_history_text(history: Optional[List[MessageSchema]]) -> str:
+    if not history:
+        return ""
+    lines = []
+    for i, turn in enumerate(history):
+        line = f"[{i}] {turn.role}: {turn.content.strip()}"
+        if turn.nodes:
+            labels = [n.get("label", "") for n in turn.nodes if n.get("label")]
+            if labels:
+                line += f"\n    Related entities: {', '.join(labels)}"
+        lines.append(line)
+    return "\n".join(lines) + "\n"

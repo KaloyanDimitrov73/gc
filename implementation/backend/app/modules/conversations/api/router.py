@@ -14,31 +14,12 @@ from backend.app.contracts.schemas import (
     ConversationSchema,
     ConversationDetailSchema,
 )
-from backend.app.core.dependencies import get_conversation_service
+from backend.app.core.dependencies import get_conversation_service, get_or_create_user_id
 from backend.app.modules.conversations.application.service import ConversationService
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/conversations", tags=["Conversations"])
-
-_USER_ID_COOKIE = "user_id"
-_COOKIE_MAX_AGE = 60 * 60 * 24 * 365  # 1 year
-
-
-def _get_or_create_user_id(request: Request, response: Response) -> str:
-    """Read the user_id cookie, or create and set a fresh one if absent."""
-    user_id = request.cookies.get(_USER_ID_COOKIE)
-    if not user_id:
-        user_id = str(uuid.uuid4())
-        response.set_cookie(
-            key=_USER_ID_COOKIE,
-            value=user_id,
-            max_age=_COOKIE_MAX_AGE,
-            httponly=True,
-            samesite="lax",
-        )
-    return user_id
-
 
 @router.get(
     "/",
@@ -47,7 +28,7 @@ def _get_or_create_user_id(request: Request, response: Response) -> str:
     description="Returns all conversations for the current user ordered by most recently updated first.",
 )
 async def list_conversations(
-    user_id: str = Depends(_get_or_create_user_id),
+    user_id: str = Depends(get_or_create_user_id),
     conversation_svc: ConversationService = Depends(get_conversation_service),
 ) -> List[ConversationSchema]:
     return await conversation_svc.list_conversations(user_id=user_id)
@@ -62,7 +43,7 @@ async def list_conversations(
 )
 async def create_conversation(
     body: CreateConversationRequest,
-    user_id: str = Depends(_get_or_create_user_id),
+    user_id: str = Depends(get_or_create_user_id),
     conversation_svc: ConversationService = Depends(get_conversation_service),
 ) -> ConversationSchema:
     return await conversation_svc.create_conversation(user_id=user_id, title=body.title)
@@ -77,7 +58,7 @@ async def create_conversation(
 async def update_conversation(
     conversation_id: str,
     body: UpdateConversationRequest,
-    user_id: str = Depends(_get_or_create_user_id),
+    user_id: str = Depends(get_or_create_user_id),
     conversation_svc: ConversationService = Depends(get_conversation_service),
 ) -> ConversationSchema:
     updated = await conversation_svc.update_title(conversation_id, user_id=user_id, title=body.title)
@@ -95,7 +76,7 @@ async def update_conversation(
 )
 async def get_conversation(
     conversation_id: str,
-    user_id: str = Depends(_get_or_create_user_id),
+    user_id: str = Depends(get_or_create_user_id),
     conversation_svc: ConversationService = Depends(get_conversation_service),
 ) -> ConversationDetailSchema:
     detail = await conversation_svc.get_conversation_detail(conversation_id, user_id=user_id)
@@ -111,7 +92,7 @@ async def get_conversation(
     description="Deletes every conversation belonging to the current user.",
 )
 async def delete_all_conversations(
-    user_id: str = Depends(_get_or_create_user_id),
+    user_id: str = Depends(get_or_create_user_id),
     conversation_svc: ConversationService = Depends(get_conversation_service),
 ) -> None:
     await conversation_svc.delete_all_conversations(user_id=user_id)
@@ -125,7 +106,7 @@ async def delete_all_conversations(
 )
 async def delete_conversation(
     conversation_id: str,
-    user_id: str = Depends(_get_or_create_user_id),
+    user_id: str = Depends(get_or_create_user_id),
     conversation_svc: ConversationService = Depends(get_conversation_service),
 ) -> None:
     deleted = await conversation_svc.delete_conversation(conversation_id, user_id=user_id)

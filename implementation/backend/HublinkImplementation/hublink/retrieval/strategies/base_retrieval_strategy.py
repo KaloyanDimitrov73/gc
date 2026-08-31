@@ -1,3 +1,4 @@
+import threading
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 import ast
@@ -84,20 +85,25 @@ class BaseRetrievalStrategy(ABC):
             llm=self.llm_adapter
         )
 
-    def retrieval(self, question: str) -> Optional[RetrievalAnswer]:
+    def retrieval(self, question: str, conversation_history: Optional[str] = None, cancel_event: Optional[threading.Event] = None) -> Optional[RetrievalAnswer]:
         """
         Retrieves the answer for a question using the strategy.
 
         Args:
             question (str): The question to retrieve the answer for.
+            conversation_history: The last chat messages
+            cancel_event (Optional[threading.Event]): Canceling of retrieval process
         """
-        processed_question = self._process_question(question)
+        processed_question = self._process_question(question, conversation_history)
         if not processed_question:
             return None
-        return self._run_retrieval(processed_question)
+        if cancel_event is not None and cancel_event.is_set():
+            logger.info("Canceling after: Retrieval")
+            return None
+        return self._run_retrieval(processed_question, conversation_history, cancel_event)
 
     @abstractmethod
-    def _run_retrieval(self, processed_question: ProcessedQuestion) -> Optional[RetrievalAnswer]:
+    def _run_retrieval(self, processed_question: ProcessedQuestion, conversation_history: Optional[List[str]] = None, cancel_event: Optional[threading.Event] = None) -> Optional[RetrievalAnswer]:
         """
         The main retrieval function that is called by the retrieval method.
         This function has to be implemented by the subclass.
@@ -300,7 +306,7 @@ class BaseRetrievalStrategy(ABC):
         relevant_hubs = processed_hub_data[:self.settings.number_of_hubs]
         return relevant_hubs
 
-    def _process_question(self, question: str) -> ProcessedQuestion:
+    def _process_question(self, question: str, conversation_history: Optional[str] = None) -> ProcessedQuestion:
         """
         Prepares the question for the retrieval process. If the option is enabled,
         it extracts the components of the question and embeds them.
@@ -316,7 +322,7 @@ class BaseRetrievalStrategy(ABC):
         """
         components = []
         if self.settings.extract_question_components:
-            components = self._get_question_components(question)
+            components = self._get_question_components(question, conversation_history)
 
         logger.info("Embedding question")
 
@@ -378,7 +384,7 @@ class BaseRetrievalStrategy(ABC):
                 result_paths.append(path_with_score)
         return result_paths
 
-    def _get_question_components(self, question: str) -> List[str]:
+    def _get_question_components(self, question: str, conversation_history: Optional[List[str]] = None) -> List[str]:
         """
         This method calls an LLM to extract the components of the question.
         
@@ -395,12 +401,12 @@ class BaseRetrievalStrategy(ABC):
         parser = StrOutputParser()
         prompt = PromptTemplate(
             template=prompt_text,
-            input_variables=["question"]
+            input_variables=["question", "chat_history"]
         )
 
         chain = prompt | self.llm_adapter.llm | parser
         response = chain.invoke(
-            {"question": question},
+            {"question": question, "chat_history": conversation_history},
             config=_llm_call_config("hublink.question_component_extraction"))
         logger.debug(f"Response from LLM for Question Components: {response}")
 

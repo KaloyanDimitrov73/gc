@@ -1,5 +1,5 @@
 '''All Depends() factories'''
-
+import uuid
 from typing import Optional
 import threading
 
@@ -188,7 +188,7 @@ def get_retrieval_service_if_ready() -> "RetrievalService | None":
 
 # ConversationService is request-scoped (depends on a per-request AsyncSession) —
 # no singleton pattern needed.
-from fastapi import Depends  # noqa: E402 — placed here to avoid circular imports
+from fastapi import Depends, Request, Response # noqa: E402 — placed here to avoid circular imports
 from sqlalchemy.ext.asyncio import AsyncSession
 from backend.app.modules.conversations.infrastructure.database.db import get_db
 from backend.app.modules.conversations.infrastructure.database.conversation_repo import ConversationRepository
@@ -210,3 +210,21 @@ def get_llm_config_registry() -> LLMConfigRegistry:
     if _llm_config_registry is None:
         _llm_config_registry = LLMConfigRegistry()
     return _llm_config_registry
+
+_USER_ID_COOKIE = "user_id"
+_COOKIE_MAX_AGE = 60 * 60 * 24 * 365  # 1 year
+
+
+def get_or_create_user_id(request: Request, response: Response) -> str:
+    """Read the user_id cookie, or create and set a fresh one if absent."""
+    user_id = request.cookies.get(_USER_ID_COOKIE)
+    if not user_id:
+        user_id = str(uuid.uuid4())
+        response.set_cookie(
+            key=_USER_ID_COOKIE,
+            value=user_id,
+            max_age=_COOKIE_MAX_AGE,
+            httponly=True,
+            samesite="lax",
+        )
+    return user_id

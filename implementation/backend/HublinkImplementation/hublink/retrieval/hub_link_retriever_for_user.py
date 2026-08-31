@@ -16,6 +16,7 @@ from typing import Optional, List, Dict, Any
 from typing_extensions import override
 from copy import deepcopy
 
+from backend.app.contracts.schemas import MessageSchema
 from core.data.models import RetrievalAnswer
 from language_model import LLMProvider
 from language_model.config.llm_config import LLMConfig
@@ -82,6 +83,8 @@ class HubLinkRetrieverForUser(KnowledgeGraphRetriever):
             llm_config: LLMConfig,
             topic_entity_id: Optional[str] = None,
             use_direct_final_answer: bool = False,
+            conversation_history: Optional[List[str]] = None,
+            cancel_event: Optional[threading.Event] = None,
             ) -> RetrievalAnswer:
         """
         Main method to query the retriever with optional per-query settings overrides.
@@ -92,6 +95,9 @@ class HubLinkRetrieverForUser(KnowledgeGraphRetriever):
             number_of_hubs (int): Number of hubs to retrieve.
             retrieval_mode (str): The retrieval mode ('direct' or 'graph').
             llm_config (LLMConfig): Full LLM configuration for answer generation.
+            use_direct_final_answer: Skipping per-hub partial answer generation.
+            conversation_history: The last chat messages
+            cancel_event: Canceling of retrieval process
 
         Returns:
             RetrievalAnswer: An object containing both the retrieved knowledge and the final answer.
@@ -131,7 +137,7 @@ class HubLinkRetrieverForUser(KnowledgeGraphRetriever):
         else:
             strategy = DirectRetrievalStrategy(retrieval_data=retrieval_data)
 
-        return strategy.retrieval(query_text)
+        return strategy.retrieval(query_text, conversation_history, cancel_event)
 
     @override
     def retrieve_knowledge(
