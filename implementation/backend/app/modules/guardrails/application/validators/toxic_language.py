@@ -19,9 +19,11 @@ class ToxicLanguageValidator:
         try:
             ensure_nltk_resources()
             from guardrails import Guard
-            from guardrails.hub import ToxicLanguage
+            from guardrails_ai.toxic_language import ToxicLanguage
 
-            self._guard = Guard().use(ToxicLanguage(on_fail="noop"))
+            self._guard = Guard().use(
+                ToxicLanguage(on_fail="noop", use_local=True)
+            )
             self._available = True
             logger.info("ToxicLanguageValidator initialized successfully")
         except Exception as e:

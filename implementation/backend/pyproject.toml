@@ -20,6 +20,9 @@ dependencies = [
   "rich>=13,<14",
   "sqlalchemy==2.0.48",
   "aiosqlite==0.22.1",
+  "guardrails-ai-toxic-language",
+  "guardrails-ai-detect-jailbreak",
+  "guardrails-ai-gibberish-text",
 ]
 
 [project.optional-dependencies]
@@ -34,7 +37,7 @@ where = [".."]
 include = ["backend*"]
 
 [tool.pytest.ini_options]
-testpaths = ["tests", "HublinkImplementation/tests"]
+testpaths = ["tests"]
 pythonpath = [".."]
 addopts = "-v -s"
 asyncio_mode = "auto"
