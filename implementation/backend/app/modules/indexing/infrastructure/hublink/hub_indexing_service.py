@@ -64,7 +64,7 @@ class HubIndexingService:
         return HubIndexerOptions.from_settings(
             self.hublink_settings,
             self.hub_storage_manager,
-            config.llm_config,
+            config.index_llm_config,
             self.hublink_settings.embedding_config
         )
 
