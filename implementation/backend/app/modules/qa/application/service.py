@@ -134,9 +134,11 @@ class RetrievalService:
         progress_queue: _asyncio.Queue = _asyncio.Queue()
         cancel_event = threading.Event()
 
+        history_text = _build_history_text(conversation_history)
+
         instant_task = _asyncio.create_task(
             _asyncio.to_thread(
-                self._hublink_service.get_instant_response, question, conversation_history
+                self._hublink_service.get_instant_response, question, history_text
             )
         )
 
@@ -149,6 +151,7 @@ class RetrievalService:
                 topic_entity_id=topic_entity_id,
                 use_direct_final_answer=use_direct_final_answer,
                 progress_queue=progress_queue,
+                conversation_history=history_text,
                 cancel_event=cancel_event,
             )
         )
@@ -181,11 +184,11 @@ class RetrievalService:
 
             if instant_task in done and not instant_checked:
                 instant_checked = True
-                instant_answer = instant_task.result()
+                instant_answer, sources = instant_task.result()
 
                 if instant_answer is not None:
                     async for evt in self._finish_via_instant_answer(
-                            instant_answer, query_task, instant_task, cancel_event
+                            instant_answer, sources, query_task, instant_task, cancel_event, conversation_history
                     ):
                         yield evt
                     return
@@ -204,10 +207,12 @@ class RetrievalService:
             yield evt
 
     async def _finish_via_instant_answer(
-        self, instant_answer: str, query_task, instant_task, cancel_event: threading.Event,
+        self, instant_answer: str, sources: Optional[List[int]], query_task, instant_task, cancel_event: threading.Event, conversation_history: Optional[List[MessageSchema]]
     ) -> AsyncIterator[Dict[str, Any]]:
         cancel_event.set()
         query_task.cancel()
+        nodes = []
+
         try:
             await query_task
         except _asyncio.CancelledError:
@@ -216,6 +221,20 @@ class RetrievalService:
         yield {"type": "progress", "step": "instant_response", "percent": 90,
                "hubCompleted": None, "hubTotal": None}
 
+        if sources:
+            for i in sources:
+                try:
+                    idx = int(i)
+                except (ValueError, TypeError) as e:
+                    logger.warning(f"Invalid source index {i!r}: {e}")
+                    continue
+
+                if 0 <= idx < len(conversation_history):
+                    nodes.extend(conversation_history[idx].nodes)
+                else:
+                    logger.warning(f"Source index out of range: {idx}")
+
+
         answer, validation_passed, warning = await self._guardrails_service.validate_output(instant_answer)
         guardrails_warning = None if validation_passed else warning
 
@@ -223,7 +242,7 @@ class RetrievalService:
                "hubCompleted": None, "hubTotal": None}
 
         _assert_tasks_finished(query_task, instant_task, where="instant_answer_path")
-        yield {"type": "complete", "answer": answer, "nodes": [], "sources": [],
+        yield {"type": "complete", "answer": answer, "nodes": nodes, "sources": [],
                "guardrails_warning": guardrails_warning}
 
     async def _finish_via_query_task(self, query_task, instant_task) -> AsyncIterator[Dict[str, Any]]:
@@ -271,3 +290,16 @@ def _assert_tasks_finished(*tasks: _asyncio.Task, where: str) -> None:
         )
     else:
         logger.info("ask_streaming exiting at '%s': all tasks finished.", where)
+
+def _build_history_text(history: Optional[List[MessageSchema]]) -> str:
+    if not history:
+        return ""
+    lines = []
+    for i, turn in enumerate(history):
+        line = f"[{i}] {turn.role}: {turn.content.strip()}"
+        if turn.nodes:
+            labels = [n.get("label", "") for n in turn.nodes if n.get("label")]
+            if labels:
+                line += f"\n    Related entities: {', '.join(labels)}"
+        lines.append(line)
+    return "\n".join(lines) + "\n"

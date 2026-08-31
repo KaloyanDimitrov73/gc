@@ -22,7 +22,7 @@ class DirectRetrievalStrategy(BaseRetrievalStrategy):
     """
 
     @override
-    def _run_retrieval(self, processed_question: ProcessedQuestion, cancel_event: Optional[threading.Event] = None) -> Optional[RetrievalAnswer]:
+    def _run_retrieval(self, processed_question: ProcessedQuestion, conversation_history: Optional[List[str]] = None, cancel_event: Optional[threading.Event] = None) -> Optional[RetrievalAnswer]:
         """Runs the main loop of the retrieval strategy."""
 
         logger.info("Searching candidate hubs")
@@ -83,7 +83,8 @@ class DirectRetrievalStrategy(BaseRetrievalStrategy):
             final_answer = self.answer_generator.get_final_answer(
                 question=processed_question.question,
                 hub_answers=partial_answers,
-                settings=self.settings
+                settings=self.settings,
+                conversation_history=conversation_history
             )
             if final_answer:
                 logger.debug("Final answer found: %s",

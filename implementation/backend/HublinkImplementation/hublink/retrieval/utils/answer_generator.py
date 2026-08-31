@@ -83,7 +83,9 @@ class AnswerGenerator:
     def get_final_answer(self,
                          question: str,
                          hub_answers: List[HubAnswer],
-                         settings: HubLinkSettings) -> Optional[RetrievalAnswer]:
+                         settings: HubLinkSettings,
+                         conversation_history: Optional[str] = None,
+                         ) -> Optional[RetrievalAnswer]:
         """
         Generates the final answer from the partial answers of the hubs.
 
@@ -121,7 +123,7 @@ class AnswerGenerator:
         parser = StrOutputParser()
         prompt = PromptTemplate(
             template=prompt_text,
-            input_variables=["question", "partial_answers"],
+            input_variables=["question", "partial_answers", "chat_history"],
         )
 
 
@@ -131,7 +133,7 @@ class AnswerGenerator:
         # Run the Query
         chain = prompt | self.llm.llm | parser
         response = chain.invoke(
-            {"question": question, "partial_answers": partial_answers},
+            {"question": question, "partial_answers": partial_answers, "chat_history": conversation_history},
             config=_llm_call_config("hublink.final_answer_generation"))
 
         # Step 2 complete: LLM answered
@@ -631,7 +633,7 @@ class AnswerGenerator:
     def generate_instant_response(
         self,
         question: str,
-        history: Optional[List[MessageSchema]] = None,
+        history_text: Optional[str] = None,
     ) -> Optional[InstantAnswer]:
         """
         Attempts to answer the question directly via LLM, without triggering retrieval.
@@ -644,9 +646,7 @@ class AnswerGenerator:
 
         Args:
             question (str): The input question.
-            history (Optional[List[Message]]): Prior conversation turns, if any.
-            cancel_event (Optional[threading.Event]): Abort signal, checked before
-                the LLM call.
+            history_text (Optional[str]): Prior conversation turns, if any.
 
         Returns:
             Optional[InstantAnswer]: The direct answer, or None if retrieval is needed.
@@ -664,11 +664,6 @@ class AnswerGenerator:
 
         prompt_text, _, _ = self.prompt_provider.get_prompt(
             "novel_retriever/instant_answer_generation_prompt.yaml")
-
-        history_text = ""
-        if history:
-            for turn in history:
-                history_text += f"{turn.role}: {turn.content}\n"
 
         parser = StrOutputParser()
         prompt = PromptTemplate(
@@ -706,8 +701,8 @@ class AnswerGenerator:
     def generate_instant_history_response(
         self,
         question: str,
-        history: Optional[List[MessageSchema]] = None,
-    ) -> Optional[InstantAnswer]:
+        history_text: Optional[str] = None,
+    ) -> Tuple[Optional[str], Optional[List[int]]]:
         """
         Attempts to answer the question directly via LLM, without triggering retrieval.
 
@@ -720,16 +715,14 @@ class AnswerGenerator:
         Args:
             question (str): The input question.
             history (Optional[List[Message]]): Prior conversation turns, if any.
-            cancel_event (Optional[threading.Event]): Abort signal, checked before
-                the LLM call.
 
         Returns:
-            Optional[InstantAnswer]: The direct answer, or None if retrieval is needed.
+           Tuple[Optional[str], Optional[List[int]]]: The direct answer with source indices, or None if retrieval is needed.
         """
 
         _ph = ProgressHandler()
         _ph.add_task(
-            string_id="instant_response_generation",
+            string_id="generate_instant_history_response",
             description="Checking for instant answer",
             total=1,
             reset=True,
@@ -739,8 +732,6 @@ class AnswerGenerator:
 
         prompt_text, _, _ = self.prompt_provider.get_prompt(
             "novel_retriever/reuse_from_history_prompt.yaml")
-
-        history_text = _build_history_text(history)
 
         parser = StrOutputParser()
         prompt = PromptTemplate(
@@ -753,7 +744,7 @@ class AnswerGenerator:
             {"question": question, "history": history_text},
             config=_llm_call_config("hublink.instant_response_generation"))
 
-        _ph.finish_by_string_id("instant_response_generation")
+        _ph.finish_by_string_id("generate_instant_history_response")
 
         logger.debug(f"The instant-response history context was: {history_text}")
         logger.info(f"The raw response from the LLM is: {raw_response}")
@@ -765,29 +756,17 @@ class AnswerGenerator:
                 "AnswerGenerator: Instant response was not valid JSON, falling back to retrieval. "
                 "Raw response: %s", raw_response,
             )
-            return None
+            return None, None
 
         answer = parsed.get("answer")
         if answer is None:
-            return None
+            return None, None
 
-        used_history_indices = parsed.get("answer")
+        used_history_indices = parsed.get("used_history_indices")
         if used_history_indices is None:
-            return None
+            return None, None
 
-        logger.info(f"The instant response from the LLM is: {used_history_indices}")
+        logger.info(f"The instant response from the LLM is: {answer}")
+        logger.info(f"The sources: {used_history_indices}")
 
-        return answer.strip()
-
-def _build_history_text(history: Optional[List[MessageSchema]]) -> str:
-    if not history:
-        return ""
-    lines = []
-    for i, turn in enumerate(history):
-        line = f"[{i}] {turn.role}: {turn.content.strip()}"
-        if turn.nodes:
-            labels = [n.get("label", "") for n in turn.nodes if n.get("label")]
-            if labels:
-                line += f"\n    Related entities: {', '.join(labels)}"
-        lines.append(line)
-    return "\n".join(lines) + "\n"
+        return answer.strip(), used_history_indices

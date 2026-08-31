@@ -2,6 +2,7 @@
 Service layer for interacting with the HubLink implementation.
 Handles the integration between FastAPI and the HubLink retrieval system.
 """
+from concurrent.futures import ThreadPoolExecutor
 from typing import Optional, List, Tuple, Dict, Any
 import asyncio
 import logging
@@ -164,6 +165,7 @@ class HubLinkService:
         number_of_hubs: int,
         topic_entity_id: Optional[str] = None,
         use_direct_final_answer: bool = False,
+        conversation_history: Optional[str] = None,
         cancel_event: Optional[threading.Event] = None,
     ) -> Tuple[str, List[GraphNode], List[str]]:
         """
@@ -175,6 +177,9 @@ class HubLinkService:
             llm_model: LLM model identifier (e.g. 'llama3.1:8b', 'gpt-4o-mini')
             number_of_hubs: Number of hubs to retrieve
             topic_entity_id: Optional topic entity for graph traversal
+            use_direct_final_answer: Skipping per-hub partial answer generation.
+            conversation_history: The last chat messages
+            cancel_event: Canceling of retrieval process
 
         Returns:
             Tuple of (answer_text, graph_nodes, source_identifiers)
@@ -215,6 +220,7 @@ class HubLinkService:
                 llm_config=llm_config,
                 topic_entity_id=topic_entity_id,
                 use_direct_final_answer=use_direct_final_answer,
+                conversation_history=conversation_history,
                 cancel_event=cancel_event
             )
 
@@ -237,6 +243,7 @@ class HubLinkService:
         topic_entity_id: Optional[str] = None,
         use_direct_final_answer: bool = False,
         progress_queue: Optional[asyncio.Queue] = None,
+        conversation_history: Optional[str] = None,
         cancel_event: Optional[threading.Event] = None,
 
     ) -> Tuple[str, List[GraphNode], List[str]]:
@@ -366,6 +373,7 @@ class HubLinkService:
                     llm_config=llm_config,
                     topic_entity_id=topic_entity_id,
                     use_direct_final_answer=use_direct_final_answer,
+                    conversation_history=conversation_history,
                     cancel_event=cancel_event
                 )
 
@@ -410,12 +418,20 @@ class HubLinkService:
 
     def get_instant_response(self,
         question: str,
-        history: Optional[List[MessageSchema]] = None):
-        general_answer = self.answer_generator.generate_instant_response(question, history)
-        history_answer = self.answer_generator.generate_instant_history_response(question, history)
+        history: Optional[str] = None):
+        with ThreadPoolExecutor(max_workers=2) as executor:
+            future_general = executor.submit(
+                self.answer_generator.generate_instant_response, question, history
+            )
+            future_history = executor.submit(
+                self.answer_generator.generate_instant_history_response, question, history
+            )
 
-        if history_answer:
-            return history_answer
-        else:
-            return general_answer
+            general_answer = future_general.result()
+            history_answer, sources = future_history.result()
+
+            if history_answer:
+                return history_answer, sources
+            else:
+                return general_answer, None
 

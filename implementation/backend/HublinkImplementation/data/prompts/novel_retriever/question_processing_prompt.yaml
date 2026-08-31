@@ -1,23 +1,57 @@
 template: >
   ### Task Description:
-  Please analyze the following question and break it down into its key components or claims. 
+  Please analyze the following question and break it down into its key components or claims.
 
   ### Instructions:
-  - Break down the question into its key components or claims.
+  - Step 1 (Relevance Check): Look at the chat history. Decide whether the current question implicitly refers to something mentioned earlier (e.g. "these papers", "that paper", "the latter", "of them", "before/after that year", or any other reference that only makes sense together with prior context). 
+    - If the question is fully self-contained and does NOT depend on the chat history, ignore the chat history completely.
+    - If the question DOES depend on the chat history, identify exactly which entities (e.g. paper titles, authors, publishers, years, topics) from the history are being referenced.
+  - Step 2 (Enrichment): If relevant prior entities were identified in Step 1, resolve the reference and use the EXACT, full names/titles of those entities (e.g. exact paper titles, not "the paper" or "it") as part of the components. Only carry over entities that are actually relevant to answering the current question — do not dump the entire history into the output.
+  - Step 3 (Decomposition): Break down the (possibly enriched) question into its key components or claims, following the style of the examples below.
   - Your output has to be a valid python list of strings.
-  - Do not use any external information, personal opinions, or interpretations beyond the given texts. Do not make any assumptions and do not answer the question.
+  - Do not use any external information, personal opinions, or interpretations beyond the given texts and chat history. Do not make any assumptions and do not answer the question.
   - Do not include any additional explanations or commentary. Just provide the list of components.
 
   ### Examples:
+
+  Chat History: []
   Question: What are the research questions in the paper titled 'Artificial Intelligence in Healthcare'?
   Components: ['Research Questions', 'Artificial Intelligence in Healthcare']
+
+  Chat History: []
   Question: Which publications include the research object 'Architecture Analysis Method'?
   Components: ['Research Object', 'Architecture Analysis Method']
+
+  Chat History: []
   Question: Which papers have been published by SpringerLink in 2020?
   Components: ['Publisher', 'SpringerLink', '2020']
 
+  Chat History:
+  User: Which papers have been published by SpringerLink in 2020?
+  Assistant: ['Deep Learning for Medical Imaging', 'AI Ethics Frameworks', 'Neural Networks in Diagnostics']
+  Question: Which of these have input data available?
+  # Relevant, because "these" refers to the three papers listed above.
+  Components: ['Input data', 'Deep Learning for Medical Imaging', 'AI Ethics Frameworks', 'Neural Networks in Diagnostics']
+
+  Chat History:
+  User: What are the research questions in the paper titled 'Artificial Intelligence in Healthcare'?
+  Assistant: ['RQ1: ...', 'RQ2: ...', 'RQ3: ...']
+  Question: Who are the authors of that paper?
+  # Relevant, because "that paper" refers to 'Artificial Intelligence in Healthcare'.
+  Components: ['Authors', 'Artificial Intelligence in Healthcare']
+
+  Chat History:
+  User: What are the research questions in the paper titled 'Artificial Intelligence in Healthcare'?
+  Assistant: ['RQ1: ...', 'RQ2: ...', 'RQ3: ...']
+  Question: Which papers were published by Elsevier in 2019?
+  # Not relevant, because this question is fully self-contained and does not reference the prior paper.
+  Components: ['Publisher', 'Elsevier', '2019']
+
   ### Start Your Task:
+  Chat History: {chat_history}
   Question: {question}
+  Components:
 
 input_variables:
- - question
+  - question
+  - chat_history

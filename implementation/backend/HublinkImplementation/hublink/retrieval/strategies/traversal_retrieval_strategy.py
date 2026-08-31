@@ -30,7 +30,7 @@ class TraversalRetrievalStrategy(BaseRetrievalStrategy):
         self.topic_entity_id = topic_entity_id
 
     @override
-    def _run_retrieval(self, processed_question: ProcessedQuestion, cancel_event: Optional[threading.Event] = None) -> Optional[RetrievalAnswer]:
+    def _run_retrieval(self, processed_question: ProcessedQuestion,  conversation_history: Optional[List[str]] = None, cancel_event: Optional[threading.Event] = None) -> Optional[RetrievalAnswer]:
         """
         This is the main loop of the retrieval strategy. First all HubPaths of the current
         level (the depth from the topic entity to the current traversal) are retrieved.
@@ -129,7 +129,8 @@ class TraversalRetrievalStrategy(BaseRetrievalStrategy):
                 final_answer = self.answer_generator.get_final_answer(
                     question=processed_question.question,
                     hub_answers=partial_hub_answers,
-                    settings=self.settings
+                    settings=self.settings,
+                    conversation_history=conversation_history,
                 )
 
                 # If a final answer was generated, we return it
