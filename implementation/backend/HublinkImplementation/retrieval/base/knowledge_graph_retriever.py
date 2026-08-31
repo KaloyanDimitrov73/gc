@@ -40,7 +40,8 @@ class KnowledgeGraphRetriever(Retriever, ABC):
         """
         try:
             knowledge_graph_config = kwargs.pop('knowledge_graph_config')
-            llm_config = kwargs.pop('llm_config')
+            index_llm_config = kwargs.pop('index_llm_config')
+            query_llm_config = kwargs.pop('query_llm_config')
         except KeyError as e:
             raise ValueError(f"Missing required parameter: {e.args[0]}") from e
 
@@ -51,7 +52,8 @@ class KnowledgeGraphRetriever(Retriever, ABC):
             return KGRetrievalConfig(
                 retriever_type=retriever_type,
                 knowledge_graph_config=knowledge_graph_config,
-                llm_config=llm_config,
+                index_llm_config=index_llm_config,
+                query_llm_config=query_llm_config,
                 name=name,
                 additional_params=kwargs
             )
@@ -60,7 +62,8 @@ class KnowledgeGraphRetriever(Retriever, ABC):
         return KGRetrievalConfig(
             retriever_type=retriever_type,
             knowledge_graph_config=knowledge_graph_config,
-            llm_config=llm_config,
+            index_llm_config=index_llm_config,
+            query_llm_config=query_llm_config,
             additional_params=kwargs
         )
 

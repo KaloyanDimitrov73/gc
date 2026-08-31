@@ -1,12 +1,9 @@
-﻿from pathlib import Path
-from typing import List, Optional
+﻿from typing import List, Optional
 from pydantic import BaseModel, Field
 from langchain_core.prompts import PromptTemplate
 
-_PROMPTS_DIR = str(Path(__file__).parent.parent / "prompts")
-
 from language_model.base.llm_adapter import LLMAdapter
-from language_model.prompt_provider import PromptProvider
+from implementation.language_model import PromptProvider
 
 from implementation.core.logging import get_logger
 logger = get_logger(__name__)
@@ -41,7 +38,7 @@ class AnswerValidator:
     def __init__(self,
                  llm_adapter: LLMAdapter):
         self.llm_adapter = llm_adapter
-        self.prompt_provider = PromptProvider(prompt_dir=_PROMPTS_DIR)
+        self.prompt_provider = PromptProvider()
 
     def validate_answer(self,
                         prompt_contexts_text: str,

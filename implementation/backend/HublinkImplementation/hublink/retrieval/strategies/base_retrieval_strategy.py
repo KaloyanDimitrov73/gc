@@ -100,7 +100,13 @@ class BaseRetrievalStrategy(ABC):
         if cancel_event is not None and cancel_event.is_set():
             logger.info("Canceling after: Retrieval")
             return None
-        return self._run_retrieval(processed_question, conversation_history, cancel_event)
+        retrieval_answer = self._run_retrieval(processed_question, conversation_history, cancel_event)
+
+        if retrieval_answer is not None:
+            retrieval_answer.extracted_keywords = list(
+                processed_question.keywords
+            )
+        return retrieval_answer
 
     @abstractmethod
     def _run_retrieval(self, processed_question: ProcessedQuestion, conversation_history: Optional[List[str]] = None, cancel_event: Optional[threading.Event] = None) -> Optional[RetrievalAnswer]:
@@ -291,7 +297,14 @@ class BaseRetrievalStrategy(ABC):
         processed_hub_data: List[Hub] = []
         for hub_scoring in hubs:
             scores = [
-                hub_path.score for hub_path in hub_scoring.paths]
+                hub_path.score
+                for hub_path in hub_scoring.paths
+                if hub_path.score is not None
+            ]
+            if not scores:
+                hub_scoring.hub_score = float("-inf")
+                processed_hub_data.append(hub_scoring)
+                continue
             # Compute weights using an exponential function of the scores
             weights = np.exp(alpha * np.array(scores))
             # Compute the weighted average score
@@ -308,21 +321,28 @@ class BaseRetrievalStrategy(ABC):
 
     def _process_question(self, question: str, conversation_history: Optional[str] = None) -> ProcessedQuestion:
         """
-        Prepares the question for the retrieval process. If the option is enabled,
-        it extracts the components of the question and embeds them.
+        Prepares the question for retrieval.
 
-        It also embeds the question itself.
+        When ``extract_question_components`` is enabled, the LLM extracts
+        semantic components and keywords. The components are embedded alongside
+        the original question, while the keywords are stored in the returned
+        processed-question model for downstream use. Keywords are not embedded.
         
         Args:
             question (str): The question to be processed.
             
         Returns:
             ProcessedQuestion: The processed question containing the original question,
-                components, and embeddings.
+                components, sparse routing keywords, and embeddings.
         """
-        components = []
+        extracted_components: List[str] = []
+        keywords: List[str] = []
         if self.settings.extract_question_components:
-            components = self._get_question_components(question, conversation_history)
+            extracted_components, keywords = (
+                self._get_question_components(question, conversation_history)
+            )
+
+        components = extracted_components
 
         logger.info("Embedding question")
 
@@ -336,64 +356,48 @@ class BaseRetrievalStrategy(ABC):
         return ProcessedQuestion(
             question=question,
             components=components,
+            keywords=keywords,
             embeddings=embeddings
         )
 
     def _get_hub_paths_for_hub(self,
                                processed_question: ProcessedQuestion,
-                               hub_id: str) -> List[HubPath]:
+                               hub_id: str,
+                               excluded_path_hashes: Optional[List[str]] = None
+                               ) -> List[HubPath]:
         """
         Retrieves the top paths for a given hub ranked and scored by their relevance
         to the question.
 
-        This function ensures, that for each hub the desired amount of top n paths
-        are retrieved if possible. Furthermore, it ensures that the paths are unique
-        and not duplicates of each other. This is because each HubPath is stored 
-        multiple times in the vector store each with different embeddings on the 
-        path text, triple, and entity level. With this function, we are returing only
-        one match to the HubPath by ensuring that the highest rated component of the 
-        path is returned.
+        The storage search is responsible for returning unique logical paths.
         
         Args:
             processed_question (ProcessedQuestion): The processed question
                 containing the question, components, and embeddings.
             hub_id (str): The ID of the hub for which to retrieve the paths.
-            
+            excluded_path_hashes (List[str], optional): Paths that must not be
+                returned by the storage search.
+
         Returns:
             List[HubPath]: The list of unique hub paths for the given hub.
         """
-        unique_path_hashes = set()
-        result_paths = []
-        while len(unique_path_hashes) < self.settings.top_paths_to_keep:
-            hub_paths = self.hub_storage_manager.similarity_search_by_hub_entity(
-                query_embeddings=processed_question.embeddings,
-                hub_entity_id=hub_id,
-                n_results=self.settings.top_paths_to_keep,
-                excluded_path_hashs=list(unique_path_hashes),
-            )
-            # We break early if the hub has no more paths
-            if not hub_paths or len(hub_paths) == 0:
-                break
-            for path_with_score in hub_paths:
-                if path_with_score.path_hash in unique_path_hashes:
-                    continue
-                # We break early if the amount of paths has reached the limit
-                if len(unique_path_hashes) >= self.settings.top_paths_to_keep:
-                    break
-                unique_path_hashes.add(path_with_score.path_hash)
-                result_paths.append(path_with_score)
-        return result_paths
+        return self.hub_storage_manager.similarity_search_by_hub_entity(
+            query_embeddings=processed_question.embeddings,
+            hub_entity_id=hub_id,
+            n_results=self.settings.top_paths_to_keep,
+            excluded_path_hashs=excluded_path_hashes,
+        )
 
-    def _get_question_components(self, question: str, conversation_history: Optional[List[str]] = None) -> List[str]:
+    def _get_question_processing(
+            self, question: str, conversation_history: Optional[List[str]] = None) -> tuple[List[str], List[str]]:
         """
-        This method calls an LLM to extract the components of the question.
+        Calls an LLM to extract question components and sparse routing keywords.
         
         Args:
-            question (str): The question where the components should be 
-                extracted from.
+            question (str): The question to process for retrieval.
 
         Returns:
-            List[str]: The list of components extracted from the question.
+            tuple[List[str], List[str]]: The extracted components and keywords.
         """
         prompt_provider = PromptProvider()
         prompt_text, _, _ = prompt_provider.get_prompt(
@@ -406,59 +410,77 @@ class BaseRetrievalStrategy(ABC):
 
         chain = prompt | self.llm_adapter.llm | parser
         response = chain.invoke(
-            {"question": question, "chat_history": conversation_history},
-            config=_llm_call_config("hublink.question_component_extraction"))
-        logger.debug(f"Response from LLM for Question Components: {response}")
+            {"question": question},
+            config=_llm_call_config("hublink.question_processing"))
+        logger.debug("Response from LLM for Question Processing: %s", response)
 
-        question_components = self._extract_string_list(response)
+        components, keywords = self._extract_question_processing(response)
 
-        logger.debug(f"Extracted question components: {question_components}")
+        logger.debug("Extracted question components: %s", components)
+        logger.debug("Extracted sparse routing keywords: %s", keywords)
 
-        return question_components
+        return components, keywords
 
-    def _extract_string_list(self, llm_output: str) -> List[str]:
+    @staticmethod
+    def _extract_question_processing(
+            llm_output: str) -> tuple[List[str], List[str]]:
         """
-        This parser is used to extract a list of strings from the LLM output.
-        We did not use JSON outputs here, because we want to test on open source
-        models which are not able to return JSON outputs.
+        Extracts the last valid processing dictionary from an LLM response.
 
-        This implementation however works generally well for all LLMs.
+        Some open-source models echo prompt examples or include explanatory
+        text. Inspecting candidates from last to first allows the final answer
+        to be parsed without requiring native structured-output support.
         
         Args:
-            llm_output (str): The output from the LLM to extract the list from.
+            llm_output (str): The LLM output to parse.
             
         Returns:
-            List[str]: The list of strings extracted from the LLM output.
+            tuple[List[str], List[str]]: Normalized components and keywords.
+                Invalid output safely produces two empty lists, which keeps
+                retrieval dense-only.
         """
-        list_match = re.search(r'\[[^\]]*\]', llm_output)
-
-        if list_match:
-            list_str = list_match.group(0)
+        dictionary_candidates = re.findall(
+            r'\{[^{}]*\}', llm_output, flags=re.DOTALL
+        )
+        for candidate in reversed(dictionary_candidates):
             try:
-                # Attempt to safely evaluate the extracted string as a Python literal
-                potential_list = ast.literal_eval(list_str)
-                if (isinstance(potential_list, list) and
-                        all(isinstance(item, str) for item in potential_list)):
-                    return potential_list
+                parsed = ast.literal_eval(candidate)
             except (ValueError, SyntaxError):
-                pass
+                continue
 
-            # Fallback: manually extract quoted strings within the brackets
-            quoted_strings = re.findall(r'["\']([^"\']*)["\']', list_str)
-            if quoted_strings:
-                return quoted_strings
+            if not isinstance(parsed, dict):
+                continue
+            if set(parsed) != {"components", "keywords"}:
+                continue
 
-        # If no proper list found, try to extract quoted strings from the entire text
-        quoted_strings = re.findall(r'["\']([^"\']*)["\']', llm_output)
-        if quoted_strings:
-            return quoted_strings
+            components = parsed["components"]
+            keywords = parsed["keywords"]
+            if not (BaseRetrievalStrategy._is_string_list(components)
+                    and BaseRetrievalStrategy._is_string_list(keywords)):
+                continue
 
-        # If no brackets found, check if the entire output is comma-separated items
-        stripped_text = llm_output.strip()
-        if ',' in stripped_text:
-            return [item.strip() for item in stripped_text.split(',')]
+            return (
+                BaseRetrievalStrategy._normalize_string_list(components),
+                BaseRetrievalStrategy._normalize_string_list(keywords),
+            )
 
-        # If everything fails we return an empty list
         logger.debug(
-            "Question component extraction did not yield a valid list.")
-        return []
+            "Question processing did not yield a valid dictionary.")
+        return [], []
+
+    @staticmethod
+    def _is_string_list(value: object) -> bool:
+        return (isinstance(value, list)
+                and all(isinstance(item, str) for item in value))
+
+    @staticmethod
+    def _normalize_string_list(values: List[str]) -> List[str]:
+        normalized: List[str] = []
+        seen: set[str] = set()
+        for value in values:
+            stripped_value = value.strip()
+            if not stripped_value or stripped_value in seen:
+                continue
+            normalized.append(stripped_value)
+            seen.add(stripped_value)
+        return normalized

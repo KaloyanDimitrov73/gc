@@ -12,6 +12,7 @@ from typing import override, List, Optional, Dict
 
 import chromadb
 import numpy as np
+from chromadb.api.shared_system_client import SharedSystemClient
 from sklearn.metrics.pairwise import cosine_similarity
 
 from chroma_ops import hnsw
@@ -138,6 +139,59 @@ class ChromaVectorStore(VectorStore):
             f"Amount of embeddings in collection: {collection.count()}")
 
         return collection
+
+    def _close_client(self) -> None:
+        """Stop Chroma and release handles to the persistent HNSW files.
+
+        ChromaDB 0.6.3 does not expose a public close method for
+        ``PersistentClient``. Stopping its shared system closes the HNSW segment
+        handles; removing that stopped system from Chroma's cache ensures that
+        the next initialization creates a fresh, running system.
+        """
+        if self.client is None:
+            return
+
+        client = self.client
+        identifier = client._identifier
+        system = client._system
+
+        # Remove our references before releasing Chroma's underlying resources.
+        self.collection = None
+        self.client = None
+
+        try:
+            system.stop()
+        finally:
+            # Do not retain a stopped system, and do not clear systems belonging
+            # to other persistence directories.
+            SharedSystemClient._identifier_to_system.pop(identifier, None)
+
+    def _rebuild_hnsw(self, *, space: Optional[str] = None) -> None:
+        """Run the offline HNSW rebuild while the Chroma client is stopped."""
+        with self._lock:
+            ProgressHandler().disable()
+            try:
+                self._close_client()
+
+                rebuild_options = {
+                    "persist_dir": self.store_path,
+                    "collection_name": self.collection_name,
+                    "backup": False,
+                    "yes": True,
+                }
+                if space is not None:
+                    rebuild_options["space"] = space
+
+                hnsw.rebuild_hnsw(**rebuild_options)
+
+                if space is not None:
+                    self.distance_metric = space
+            finally:
+                # Restore a usable store even when the offline operation fails.
+                try:
+                    self._initialize()
+                finally:
+                    ProgressHandler().enable()
 
     @property
     @override
@@ -417,7 +471,6 @@ class ChromaVectorStore(VectorStore):
                 self._initialize()
 
             logger.info("Successfully changed distance metric")
-            ProgressHandler().enable()
 
     @override
     def print_stats(self, verbose: bool = True) -> None:

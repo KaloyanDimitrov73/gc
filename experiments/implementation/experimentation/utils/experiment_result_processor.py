@@ -100,6 +100,7 @@ class ExperimentResultProcessor:
             self._process_context(row, pipe_io_data)
             row["topic_entity_id"] = pipe_io_data.topic_entity_id
             row["topic_entity_value"] = pipe_io_data.topic_entity_value
+            row["extracted_keywords"] = pipe_io_data.extracted_keywords
 
             # Add evaluation results
             self._add_evaluation_results_to_row(

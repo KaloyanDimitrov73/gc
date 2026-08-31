@@ -13,6 +13,7 @@ class EndpointType(Enum):
     OLLAMA = "Ollama"
     GOOGLEAI = "GoogleAI"
     VDL = "VDL"  # KIT Virtual Design Lab Server (OpenAI-compatible)
+    KIT_TOOLBOX = "KitToolbox"  # KIT KI-Toolbox (OpenAI-compatible)
 
     @staticmethod
     def get_values() -> list:
@@ -32,6 +33,7 @@ class EndpointEnvVariable(Enum):
     OPENAI_API_KEY = "OPENAI_API_KEY"
     GOOGLE_API_KEY = "GOOGLE_API_KEY"
     VDL_API_KEY = "VDL_API_KEY"
+    KIT_TOOLBOX_API_KEY = "KIT_TOOLBOX_API_KEY"
 
     @staticmethod
     def get_env_variable(endpoint_type: EndpointType) -> "EndpointEnvVariable":
@@ -52,6 +54,8 @@ class EndpointEnvVariable(Enum):
             return EndpointEnvVariable.GOOGLE_API_KEY
         if endpoint_type == EndpointType.VDL:
             return EndpointEnvVariable.VDL_API_KEY
+        if endpoint_type == EndpointType.KIT_TOOLBOX:
+            return EndpointEnvVariable.KIT_TOOLBOX_API_KEY
         raise ValueError(f"Invalid endpoint type: {endpoint_type}")
 
 

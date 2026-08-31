@@ -83,7 +83,14 @@ def main():
                         },
                         "type": "kg_retrieval",
                         "retriever_type": "hublink",
-                        "llm_config": {
+                        "index_llm_config": {
+                            "additional_params": {},
+                            "endpoint": "Ollama",
+                            "name_model": "qwen2.5:14b",
+                            "temperature": 0.0,
+                            "max_tokens": -1
+                        },
+                        "query_llm_config": {
                             "additional_params": {},
                             "endpoint": "Ollama",
                             "name_model": "qwen2.5:14b",
@@ -152,7 +159,7 @@ def main():
             "parameter_ranges": [
                 {
                     "config_name": "retrieval_config",
-                    "parameter_name": "llm_config",
+                    "parameter_name": "query_llm_config",
                     "values": [
                         {
                             "additional_params": {},

@@ -1,8 +1,5 @@
-﻿from pathlib import Path
-from typing import List, Optional, Tuple
+﻿from typing import List, Optional, Tuple
 from pydantic import BaseModel, Field
-
-_PROMPTS_DIR = str(Path(__file__).parent.parent / "prompts")
 
 from core.data.context_tracer import ContextTracer, ContextTrace
 from core.progress.progress_handler import ProgressHandler
@@ -11,7 +8,7 @@ from language_model.base.llm_adapter import LLMAdapter
 from knowledge_base.knowledge_graph.storage.base.knowledge_graph import KnowledgeGraph
 from core.data.models import Knowledge, Subgraph, Triple
 from implementation.shared_models.qa_pair import QAPair
-from language_model.prompt_provider import PromptProvider
+from implementation.language_model import PromptProvider
 from implementation.core.logging import get_logger
 from core.data.extraction.paper_content_extractor import (
     TextWithOriginal,
@@ -88,7 +85,7 @@ class FromSubgraphGenerator:
         self._prepare_utils()
 
     def _prepare_utils(self):
-        self.prompt_provider = PromptProvider(prompt_dir=_PROMPTS_DIR)
+        self.prompt_provider = PromptProvider()
         self.graph_converter = GraphConverter(
             graph=self.graph,
             llm_adapter=self.llm_adapter)

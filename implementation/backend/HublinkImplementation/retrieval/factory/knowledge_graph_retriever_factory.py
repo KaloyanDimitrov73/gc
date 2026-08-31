@@ -86,7 +86,7 @@ class KnowledgeGraphRetrieverFactory(BaseFactory):
         elif retriever_type == KnowledgeGraphRetrieverType.HUBLINK.value:
             try:
                 # pylint: disable=import-outside-toplevel
-                from retrieval.implementations.HubLink.hub_link_retriever\
+                from hublink.retrieval.hub_link_retriever\
                     import HubLinkRetriever
                 return HubLinkRetriever
             except ImportError as e:

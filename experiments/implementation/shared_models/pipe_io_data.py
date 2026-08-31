@@ -24,6 +24,9 @@ class PipeIOData(BaseModel):
     generated_answer: Optional[str] = Field(
         default=None,
         description="The answer generated based on the retrieval question.")
+    extracted_keywords: List[str] = Field(
+        default_factory=list,
+        description="Keywords extracted while preprocessing the retrieval question.")
     progress_bar_id: Optional[str] = Field(
         default=None,
         description="A specific internal identifier of the SQA system to manage the progress bar.")

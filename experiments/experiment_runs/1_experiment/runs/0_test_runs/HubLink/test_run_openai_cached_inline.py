@@ -28,8 +28,8 @@ def main():
                             "use_topic_if_given": False,
                             "embedding_config":{
                                 "additional_params": {},
-                                "endpoint": "OpenAI",
-                                "name_model": "text-embedding-3-large"
+                                "endpoint": "VDL",
+                                "name_model": "qwen3-embedding:8b"
                             },
                             "top_paths_to_keep": 10,
                             "number_of_hubs": 10,
@@ -53,10 +53,17 @@ def main():
                         },
                         "type": "kg_retrieval",
                         "retriever_type": "hublink",
-                        "llm_config": {
+                        "index_llm_config": {
                             "additional_params": {},
-                            "endpoint": "OpenAI",
-                            "name_model": "o3-mini",
+                            "endpoint": "VDL",
+                            "name_model": "qwen3:14b",
+                            "temperature": None,
+                            "max_tokens": -1
+                        },
+                        "query_llm_config": {
+                            "additional_params": {},
+                            "endpoint": "VDL",
+                            "name_model": "qwen3:14b",
                             "temperature": None,
                             "max_tokens": -1
                         },
@@ -102,8 +109,8 @@ def main():
                         "type": "generation",
                         "llm_config": {
                             "additional_params": {},
-                            "endpoint": "OpenAI",
-                            "name_model": "o3-mini",
+                            "endpoint": "VDL",
+                            "name_model": "qwen3:14b",
                             "temperature": None,
                             "max_tokens": -1
                         }

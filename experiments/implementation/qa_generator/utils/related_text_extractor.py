@@ -1,14 +1,12 @@
-﻿from pathlib import Path
-from typing import List
+﻿from typing import List
 from pydantic import BaseModel, Field, RootModel
 
-_PROMPTS_DIR = str(Path(__file__).parent.parent / "prompts")
 from langchain_core.prompts import PromptTemplate
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
 from core.data.models import Triple, Publication
 from language_model.base.llm_adapter import LLMAdapter
-from language_model.prompt_provider import PromptProvider
+from implementation.language_model import PromptProvider
 
 from implementation.core.logging import get_logger
 logger = get_logger(__name__)
@@ -43,7 +41,7 @@ class RelatedTextExtractor:
     def __init__(self,
                  llm_adapter: LLMAdapter):
         self.llm_adapter = llm_adapter
-        self.prompt_provider = PromptProvider(prompt_dir=_PROMPTS_DIR)
+        self.prompt_provider = PromptProvider()
 
     def extract_related_texts(self,
                               publication: Publication,
@@ -62,7 +60,7 @@ class RelatedTextExtractor:
         """
 
         # Get the main prompt for the content extraction
-        prompt_provider = PromptProvider(prompt_dir=_PROMPTS_DIR)
+        prompt_provider = PromptProvider()
         prompt_text, _, _ = prompt_provider.get_prompt(
             "qa_generation/related_text_extraction_prompt.yaml")
 

@@ -2,7 +2,15 @@
 from typing_extensions import override
 
 from core.data.models import RetrievalAnswer
-from retrieval.implementations.HubLink.hub_link_retriever import HubLinkRetriever
+from backend.app.modules.indexing.infrastructure.hublink.hub_store_service import (
+    HubStoreService,
+)
+from hublink.indexing.experiment.sparse_store_service_for_experiment import (
+    SparseStoreServiceForExperiment,
+)
+from hublink.retrieval.experiment.hub_link_retriever_for_experiment import (
+    HubLinkRetrieverForExperiment,
+)
 from knowledge_base.knowledge_graph.storage.implementations.orkg_remote_graph import ORKGRemoteGraph
 from implementation.config.config_models.retrieval.kg_retrieval_config import KGRetrievalConfig
 from implementation.pipe.retrieval.base.retrieval_pipe import RetrievalPipe
@@ -55,6 +63,9 @@ class KGRetrievalPipe(RetrievalPipe[KGRetrievalConfig]):
         input_data.retrieved_context.extend(retrieval_answer.contexts)
         if retrieval_answer.retriever_answer:
             input_data.generated_answer = retrieval_answer.retriever_answer
+        input_data.extracted_keywords = list(
+            retrieval_answer.extracted_keywords
+        )
         return input_data
 
     def _prepare(self):
@@ -64,4 +75,15 @@ class KGRetrievalPipe(RetrievalPipe[KGRetrievalConfig]):
         """
         graph = ORKGRemoteGraph(self.config.knowledge_graph_config)
         graph.update_cache_if_not_exists()
-        self.retriever = HubLinkRetriever(self.config, graph)
+        self.hub_store_service = HubStoreService(self.config)
+        self.sparse_store_service = SparseStoreServiceForExperiment(self.config)
+        self.retriever = HubLinkRetrieverForExperiment(
+            config=self.config,
+            graph=graph,
+            hub_storage_manager=(
+                self.hub_store_service.hub_storage_manager
+            ),
+            sparse_storage_manager=(
+                self.sparse_store_service.sparse_storage_manager
+            ),
+        )

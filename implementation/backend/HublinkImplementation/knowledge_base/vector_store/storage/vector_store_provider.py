@@ -26,7 +26,9 @@ class VectorStoreProvider:
     """
 
     @staticmethod
-    def compute_store_name(config: KGRetrievalConfig, settings: HubLinkSettings) -> str:
+    def compute_store_name(
+            config: KGRetrievalConfig,
+            settings: HubLinkSettings) -> str:
         """
         Deterministic store name derived from the graph/embedding/indexing-LLM
         configs. Both the indexing and retrieval side MUST call this with
@@ -35,7 +37,7 @@ class VectorStoreProvider:
         """
 
         graph_hash = config.knowledge_graph_config.config_hash
-        llm_hash = config.llm_config.config_hash
+        llm_hash = config.index_llm_config.config_hash
         embedding_hash = settings.embedding_config.config_hash
 
         return (

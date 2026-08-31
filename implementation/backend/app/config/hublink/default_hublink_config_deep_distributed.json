@@ -23,17 +23,26 @@
                 "max_workers": 10,
                 "compare_hubs_with_same_hop_amount": false,
                 "max_level": 1,
-                "force_index_update": false,
+                "force_index_update": true,
                 "max_indexing_depth": -1,
                 "max_hub_path_length": -1,
                 "return_source_data_as_context": false,
                 "indexing_root_entity_types": null,
                 "indexing_root_entity_ids": ["R659055"],
-                "hub_types": ["Paper"]
+                "hub_types": ["Paper"],
+                "use_bm25_hybrid_search": true,
+                "use_splade_hybrid_search": true
             },
             "type": "kg_retrieval",
             "retriever_type": "hublink",
-            "llm_config": {
+            "index_llm_config": {
+                "additional_params": {},
+                "endpoint": "OpenAI",
+                "name_model": "o3-mini",
+                "temperature": null,
+                "max_tokens": -1
+            },
+            "query_llm_config": {
                 "additional_params": {},
                 "endpoint": "OpenAI",
                 "name_model": "o3-mini",

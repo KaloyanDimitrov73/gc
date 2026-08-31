@@ -18,3 +18,6 @@ class RetrievalAnswer(BaseModel):
     sources: List[str] = Field(
         default_factory=list,
         description="Source identifiers (e.g. DOIs) of hubs actually referenced in the answer.")
+    extracted_keywords: List[str] = Field(
+        default_factory=list,
+        description="Keywords extracted while preprocessing the retrieval question.")

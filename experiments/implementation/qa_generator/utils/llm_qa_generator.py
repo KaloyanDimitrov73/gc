@@ -1,9 +1,7 @@
 ﻿import json
-from pathlib import Path
 from typing import List, Optional, Set, Tuple, Union
 from dataclasses import dataclass
 
-_PROMPTS_DIR = str(Path(__file__).parent.parent / "prompts")
 from typing_extensions import Annotated
 from langchain_core.output_parsers import JsonOutputParser, StrOutputParser
 from langchain_core.prompts import PromptTemplate
@@ -18,7 +16,7 @@ from knowledge_base.knowledge_graph.storage.utils.graph_converter import GraphCo
 from language_model.base.llm_adapter import LLMAdapter
 from knowledge_base.knowledge_graph.storage.base.knowledge_graph import KnowledgeGraph
 from core.data.models import Triple, Knowledge
-from language_model.prompt_provider import PromptProvider
+from implementation.language_model import PromptProvider
 from implementation.core.logging import get_logger
 from core.data.extraction.paper_content_extractor import (
     TextWithOriginal,
@@ -139,7 +137,7 @@ class LLMQAGenerator:
 
     def _prepare_utils(self):
         self.question_classifier = QuestionClassifier(self.llm_adapter)
-        self.prompt_provider = PromptProvider(prompt_dir=_PROMPTS_DIR)
+        self.prompt_provider = PromptProvider()
         self.graph_utils = GraphConverter(
             graph=self.graph, llm_adapter=self.llm_adapter)
         self.progress_handler = ProgressHandler()
@@ -161,7 +159,7 @@ class LLMQAGenerator:
         """
 
         parser = StrOutputParser()
-        prompt_provider = PromptProvider(prompt_dir=_PROMPTS_DIR)
+        prompt_provider = PromptProvider()
         prompt_text, _, _ = prompt_provider.get_prompt(
             "qa_generation/multi_fact_golden_answer_prompt.yaml")
 

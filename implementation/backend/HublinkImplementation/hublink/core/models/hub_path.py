@@ -1,7 +1,8 @@
-from typing import List, Optional
+from typing import Dict, List, Optional
 from pydantic import BaseModel, Field
 
 from core.data.models.triple import Triple
+
 
 class HubPath(BaseModel):
     """
@@ -18,6 +19,29 @@ class HubPath(BaseModel):
     embedded_text: Optional[str] = Field(
         default=None, 
         description="The text that was embedded for the path.")
+    dense_score: Optional[float] = Field(
+        default=None,
+        description=(
+            "The dense semantic similarity score of the path for the given "
+            "question."
+        ))
+    dense_rank: Optional[int] = Field(
+        default=None,
+        description=(
+            "Zero-based global rank in the independently retrieved dense "
+            "candidate list. None when the path was not retrieved by the "
+            "dense channel."
+        ))
     score: Optional[float] = Field(
-        default=None, 
-        description="The score of the path based on the given question during retrieval.")
+        default=None,
+        description=(
+            "The final globally comparable path score used for selection and "
+            "hub pruning. Equals dense_score for dense-only retrieval and the "
+            "normalized path-level RRF score for hybrid retrieval."
+        ))
+    sparse_scores: Dict[str, float] = Field(
+        default_factory=dict,
+        description="Raw path scores keyed by sparse retrieval channel.")
+    sparse_ranks: Dict[str, int] = Field(
+        default_factory=dict,
+        description="Zero-based global path ranks keyed by sparse channel.")

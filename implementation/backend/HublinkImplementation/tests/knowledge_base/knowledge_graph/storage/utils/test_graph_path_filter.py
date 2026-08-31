@@ -1,6 +1,6 @@
 import pytest
 from core.data.models.knowledge import Knowledge
-from core import Subgraph
+from core.data.models import Subgraph
 from core.data.models.triple import Triple
 from knowledge_base.knowledge_graph.storage.utils.graph_path_filter import GraphPathFilter
 from knowledge_base.knowledge_graph.storage.utils.path_builder import PathBuilder
