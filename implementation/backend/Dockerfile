@@ -37,7 +37,7 @@ RUN install -d hublink_shared/hublink_shared/config \
 # Install dependencies (shared first, then HublinkImplementation, for correct resolution)
 RUN --mount=type=cache,target=/root/.cache/pip pip install -e hublink_shared/
 RUN --mount=type=cache,target=/root/.cache/pip pip install -e backend/HublinkImplementation/
-RUN --mount=type=cache,target=/root/.cache/pip pip install -e backend/
+RUN --mount=type=cache,target=/root/.cache/pip pip install -e "backend[guardrails]"
 
 # Guardrails retired its Hub registry and hosted remote-inference service.
 # Install the public PyPI validator packages and bake their local models into
