@@ -48,7 +48,10 @@ class ANNHubFinder(CandidateHubsFinder):
                 hubs_to_exclude = list(candidate_hubs.keys())
 
                 logger.info("Use the embeddings from the question to find the candidate hubs")
-                logger.info("List of candidate hubs: %s", len(hubs_to_exclude))
+                logger.info(
+                    "Candidate hubs already collected and excluded: %s",
+                    len(hubs_to_exclude),
+                )
                 logger.info("Question Components: %s", processed_question.components)
                 results = self.hub_storage_manager.similarity_search_hubs(
                     query_embeddings=processed_question.embeddings,

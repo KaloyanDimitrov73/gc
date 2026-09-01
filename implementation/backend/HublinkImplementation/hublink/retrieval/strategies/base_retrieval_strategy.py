@@ -339,7 +339,7 @@ class BaseRetrievalStrategy(ABC):
         keywords: List[str] = []
         if self.settings.extract_question_components:
             extracted_components, keywords = (
-                self._get_question_components(question, conversation_history)
+                self._get_question_processing(question, conversation_history)
             )
 
         components = extracted_components
@@ -410,7 +410,10 @@ class BaseRetrievalStrategy(ABC):
 
         chain = prompt | self.llm_adapter.llm | parser
         response = chain.invoke(
-            {"question": question},
+            {
+                "question": question,
+                "chat_history": conversation_history or "",
+            },
             config=_llm_call_config("hublink.question_processing"))
         logger.debug("Response from LLM for Question Processing: %s", response)
 

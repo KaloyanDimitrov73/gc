@@ -4,8 +4,8 @@ from unittest.mock import Mock, patch
 from backend.app.modules.indexing.infrastructure.hublink.hub_store_service import (
     HubStoreService,
 )
-from hublink.indexing.experiment.sparse_store_service_for_experiment import (
-    SparseStoreServiceForExperiment,
+from hublink.indexing.experiment.sparse_store_service import (
+    SparseStoreService,
 )
 
 
@@ -68,11 +68,11 @@ def test_hub_store_service_creates_only_dense_store(
 
 
 @patch(
-    "hublink.indexing.experiment.sparse_store_service_for_experiment."
+    "hublink.indexing.experiment.sparse_store_service."
     "SparseStorageManager"
 )
 @patch(
-    "hublink.indexing.experiment.sparse_store_service_for_experiment."
+    "hublink.indexing.experiment.sparse_store_service."
     "HubLinkSettings"
 )
 def test_sparse_store_service_uses_enabled_channels_by_default(
@@ -81,7 +81,7 @@ def test_sparse_store_service_uses_enabled_channels_by_default(
     config = Mock()
     hub_link_settings.from_config.return_value = _settings()
 
-    service = SparseStoreServiceForExperiment(config)
+    service = SparseStoreService(config)
 
     sparse_storage_manager.from_config.assert_called_once_with(
         config=config,
@@ -95,11 +95,11 @@ def test_sparse_store_service_uses_enabled_channels_by_default(
 
 
 @patch(
-    "hublink.indexing.experiment.sparse_store_service_for_experiment."
+    "hublink.indexing.experiment.sparse_store_service."
     "SparseStorageManager"
 )
 @patch(
-    "hublink.indexing.experiment.sparse_store_service_for_experiment."
+    "hublink.indexing.experiment.sparse_store_service."
     "HubLinkSettings"
 )
 def test_sparse_store_service_accepts_channel_loading_overrides(
@@ -108,7 +108,7 @@ def test_sparse_store_service_accepts_channel_loading_overrides(
     config = Mock()
     hub_link_settings.from_config.return_value = _settings()
 
-    SparseStoreServiceForExperiment(
+    SparseStoreService(
         config,
         load_bm25=False,
         load_splade=True,

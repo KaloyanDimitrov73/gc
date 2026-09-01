@@ -18,11 +18,11 @@ from backend.app.modules.indexing.infrastructure.hublink.hub_store_service impor
     HubStoreService,
 )
 from _indexing_script_common import load_hublink_config
-from hublink.indexing.experiment.sparse_indexing_service_for_experiment import (
-    SparseIndexingServiceForExperiment,
+from hublink.indexing.experiment.sparse_indexing_service import (
+    SparseIndexingService,
 )
-from hublink.indexing.experiment.sparse_store_service_for_experiment import (
-    SparseStoreServiceForExperiment,
+from hublink.indexing.experiment.sparse_store_service import (
+    SparseStoreService,
 )
 
 
@@ -61,12 +61,12 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     load_dotenv(find_dotenv(), override=True)
     hub_stores = HubStoreService(config)
-    sparse_stores = SparseStoreServiceForExperiment(
+    sparse_stores = SparseStoreService(
         config,
         load_bm25=False,
         load_splade=False,
     )
-    service = SparseIndexingServiceForExperiment(
+    service = SparseIndexingService(
         config=config,
         hub_storage_manager=hub_stores.hub_storage_manager,
         sparse_storage_manager=sparse_stores.sparse_storage_manager,

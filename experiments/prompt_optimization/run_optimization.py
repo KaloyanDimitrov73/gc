@@ -87,6 +87,14 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--train-limit", type=int)
     parser.add_argument("--validation-limit", type=int)
     parser.add_argument("--test-limit", type=int)
+    parser.add_argument(
+        "--legacy-test-only",
+        action="store_true",
+        help=(
+            "Rerun only legacy_test.csv and update test_scores.legacy in "
+            "an existing summary.json."
+        ),
+    )
     return parser
 
 
@@ -149,6 +157,21 @@ def _evaluate(program: Any, examples: list[Any], metric: Any) -> Any:
     return evaluator(program)
 
 
+def _copro_eval_kwargs(num_threads: int) -> dict[str, Any]:
+    """Return options accepted by both Evaluate and Evaluate.__call__.
+
+    COPRO forwards the same mapping to both APIs, whose accepted keyword sets
+    are not identical. Constructor-only options such as ``max_errors`` must not
+    be included here.
+    """
+
+    return {
+        "num_threads": num_threads,
+        "display_progress": True,
+        "display_table": False,
+    }
+
+
 def _write_evaluation(path: Path, result: Any) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8", newline="") as output_file:
@@ -198,6 +221,45 @@ def _write_optimized_instruction(path: Path, program: Any) -> None:
     path.write_text(instruction.strip() + "\n", encoding="utf-8")
 
 
+def _load_legacy_rerun_summary(
+    summary_path: Path,
+    *,
+    pipeline_config: Path,
+    test_examples: int,
+) -> dict[str, Any]:
+    """Load and validate a summary before replacing only its legacy score."""
+
+    if not summary_path.exists():
+        raise FileNotFoundError(
+            f"Cannot update a missing optimization summary: {summary_path}"
+        )
+
+    with summary_path.open(encoding="utf-8") as summary_file:
+        summary = json.load(summary_file)
+
+    recorded_config = summary.get("pipeline_config")
+    if not recorded_config or (
+        Path(recorded_config).resolve() != pipeline_config.resolve()
+    ):
+        raise ValueError(
+            "The existing summary uses a different pipeline configuration. "
+            "Use its matching --pipeline-config or a different --output-dir."
+        )
+    if summary.get("test_examples") != test_examples:
+        raise ValueError(
+            "The rerun test size does not match summary.json: "
+            f"{test_examples} != {summary.get('test_examples')}."
+        )
+    if not isinstance(summary.get("test_scores"), dict):
+        raise ValueError("summary.json has no valid test_scores object.")
+    return summary
+
+
+def _write_summary(path: Path, summary: dict[str, Any]) -> None:
+    with path.open("w", encoding="utf-8") as summary_file:
+        json.dump(summary, summary_file, indent=2, ensure_ascii=False)
+
+
 def main() -> None:
     args = build_parser().parse_args()
     if args.breadth <= 1:
@@ -207,15 +269,16 @@ def main() -> None:
     load_dotenv(EXPERIMENTS_ROOT / ".env", override=False)
     args.output_dir.mkdir(parents=True, exist_ok=True)
 
-    train_examples = load_dspy_examples(
-        args.splits_dir / "train.csv", limit=args.train_limit
-    )
-    validation_examples = load_dspy_examples(
-        args.splits_dir / "validation.csv", limit=args.validation_limit
-    )
     test_examples = load_dspy_examples(
         args.splits_dir / "test.csv", limit=args.test_limit
     )
+    if not args.legacy_test_only:
+        train_examples = load_dspy_examples(
+            args.splits_dir / "train.csv", limit=args.train_limit
+        )
+        validation_examples = load_dspy_examples(
+            args.splits_dir / "validation.csv", limit=args.validation_limit
+        )
 
     adapter, retrieval_config = load_retrieval_adapter(args.pipeline_config)
     if not adapter.sparse_routing_enabled:
@@ -233,6 +296,33 @@ def main() -> None:
 
     metric = HitAtKTripleMetric(k=10)
     legacy_program = LegacyQuestionProcessingRetrievalProgram(adapter)
+    if args.legacy_test_only:
+        summary_path = args.output_dir / "summary.json"
+        summary = _load_legacy_rerun_summary(
+            summary_path,
+            pipeline_config=args.pipeline_config,
+            test_examples=len(test_examples),
+        )
+        legacy_test = _evaluate(legacy_program, test_examples, metric)
+        _write_evaluation(args.output_dir / "legacy_test.csv", legacy_test)
+        summary["test_scores"]["legacy"] = legacy_test.score
+        _write_summary(summary_path, summary)
+        print(
+            json.dumps(
+                {
+                    "legacy_test_score": legacy_test.score,
+                    "test_examples": len(test_examples),
+                    "legacy_test_csv": str(
+                        (args.output_dir / "legacy_test.csv").resolve()
+                    ),
+                    "updated_summary": str(summary_path.resolve()),
+                },
+                indent=2,
+                ensure_ascii=False,
+            )
+        )
+        return
+
     initial_instruction = load_question_processing_instruction(args.initial_prompt)
     student_program = QuestionProcessingRetrievalProgram(
         adapter,
@@ -266,12 +356,7 @@ def main() -> None:
     copro_candidate = optimizer.compile(
         student_program,
         trainset=train_examples,
-        eval_kwargs={
-            "num_threads": args.num_threads,
-            "display_progress": True,
-            "display_table": False,
-            "max_errors": 1,
-        },
+        eval_kwargs=_copro_eval_kwargs(args.num_threads),
     )
     copro_validation = _evaluate(
         copro_candidate, validation_examples, metric
@@ -329,10 +414,7 @@ def main() -> None:
         _write_evaluation(args.output_dir / f"{name}_test.csv", result)
         summary["test_scores"][name] = result.score
 
-    with (args.output_dir / "summary.json").open(
-        "w", encoding="utf-8"
-    ) as summary_file:
-        json.dump(summary, summary_file, indent=2, ensure_ascii=False)
+    _write_summary(args.output_dir / "summary.json", summary)
     print(json.dumps(summary, indent=2, ensure_ascii=False))
 
 

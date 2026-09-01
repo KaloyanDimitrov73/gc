@@ -5,8 +5,8 @@ from core.data.models import RetrievalAnswer
 from backend.app.modules.indexing.infrastructure.hublink.hub_store_service import (
     HubStoreService,
 )
-from hublink.indexing.experiment.sparse_store_service_for_experiment import (
-    SparseStoreServiceForExperiment,
+from hublink.indexing.experiment.sparse_store_service import (
+    SparseStoreService,
 )
 from hublink.retrieval.experiment.hub_link_retriever_for_experiment import (
     HubLinkRetrieverForExperiment,
@@ -76,7 +76,7 @@ class KGRetrievalPipe(RetrievalPipe[KGRetrievalConfig]):
         graph = ORKGRemoteGraph(self.config.knowledge_graph_config)
         graph.update_cache_if_not_exists()
         self.hub_store_service = HubStoreService(self.config)
-        self.sparse_store_service = SparseStoreServiceForExperiment(self.config)
+        self.sparse_store_service = SparseStoreService(self.config)
         self.retriever = HubLinkRetrieverForExperiment(
             config=self.config,
             graph=graph,

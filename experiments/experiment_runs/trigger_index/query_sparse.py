@@ -25,8 +25,8 @@ from hublink.core.sparse_index.sparse_search_result import (
     SparsePathHit,
     SparseSearchResult,
 )
-from hublink.indexing.experiment.sparse_store_service_for_experiment import (
-    SparseStoreServiceForExperiment,
+from hublink.indexing.experiment.sparse_store_service import (
+    SparseStoreService,
 )
 from knowledge_base.sparse_index_store.bm25_tokenizer import (
     tokenize_for_bm25,
@@ -362,7 +362,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         parser.error(str(error))
 
     load_dotenv(find_dotenv(), override=True)
-    sparse_stores = SparseStoreServiceForExperiment(
+    sparse_stores = SparseStoreService(
         config,
         load_bm25=True,
         load_splade=True,

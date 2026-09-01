@@ -4,7 +4,7 @@ from typing_extensions import override
 
 from core.data.models import RetrievalAnswer
 from core.logging.logging import get_logger
-
+from .base_retrieval_strategy import BaseRetrievalStrategy, RetrievalStrategyData
 from ..candidate_hub_finder.ann_hub_finder import ANNHubFinder
 from ..candidate_hub_finder.candidate_hubs_finder import CandidateHubsFinder
 from ..candidate_hub_finder.hybrid_search.bm25_fusion_decorator import (
@@ -42,6 +42,48 @@ class DirectRetrievalStrategy(BaseRetrievalStrategy):
             retrieval strategy.
         sparse_storage_manager: Loaded sparse-index storage manager.
     """
+
+    def __init__(
+            self,
+            retrieval_data: RetrievalStrategyData,
+            sparse_storage_manager: Optional[SparseStorageManager] = None
+    ) -> None:
+        super().__init__(retrieval_data)
+        self.sparse_storage_manager = sparse_storage_manager
+        self.candidate_hub_finder: CandidateHubsFinder = ANNHubFinder(
+            hub_storage_manager=self.hub_storage_manager,
+            number_of_hubs=self.settings.number_of_hubs,
+            top_paths_to_keep=self.settings.top_paths_to_keep,
+        )
+        evidence_merger = SparseEvidenceMerger(
+            hub_storage_manager=self.hub_storage_manager,
+        )
+        if (
+            self.settings.use_bm25_hybrid_search
+            and self.sparse_storage_manager is not None
+            and self.sparse_storage_manager.has_bm25
+        ):
+            self.candidate_hub_finder = Bm25FusionDecorator(
+                candidate_hub_finder=self.candidate_hub_finder,
+                hub_storage_manager=self.hub_storage_manager,
+                sparse_storage_manager=self.sparse_storage_manager,
+                top_paths_to_keep=self.settings.top_paths_to_keep,
+                number_of_hubs=self.settings.number_of_hubs,
+                evidence_merger=evidence_merger,
+            )
+        if (
+            self.settings.use_splade_hybrid_search
+            and self.sparse_storage_manager is not None
+            and self.sparse_storage_manager.has_splade
+        ):
+            self.candidate_hub_finder = SpladeFusionDecorator(
+                candidate_hub_finder=self.candidate_hub_finder,
+                hub_storage_manager=self.hub_storage_manager,
+                sparse_storage_manager=self.sparse_storage_manager,
+                top_paths_to_keep=self.settings.top_paths_to_keep,
+                number_of_hubs=self.settings.number_of_hubs,
+                evidence_merger=evidence_merger,
+            )
 
     @override
     def _run_retrieval(self, processed_question: ProcessedQuestion, conversation_history: Optional[List[str]] = None, cancel_event: Optional[threading.Event] = None) -> Optional[RetrievalAnswer]:

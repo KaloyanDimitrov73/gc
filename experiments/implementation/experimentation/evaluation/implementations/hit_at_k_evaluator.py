@@ -7,6 +7,7 @@ from implementation.core import ProgressHandler
 from implementation.core import AdditionalConfigParameter, RestrictionType
 from implementation.experimentation.evaluation.base.evaluator import Evaluator
 from implementation.core.logging import get_logger
+from hublink.evaluation import hit_at_k
 
 logger = get_logger(__name__)
 
@@ -101,40 +102,17 @@ class HitAtKEvaluator(Evaluator):
             contexts (List[str]): The retrieved contexts.
             golden (Union[str, List[str]]): The ground truth.
         """
-        if golden is None or golden == "":
-            if contexts is None or len(contexts) == 0:
-                return 1
-            return 0
+        if (
+            self._settings["context_type"] == "entity"
+            and golden not in (None, "")
+        ):
+            context_values = contexts if isinstance(contexts, list) else [contexts]
+            golden_values = golden if isinstance(golden, list) else [golden]
+            contexts = self._get_entities(
+                [value for value in context_values if value is not None]
+            )
+            golden = self._get_entities(
+                [value for value in golden_values if value is not None]
+            )
 
-        if contexts is None or len(contexts) == 0:
-            return 0
-
-        if not isinstance(contexts, list):
-            contexts = [contexts]
-
-        if not isinstance(golden, list):
-            golden = [golden]
-
-        if self._settings["context_type"] == "entity":
-            golden = self._get_entities(golden)
-            contexts = self._get_entities(contexts)            
-
-        ranks = []
-        for g in golden:
-            found_rank = None
-            for i, context in enumerate(contexts):
-                if g.lower() in context.lower():
-                    found_rank = i + 1
-                    break
-
-            # If not found, treat rank as 'infinite'
-            if found_rank is None:
-                found_rank = float('inf')
-
-            ranks.append(found_rank)
-
-        k = self._settings["k"]
-        hits = sum(rank <= k for rank in ranks)
-
-        # Hits@k = fraction of goldens found at rank <= k
-        return hits / len(golden)
+        return hit_at_k(contexts, golden, k=self._settings["k"])

@@ -1,7 +1,7 @@
 ﻿import pytest
 from implementation.experimentation.evaluation.implementations.hit_at_k_evaluator import HitAtKEvaluator
 from implementation.config.config_models import EvaluatorConfig
-from core import Triple, Knowledge
+from core.data.models import Knowledge, Triple
 
 TEST_TRIPLES = [
     Triple(

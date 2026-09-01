@@ -5,8 +5,8 @@ from hublink.core.models.hub_path import HubPath
 from hublink.core.sparse_index.sparse_storage_manager import (
     SparseStorageManager,
 )
-from hublink.indexing.experiment.sparse_indexing_service_for_experiment import (
-    SparseIndexingServiceForExperiment,
+from hublink.indexing.experiment.sparse_indexing_service import (
+    SparseIndexingService,
 )
 from hublink.indexing.sparse_index.bm25_indexer import Bm25Indexer
 from hublink.indexing.sparse_index.splade_indexer import SpladeIndexer
@@ -85,7 +85,7 @@ def test_splade_indexer_builds_artifact_for_storage(
 
 
 @patch(
-    "hublink.indexing.experiment.sparse_indexing_service_for_experiment."
+    "hublink.indexing.experiment.sparse_indexing_service."
     "HubLinkSettings"
 )
 def test_sparse_indexing_service_uses_channel_indexers(
@@ -108,7 +108,7 @@ def test_sparse_indexing_service_uses_channel_indexers(
     bm25_indexer = MagicMock()
     splade_indexer = MagicMock()
     sparse_storage_manager = MagicMock(index_key="graph_llm")
-    service = SparseIndexingServiceForExperiment(
+    service = SparseIndexingService(
         config=config,
         hub_storage_manager=hub_storage_manager,
         sparse_storage_manager=sparse_storage_manager,
