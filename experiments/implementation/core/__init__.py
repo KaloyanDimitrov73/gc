@@ -4,15 +4,17 @@ from core.data.models import Context, Triple, ContextType
 from core.data.models.llm_stats import LLMStats
 from core.progress.progress_handler import ProgressHandler
 
-# Experiments-own types grouped here as a convenience re-export.
+# Shared configuration types re-exported through the experiment facade.
 # PipeIOData is intentionally omitted — import it directly from
 # implementation.shared_models.pipe_io_data to avoid a circular import.
-from implementation.config.config_models import (
+from hublink_shared.config import (
     AdditionalConfigParameter,
-    RestrictionType,
-    PipelineConfig,
     Config,
     DatasetConfig,
+    RestrictionType,
+)
+from implementation.config.config_models import (
+    PipelineConfig,
     LLMConfig,
     EmbeddingConfig,
 )
