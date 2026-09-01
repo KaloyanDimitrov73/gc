@@ -19,7 +19,7 @@ const SettingsContext = createContext<SettingsContextValue | null>(null);
 
 export function SettingsProvider({ children }: { children: ReactNode }) {
   const [retrievalMode, setRetrievalMode] = useState<RetrievalMode>('direct');
-  const [llmModel, setLlmModel] = useState<LLMModel>('gpt-5-mini');
+  const [llmModel, setLlmModel] = useState<LLMModel>('o3-mini');
   const [numberOfHubs, setNumberOfHubs] = useState<NumberOfHubs>(10);
   const [useDirectFinalAnswer, setUseDirectFinalAnswer] = useState<boolean>(true);
   const [availableModels, setAvailableModels] = useState<LlmModelInfo[]>([]);

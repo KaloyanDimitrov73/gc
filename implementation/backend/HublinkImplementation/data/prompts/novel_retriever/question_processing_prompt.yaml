@@ -83,9 +83,10 @@ template: >
     empty keyword list.
   - When the question contains a short inclusive numeric range, expand it into every value in that range. Do not expand large or open-ended ranges.
   - An empty keyword list means that only dense search should be used.
-  - Return a valid Python dictionary with exactly two keys:
-    "components" and "keywords".
-  - Both values must be lists of strings.
+  
+  ### Output Format Instructions: 
+  - Return a valid Python dictionary with exactly three keys: "components", "keywords", "history_information"
+  - All values must be lists of strings.
   - Do not answer the question.
   - Do not include explanations, Markdown, or commentary.
 
@@ -94,48 +95,83 @@ template: >
   #### Dense-only: quoted or technical terms are not automatically keywords
 
   Question: What are the research questions concerning 'Artificial Intelligence in Healthcare'?
-  Output: {{"components": ["Research Questions", "Artificial Intelligence in Healthcare"], "keywords": []}}
+  Output: {{"components": ["Research Questions", "Artificial Intelligence in Healthcare"], "keywords": [], "history_information": []}}
 
   Question: Which publications include the research object 'Architecture Analysis Method'?
-  Output: {{"components": ["Research Object", "Architecture Analysis Method"], "keywords": []}}
+  Output: {{"components": ["Research Object", "Architecture Analysis Method"], "keywords": [], "history_information": []}}
 
   #### Dense-only: the requested answer type is not a keyword
 
   Question: What is the title of the paper that investigates the research object Architecture Decision Making and has the paper class philosophical paper?
-  Output: {{"components": ["Paper Title", "Architecture Decision Making", "Philosophical Paper"], "keywords": []}}
+  Output: {{"components": ["Paper Title", "Architecture Decision Making", "Philosophical Paper"], "keywords": [], "history_information": []}}
 
   #### Hybrid: proper name
 
   Question: How many papers did Manar Mazkatli publish?
-  Output: {{"components": ["Paper Count", "Manar Mazkatli"], "keywords": ["Manar Mazkatli"]}}
+  Output: {{"components": ["Paper Count", "Manar Mazkatli"], "keywords": ["Manar Mazkatli"], "history_information": []}}
 
   #### Hybrid: specific publication title
 
   Question: In which venue has the paper with the title 'Availability-Driven Architectural Change Propagation Through Bidirectional Model Transformations Between UML and Petri Net Models' been published?
-  Output: {{"components": ["Venue", "Availability-Driven Architectural Change Propagation Through Bidirectional Model Transformations Between UML and Petri Net Models"], "keywords": ["Availability-Driven Architectural Change Propagation Through Bidirectional Model Transformations Between UML and Petri Net Models"]}}
+  Output: {{"components": ["Venue", "Availability-Driven Architectural Change Propagation Through Bidirectional Model Transformations Between UML and Petri Net Models"], "keywords": ["Availability-Driven Architectural Change Propagation Through Bidirectional Model Transformations Between UML and Petri Net Models"], "history_information": []}}
 
   #### Hybrid: persistent identifier
 
   Question: Which paper has the DOI 10.1109/ICSA.2018.00022?
-  Output: {{"components": ["Paper", "10.1109/ICSA.2018.00022"], "keywords": ["10.1109/ICSA.2018.00022"]}}
+  Output: {{"components": ["Paper", "10.1109/ICSA.2018.00022"], "keywords": ["10.1109/ICSA.2018.00022"], "history_information": []}}
 
   #### Hybrid: multiple qualifying keywords
 
   Question: Which papers were published by SpringerLink in 2020?
-  Output: {{"components": ["Publisher", "SpringerLink", "2020"], "keywords": ["SpringerLink", "2020"]}}
+  Output: {{"components": ["Publisher", "SpringerLink", "2020"], "keywords": ["SpringerLink", "2020"], "history_information": []}}
 
   #### Boundary pair: extract only the qualifying anchor
 
   Question: Which papers investigate the research object Technical Debt in the publication year 2017?
-  Output: {{"components": ["Research Object", "Technical Debt", "2017"], "keywords": ["2017"]}}
+  Output: {{"components": ["Research Object", "Technical Debt", "2017"], "keywords": ["2017"], "history_information": []}}
 
   Question: Which papers investigate the research object Technical Debt?
-  Output: {{"components": ["Research Object", "Technical Debt"], "keywords": []}}
+  Output: {{"components": ["Research Object", "Technical Debt"], "keywords": [], "history_information": []}}
+  
+  ### Examples with Chat History:
+   Chat History:
+   - User: Which papers have been published by SpringerLink in 2020?
+   - Assistant: ['Deep Learning for Medical Imaging', 'AI Ethics Frameworks', 'Neural Networks in Diagnostics']
+   Question: Which of these have input data available?
+   # Relevant, because "these" refers to the three papers listed above.
+   Output: {{"components": ['Input data'], "keywords": [], "history_information": ['Deep Learning for Medical Imaging', 'AI Ethics Frameworks', 'Neural Networks in Diagnostics']}}
+
+
+   Chat History:
+   - User: What are the research questions in the paper titled 'Artificial Intelligence in Healthcare'?
+   - Assistant: ['RQ1: ...', 'RQ2: ...', 'RQ3: ...']
+   Question: Who are the authors of that paper?
+   # Relevant, because "that paper" refers to 'Artificial Intelligence in Healthcare'.
+   Output: {{"components": ['Authors'], "keywords": [], "history_information":'Artificial Intelligence in Healthcare']}}
+
+
+   Chat History:
+   - User: In how many publications is confirmability identified as a validity threat??
+   - Assistant: Confirmability is mentioned as a validity threat in three distinct publications: 
+       - Incremental Calibration of Architectural Performance Models with Parametric Dependencies, 10.1109/ICSA47634.2020.00011
+       - Technical Architectures for Automotive Systems, 10.1109/ICSA47634.2020.00013
+       - On the Understandability of Semantic Constraints for Behavioral Software Architecture Compliance: A Controlled Experiment, 10.1109/ICSA.2017.10
+   Question: Which of these papers use focus groups for evaluation?
+   # Relevant, because "these" refers to the three papers listed above.
+   Output: {{"components": ['Evaluation', 'Focus Groups], "keywords": [Focus Groups], "history_information":'Incremental Calibration of Architectural Performance Models with Parametric Dependencies', 'Technical Architectures for Automotive Systems', 'On the Understandability of Semantic Constraints for Behavioral Software Architecture Compliance: A Controlled Experiment']}}
+
+   Chat History:
+   User: What are the research questions in the paper titled 'Artificial Intelligence in Healthcare'?
+   Assistant: ['RQ1: ...', 'RQ2: ...', 'RQ3: ...']
+   Question: Which papers were published by Elsevier in 2019?
+   # Not relevant, because this question is fully self-contained and does not reference the prior paper.
+   Output: {{"components": ["Publisher", "Elsevier", "2019"], "keywords": ["Elsevier", "2019"], "history_information": []}}
+
+
 
   ### Start Your Task:
   Chat History: {chat_history}
   Question: {question}
-  Components:
 
 input_variables:
   - question

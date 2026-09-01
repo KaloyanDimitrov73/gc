@@ -337,17 +337,20 @@ class BaseRetrievalStrategy(ABC):
         """
         extracted_components: List[str] = []
         keywords: List[str] = []
+        extracted_history_info: List[str] = []
+
         if self.settings.extract_question_components:
-            extracted_components, keywords = (
-                self._get_question_processing(question, conversation_history)
+            extracted_components, keywords, extracted_history_info = (
+                self._get_question_information(question, conversation_history)
             )
 
         components = extracted_components
+        history_info = extracted_history_info
 
         logger.info("Embedding question")
 
         self.progress_handler.add_task(string_id="embedding_question", description="Embedding question", total=1, reset=True)
-        all_texts = [question] + components
+        all_texts = [question] + components + history_info
         embeddings = self.embedding_model.embed_batch(all_texts)
         if embeddings is None:
             raise RuntimeError("Embedding model returned None for question batch.")
@@ -388,8 +391,8 @@ class BaseRetrievalStrategy(ABC):
             excluded_path_hashs=excluded_path_hashes,
         )
 
-    def _get_question_processing(
-            self, question: str, conversation_history: Optional[List[str]] = None) -> tuple[List[str], List[str]]:
+    def _get_question_information(
+            self, question: str, conversation_history: Optional[List[str]] = None) -> tuple[List[str], List[str], List[str]]:
         """
         Calls an LLM to extract question components and sparse routing keywords.
         
@@ -410,23 +413,21 @@ class BaseRetrievalStrategy(ABC):
 
         chain = prompt | self.llm_adapter.llm | parser
         response = chain.invoke(
-            {
-                "question": question,
-                "chat_history": conversation_history or "",
-            },
+            {"question": question, "chat_history": conversation_history},
             config=_llm_call_config("hublink.question_processing"))
-        logger.debug("Response from LLM for Question Processing: %s", response)
+        logger.info("Response from LLM for Question Processing: %s", response)
 
-        components, keywords = self._extract_question_processing(response)
+        components, keywords, history_information = self._extract_question_processing(response)
 
-        logger.debug("Extracted question components: %s", components)
-        logger.debug("Extracted sparse routing keywords: %s", keywords)
+        logger.info("Extracted question components: %s", components)
+        logger.info("Extracted history information: %s", history_information)
+        logger.info("Extracted sparse routing keywords: %s", keywords)
 
-        return components, keywords
+        return components, keywords, history_information
 
     @staticmethod
     def _extract_question_processing(
-            llm_output: str) -> tuple[List[str], List[str]]:
+            llm_output: str) -> tuple[List[str], List[str], List[str]]:
         """
         Extracts the last valid processing dictionary from an LLM response.
 
@@ -453,23 +454,26 @@ class BaseRetrievalStrategy(ABC):
 
             if not isinstance(parsed, dict):
                 continue
-            if set(parsed) != {"components", "keywords"}:
+            if set(parsed) != {"components", "keywords", "history_information"}:
                 continue
 
             components = parsed["components"]
             keywords = parsed["keywords"]
+            history_information = parsed["history_information"]
             if not (BaseRetrievalStrategy._is_string_list(components)
-                    and BaseRetrievalStrategy._is_string_list(keywords)):
+                    and BaseRetrievalStrategy._is_string_list(keywords)
+                    and BaseRetrievalStrategy._is_string_list(history_information)):
                 continue
 
             return (
                 BaseRetrievalStrategy._normalize_string_list(components),
                 BaseRetrievalStrategy._normalize_string_list(keywords),
+                BaseRetrievalStrategy._normalize_string_list(history_information),
             )
 
-        logger.debug(
+        logger.info(
             "Question processing did not yield a valid dictionary.")
-        return [], []
+        return [], [], []
 
     @staticmethod
     def _is_string_list(value: object) -> bool:

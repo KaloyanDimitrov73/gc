@@ -136,6 +136,8 @@ class RetrievalService:
 
         history_text = _build_history_text(conversation_history)
 
+        print(history_text)
+
         instant_task = _asyncio.create_task(
             _asyncio.to_thread(
                 self._hublink_service.get_instant_response, question, history_text
@@ -187,11 +189,13 @@ class RetrievalService:
                 instant_answer, sources = instant_task.result()
 
                 if instant_answer is not None:
-                    async for evt in self._finish_via_instant_answer(
-                            instant_answer, sources, query_task, instant_task, cancel_event, conversation_history
-                    ):
-                        yield evt
-                    return
+                    valid_response, nodes = self._validate_instant_response(sources, conversation_history)
+                    if valid_response:
+                        async for evt in self._finish_via_instant_answer(
+                                instant_answer, sources, query_task, instant_task, cancel_event, conversation_history
+                        ):
+                            yield evt
+                        return
 
             if query_task in done:
                 break
@@ -206,12 +210,33 @@ class RetrievalService:
         async for evt in self._finish_via_query_task(query_task, instant_task):
             yield evt
 
+    @staticmethod
+    def _validate_instant_response(sources: Optional[List[int]], conversation_history: Optional[List[MessageSchema]]):
+        nodes = []
+        if sources:
+            for i in sources:
+                try:
+                    idx = int(i)
+                except (ValueError, TypeError) as e:
+                    logger.warning(f"Invalid source index {i!r}: {e}")
+                    return False, []
+
+                if 0 <= idx < len(conversation_history):
+                    message_nodes = conversation_history[idx].nodes
+                    if not message_nodes:
+                        continue
+                    nodes.extend(message_nodes)
+                else:
+                    logger.warning(f"Source index out of range: {idx}")
+                    return False, []
+
+        return True, nodes
+
     async def _finish_via_instant_answer(
-        self, instant_answer: str, sources: Optional[List[int]], query_task, instant_task, cancel_event: threading.Event, conversation_history: Optional[List[MessageSchema]]
+        self, instant_answer: str, nodes: List[GraphNode], query_task, instant_task, cancel_event: threading.Event
     ) -> AsyncIterator[Dict[str, Any]]:
         cancel_event.set()
         query_task.cancel()
-        nodes = []
 
         try:
             await query_task
@@ -220,20 +245,6 @@ class RetrievalService:
 
         yield {"type": "progress", "step": "instant_response", "percent": 90,
                "hubCompleted": None, "hubTotal": None}
-
-        if sources:
-            for i in sources:
-                try:
-                    idx = int(i)
-                except (ValueError, TypeError) as e:
-                    logger.warning(f"Invalid source index {i!r}: {e}")
-                    continue
-
-                if 0 <= idx < len(conversation_history):
-                    nodes.extend(conversation_history[idx].nodes)
-                else:
-                    logger.warning(f"Source index out of range: {idx}")
-
 
         answer, validation_passed, warning = await self._guardrails_service.validate_output(instant_answer)
         guardrails_warning = None if validation_passed else warning
@@ -250,6 +261,7 @@ class RetrievalService:
             answer, nodes, sources = await query_task
         except Exception as e:
             _assert_tasks_finished(query_task, instant_task, where="query_task_exception")
+            print(e)
             yield {"type": "error", "code": "internal_error", "detail": str(e)}
             return
 

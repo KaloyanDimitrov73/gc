@@ -140,6 +140,10 @@ class DirectRetrievalStrategy(BaseRetrievalStrategy):
             )
         )
 
+        if cancel_event is not None and cancel_event.is_set():
+            logger.info("Canceling after: Partial answers")
+            return None
+
         # If we have no partial answers, we return an empty answer
         # else we try to generate a final answer based on the partial
         # answers
