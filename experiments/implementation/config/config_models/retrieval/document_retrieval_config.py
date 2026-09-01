@@ -2,7 +2,7 @@ from typing import Optional, Literal
 
 from pydantic import Field
 from .retrieval_config import RetrievalConfig
-from ..dataset_config import DatasetConfig
+from hublink_shared.config import DatasetConfig
 from ..knowledge_base.vector_store_config import VectorStoreConfig
 
 

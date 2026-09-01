@@ -1,8 +1,7 @@
 ﻿from typing import List, Optional
-from .base.config import Config
+from hublink_shared.config import Config, DatasetConfig
 from .pipeline_config import PipelineConfig
 from ..data_models.parameter_range import ParameterRange
-from .dataset_config import DatasetConfig
 from .evaluator_config import EvaluatorConfig
 
 

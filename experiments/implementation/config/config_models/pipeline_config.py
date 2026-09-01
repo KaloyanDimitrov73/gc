@@ -1,7 +1,7 @@
 from typing import List, Union, Annotated
 from pydantic import Field
 
-from .base.config import Config
+from hublink_shared.config import Config
 from .pipe.generation_config import GenerationConfig
 from .retrieval.kg_retrieval_config import KGRetrievalConfig
 from .retrieval.document_retrieval_config import DocumentRetrievalConfig

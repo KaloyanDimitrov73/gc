@@ -1,4 +1,4 @@
-from .base.config import Config
+from hublink_shared.config import Config
 
 
 class EmbeddingConfig(Config):

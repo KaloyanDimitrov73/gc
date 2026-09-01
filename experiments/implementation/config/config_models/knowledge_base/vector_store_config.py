@@ -1,6 +1,5 @@
-from ..dataset_config import DatasetConfig
+from hublink_shared.config import Config, DatasetConfig
 from ..chunking_strategy_config import ChunkingStrategyConfig
-from ..base.config import Config
 from ..embedding_config import EmbeddingConfig
 
 

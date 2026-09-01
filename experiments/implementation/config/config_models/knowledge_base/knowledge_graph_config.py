@@ -1,8 +1,7 @@
 import hashlib
 import json
 from typing import Optional
-from ..dataset_config import DatasetConfig
-from ..base.config import Config
+from hublink_shared.config import Config, DatasetConfig
 from ..llm_config import LLMConfig
 
 
