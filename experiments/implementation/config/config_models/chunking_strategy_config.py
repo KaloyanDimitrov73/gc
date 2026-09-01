@@ -1,6 +1,6 @@
 from typing_extensions import Annotated
 from pydantic import Field
-from .base.config import Config
+from hublink_shared.config import Config
 
 
 class ChunkingStrategyConfig(Config):

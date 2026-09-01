@@ -124,7 +124,9 @@ def test_question_processing_prompt_keyword_results() -> None:
         question = row["question"]
         print(f"\n[{index}/{len(rows)}] Processing: {question}", flush=True)
         try:
-            raw_output = chain.invoke({"question": question})
+            raw_output = chain.invoke(
+                {"question": question, "chat_history": ""}
+            )
             result = _parse_question_processing_output(raw_output)
         except Exception as error:
             error_summary = f"{type(error).__name__}: {error}"

@@ -1,6 +1,11 @@
-from .additional_config_parameter import AdditionalConfigParameter, RestrictionType
+from hublink_shared.config import (
+    AdditionalConfigParameter,
+    Config,
+    DatasetConfig,
+    RestrictionType,
+)
+
 from .chunking_strategy_config import ChunkingStrategyConfig
-from .dataset_config import DatasetConfig
 from .embedding_config import EmbeddingConfig
 from .experiment_config import ExperimentConfig
 from .llm_config import LLMConfig
@@ -21,8 +26,6 @@ from .retrieval.document_retrieval_config import DocumentRetrievalConfig
 
 from .knowledge_base.knowledge_graph_config import KnowledgeGraphConfig
 from .knowledge_base.vector_store_config import VectorStoreConfig
-
-from .base.config import Config
 
 __all__ = [
     'AdditionalConfigParameter',

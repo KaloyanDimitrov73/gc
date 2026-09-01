@@ -13,3 +13,4 @@ dependencies = [
 
 [tool.setuptools.packages.find]
 where = ["."]
+include = ["hublink_shared*"]
