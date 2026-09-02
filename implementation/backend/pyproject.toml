@@ -14,18 +14,20 @@ dependencies = [
   "pydantic==2.10.6",
   "pydantic-settings==2.6.0",
   "python-dotenv>=1.0.0",
+  "sqlalchemy==2.0.48",
+  "aiosqlite==0.22.1",
+]
+
+[project.optional-dependencies]
+guardrails = [
   "guardrails-ai==0.9.2",
   # rich >=14.3 crashes the guardrails CLI during hub installs
   # (lazy rich._unicode_data import breaks when pip swaps rich mid-run).
   "rich>=13,<14",
-  "sqlalchemy==2.0.48",
-  "aiosqlite==0.22.1",
   "guardrails-ai-toxic-language",
   "guardrails-ai-detect-jailbreak",
   "guardrails-ai-gibberish-text",
 ]
-
-[project.optional-dependencies]
 dev = [
   "pytest==8.3.4",
   "pytest-asyncio==0.24.0",
@@ -34,7 +36,7 @@ dev = [
 
 [tool.setuptools.packages.find]
 where = [".."]
-include = ["backend*"]
+include = ["backend", "backend.app*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

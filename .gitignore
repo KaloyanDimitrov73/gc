@@ -2,6 +2,9 @@
 .vscode/
 pyrightconfig.json
 
+# Python package build metadata
+*.egg-info/
+
 # runtime SQLite database (recreated by init_db on backend startup)
 implementation/backend/data/*.db
 
