@@ -136,8 +136,6 @@ class RetrievalService:
 
         history_text = _build_history_text(conversation_history)
 
-        print(history_text)
-
         instant_task = _asyncio.create_task(
             _asyncio.to_thread(
                 self._hublink_service.get_instant_response, question, history_text
@@ -192,7 +190,7 @@ class RetrievalService:
                     valid_response, nodes = self._validate_instant_response(sources, conversation_history)
                     if valid_response:
                         async for evt in self._finish_via_instant_answer(
-                                instant_answer, sources, query_task, instant_task, cancel_event, conversation_history
+                                instant_answer, nodes, query_task, instant_task, cancel_event
                         ):
                             yield evt
                         return
