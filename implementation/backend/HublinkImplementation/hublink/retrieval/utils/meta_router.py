@@ -9,6 +9,11 @@ from langchain_core.prompts import PromptTemplate
 from core.progress.progress_handler import ProgressHandler
 from language_model import LLMAdapter, PromptProvider
 
+from core.logging.logging import get_logger
+
+
+logger = get_logger(__name__)
+
 
 # NOTE: adjust these imports to match your actual project structure --
 # they mirror the ones implicitly used in generate_instant_response().
@@ -17,21 +22,6 @@ from language_model import LLMAdapter, PromptProvider
 # so we cap the generation tightly. This keeps latency and cost minimal and
 # also acts as a cheap guard against the model rambling.
 _ROUTER_MAX_TOKENS = 5
-
-log_file = Path(__file__).parent / "meta_router.log"
-
-routing_logger = logging.getLogger("meta_router")
-routing_logger.setLevel(logging.INFO)
-
-handler = logging.FileHandler(log_file, encoding="utf-8")
-handler.setFormatter(
-    logging.Formatter(
-        "%(asctime)s | %(message)s",
-        datefmt="%Y-%m-%d %H:%M:%S",
-    )
-)
-
-routing_logger.addHandler(handler)
 
 
 class RouteDecision(str, Enum):
@@ -55,11 +45,6 @@ class MetaRouter:
       - RETRIEVAL: a question that needs facts not (yet) present in the
         conversation history and therefore requires the retrieval pipeline,
         typically using the history to resolve references like "these papers".
-
-    This router does not itself answer chat_history questions -- it only
-    classifies. The caller is expected to dispatch to the appropriate
-    downstream component (e.g. an "answer-from-history" generator or the
-    retrieval pipeline) based on the returned RouteDecision.
     """
 
     def __init__(self, llm):
@@ -77,14 +62,11 @@ class MetaRouter:
         Args:
             question (str): The current user question.
             history_text (Optional[str]): The prior conversation turns,
-                formatted as text (same format you already pass into
-                generate_instant_response).
+                formatted as text.
 
         Returns:
             RouteDecision: One of GENERAL, CHAT_HISTORY, RETRIEVAL.
-                Falls back to RETRIEVAL on any parsing/classification failure,
-                since retrieval is the safest default (worst case: an
-                unnecessary but correct retrieval call).
+                Falls back to RETRIEVAL on any parsing/classification failure.
         """
 
         _ph = ProgressHandler()
@@ -122,21 +104,11 @@ class MetaRouter:
         try:
             decision = RouteDecision(route_value)
         except ValueError:
-            routing_logger.warning(
+            logger.warning(
                 "MetaRouter: unparseable route '%s' returned by LLM, "
                 "defaulting to RETRIEVAL", route_value,
             )
             return RouteDecision.RETRIEVAL
 
-        routing_logger.info(
-            "----------------- TEST 2 -------------------"
-        )
-        routing_logger.info(
-            "QUESTION: %s | ROUTE: %s \n ######### HISTORY: %s",
-            question.replace("\n", " "),
-            decision.value,
-            history_text
-        )
-
-        routing_logger.info("")
+        logger.info("MetaRouter decision: %s", decision)
         return decision

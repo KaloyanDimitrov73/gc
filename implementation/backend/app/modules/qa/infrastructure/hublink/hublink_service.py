@@ -429,21 +429,14 @@ class HubLinkService:
             history: Optional[str] = None,
     ) -> Tuple[RouteDecision, Optional[str], Optional[list]]:
         """
-        Replaces the old get_instant_response(). Instead of always running
-        both the "general" and "chat_history" instant-answer generators in
-        parallel, this first asks the MetaRouter which route applies, and
-        only runs the ONE matching generator -- saving an LLM call whenever
-        the route turns out to be "retrieval" (no instant generation at all
-        in that case) or "general"/"chat_history" (only one generator call
-        instead of two).
+        Replaces the old get_instant_response(). Instead of always running answer generators in
+        parallel, this first asks the MetaRouter which route applies, and only runs teh matching path.
 
         Returns:
             (route, answer, sources)
-            - route == RETRIEVAL:      answer is None, sources is None.
-                                        Caller should run the retrieval pipeline.
-            - route == GENERAL:        answer is the instant answer, sources is None.
-            - route == CHAT_HISTORY:   answer is the instant answer, sources is the
-                                        list of source ids it was grounded on.
+            - route == RETRIEVAL:      no answer, sources is None. --> run the retrieval pipeline.
+            - route == GENERAL:        instant answer, sources is None.
+            - route == CHAT_HISTORY:   instant answer, sources = list of message ids it was grounded on.
         """
         route = self.meta_router.check_route(question, history)
 

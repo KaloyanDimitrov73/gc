@@ -58,6 +58,7 @@ class RetrievalService:
         number_of_hubs: int,
         topic_entity_id: Optional[str] = None,
         use_direct_final_answer: bool = False,
+        conversation_history: Optional[List["MessageSchema"]] = None,
     ) -> RetrievalResult:
         """
         Validate input, query HubLink, and validate output.
@@ -73,8 +74,32 @@ class RetrievalService:
                 "HubLink service is not available. Try /api/v1/qa/init and check backend logs."
             )
 
-        logger.info("Query Hublink.")
+        history_text = _build_history_text(conversation_history)
 
+        # --- Step 1: ask the meta router which path applies. ---
+        route, instant_answer, sources = await _asyncio.to_thread(
+            self._hublink_service.get_routed_response, question, history_text
+        )
+
+        # --- Step 2a: route resolved to an instant answer (general / chat_history) ---
+        if route != RouteDecision.RETRIEVAL and instant_answer is not None and instant_answer != "null":
+            valid_response, nodes = self._validate_instant_response(sources, conversation_history)
+            if valid_response:
+                guardrails_warning = None
+                if self._guardrails_service:
+                    instant_answer, validation_passed, warning = await self._guardrails_service.validate_output(
+                        instant_answer
+                    )
+                    guardrails_warning = None if validation_passed else warning
+
+                return RetrievalResult(
+                    answer=instant_answer,
+                    nodes=nodes,
+                    sources=sources or [],
+                    guardrails_warning=guardrails_warning,
+                )
+
+        # --- Step 2b: route is RETRIEVAL
         answer, nodes, sources = await self._hublink_service.query(
             question=question,
             retrieval_mode=retrieval_mode,
@@ -138,10 +163,7 @@ class RetrievalService:
 
         history_text = _build_history_text(conversation_history)
 
-        # --- Step 1: ask the meta router which path applies. This single call
-        # replaces the old "always run general + chat_history in parallel"
-        # approach -- it also directly returns the instant answer if the route
-        # is GENERAL or CHAT_HISTORY, so there's no second round trip. ---
+        # --- Step 1: ask the meta router which path applies. ---
         yield {"type": "progress", "step": "routing_question", "percent": 10,
                "hubCompleted": None, "hubTotal": None}
 
@@ -204,13 +226,11 @@ class RetrievalService:
                 if evt and evt.get("type") == "hub_progress":
                     yield _queue_to_progress(evt)
 
-        # Final drain -- events that arrived in the last tick
         while not progress_queue.empty():
             evt = progress_queue.get_nowait()
             if evt and evt.get("type") == "hub_progress":
                 yield _queue_to_progress(evt)
 
-        # NOTE: _finish_via_query_task previously also took an `instant_task` to
         async for evt in self._finish_via_query_task(query_task, None):
             yield evt
 

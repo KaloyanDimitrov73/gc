@@ -148,9 +148,8 @@ async def lifespan(app: FastAPI):
             logger.info("All services initialized and ready.")
 
             indexing_svc = get_indexing_service()
-            interval = 3600
-            indexing_svc.start_scheduler(interval)
-            logger.info("Indexing scheduler started, interval=%ss", interval)
+            indexing_svc.start_scheduler(interval_seconds=settings.indexing_interval_seconds)
+            logger.info("Indexing scheduler started, interval=%ss", settings.indexing_interval_seconds)
         except Exception:
             logger.exception("Background service initialization failed")
 
