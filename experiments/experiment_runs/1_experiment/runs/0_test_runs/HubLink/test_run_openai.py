@@ -16,7 +16,7 @@ def main():
     folder_path = fpm.combine_paths(current_directory, "results")
     qa_dataset_path = fpm.combine_paths(
         fpm.get_parent_directory(current_directory, 1),
-        "test_qa_dataset.csv"
+        "test_qa_history_dataset.csv"
     )
     evaluator_configs_path = fpm.combine_paths(
         current_directory,

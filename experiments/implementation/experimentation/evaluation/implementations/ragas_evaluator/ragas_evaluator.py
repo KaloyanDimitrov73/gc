@@ -117,11 +117,6 @@ class RagasEvaluator(Evaluator):
 
     @weave.op()
     @override
-    def summarize(self, score_rows) -> dict:
-        pass
-
-    @weave.op()
-    @override
     def score(self,
               output: Optional[dict],
               golden_answer: Optional[str] = None,
@@ -134,7 +129,7 @@ class RagasEvaluator(Evaluator):
         dataset to be fetched sucessfully.
         """
         ProgressHandler().update_task_by_string_id("evaluating_results")
-        logger.debug("Starting RAGAS score evaluation.")
+        logger.info("Starting RAGAS score evaluation.")
         if golden_answer is None or output is None:
             return {}
         # Pylint throws a false positive error here
@@ -168,12 +163,14 @@ class RagasEvaluator(Evaluator):
         if not context_texts:
             context_texts = self._get_context_texts(context)
 
+        """
         if context is None or len(context) == 0:
-            logger.debug("The pipeline didn't return any output.")
+            logger.info("The pipeline didn't return any output.")
             empty_metrics = {}
             for metric in self._ragas_metrics:
                 empty_metrics[metric] = 0.0
             return empty_metrics
+        """
 
         # RAGAS needs a special dataset format to evaluate the model
         # therefore we create a qa-dataset with the given model output
@@ -185,7 +182,15 @@ class RagasEvaluator(Evaluator):
             "retrieved_contexts": context_texts,
             "golden_answer": golden_answer
         }
-        logger.debug(f"Ragas evaluation dataset: {dataset_dict}")
+
+        dataset_dict = {
+            "question": model_output["initial_question"],
+            "generated_answer": self._clean_answer(model_output["generated_answer"]),
+            "golden_triples": [],
+            "retrieved_contexts": None,
+            "golden_answer": golden_answer
+        }
+        logger.info(f"Ragas evaluation dataset: {dataset_dict}")
 
         dataset = self._convert_to_ragas_dataset(dataset_dict)
         return self._run_ragas_evaluation(dataset, self._ragas_metrics)

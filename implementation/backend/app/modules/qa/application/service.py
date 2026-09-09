@@ -14,6 +14,7 @@ from backend.app.modules.qa.infrastructure.hublink.hublink_service import (
 )
 from backend.app.contracts.schemas import GraphNode, MessageSchema
 from backend.app.shared.exceptions import AppError, InputRejectedError, ServiceUnavailableError
+from hublink.retrieval.utils.meta_router import RouteDecision
 
 logger = logging.getLogger(__name__)
 
@@ -44,7 +45,7 @@ class RetrievalService:
     Coordinates guardrails and HubLink provider calls.
     """
 
-    def __init__(self, hublink_service: HubLinkService, guardrails_service: GuardrailsService):
+    def __init__(self, hublink_service: HubLinkService, guardrails_service: Optional[GuardrailsService]):
         self._hublink_service = hublink_service
         self._guardrails_service = guardrails_service
 
@@ -57,21 +58,48 @@ class RetrievalService:
         number_of_hubs: int,
         topic_entity_id: Optional[str] = None,
         use_direct_final_answer: bool = False,
+        conversation_history: Optional[List["MessageSchema"]] = None,
     ) -> RetrievalResult:
         """
         Validate input, query HubLink, and validate output.
         """
-        is_valid, rejection_reason = await self._guardrails_service.validate_input(question)
-        if not is_valid:
-            raise RetrievalInputRejectedError(rejection_reason or "Input rejected by guardrails.")
+        if self._guardrails_service:
+            is_valid, rejection_reason = await self._guardrails_service.validate_input(question)
+
+            if not is_valid:
+                raise RetrievalInputRejectedError(rejection_reason or "Input rejected by guardrails.")
 
         if not self._hublink_service.is_available():
             raise RetrievalUnavailableError(
                 "HubLink service is not available. Try /api/v1/qa/init and check backend logs."
             )
 
-        logger.info("Query Hublink.")
+        history_text = _build_history_text(conversation_history)
 
+        # --- Step 1: ask the meta router which path applies. ---
+        route, instant_answer, sources = await _asyncio.to_thread(
+            self._hublink_service.get_routed_response, question, history_text
+        )
+
+        # --- Step 2a: route resolved to an instant answer (general / chat_history) ---
+        if route != RouteDecision.RETRIEVAL and instant_answer is not None and instant_answer != "null":
+            valid_response, nodes = self._validate_instant_response(sources, conversation_history)
+            if valid_response:
+                guardrails_warning = None
+                if self._guardrails_service:
+                    instant_answer, validation_passed, warning = await self._guardrails_service.validate_output(
+                        instant_answer
+                    )
+                    guardrails_warning = None if validation_passed else warning
+
+                return RetrievalResult(
+                    answer=instant_answer,
+                    nodes=nodes,
+                    sources=sources or [],
+                    guardrails_warning=guardrails_warning,
+                )
+
+        # --- Step 2b: route is RETRIEVAL
         answer, nodes, sources = await self._hublink_service.query(
             question=question,
             retrieval_mode=retrieval_mode,
@@ -81,13 +109,130 @@ class RetrievalService:
             use_direct_final_answer=use_direct_final_answer,
         )
 
-        answer, validation_passed, warning = await self._guardrails_service.validate_output(answer)
+        guardrails_warning = None
+        if self._guardrails_service:
+            answer, validation_passed, warning = await self._guardrails_service.validate_output(answer)
+            guardrails_warning = None if validation_passed else warning
+
         return RetrievalResult(
             answer=answer,
             nodes=nodes,
             sources=sources,
-            guardrails_warning=None if validation_passed else warning,
+            guardrails_warning=guardrails_warning,
         )
+
+    async def ask_streaming_with_meta_router(
+            self,
+            *,
+            question: str,
+            retrieval_mode: str,
+            llm_model: str,
+            number_of_hubs: int,
+            topic_entity_id: Optional[str] = None,
+            use_direct_final_answer: bool = False,
+            conversation_history: Optional[List["MessageSchema"]],
+    ) -> AsyncIterator[Dict[str, Any]]:
+        """
+        Async generator that yields pipeline progress events and a final complete event.
+
+        Progress events: {"type": "progress", "step": str, "percent": int}
+        Complete event:  {"type": "complete", "answer": str, "nodes": list,
+                          "sources": list, "guardrails_warning": str | None}
+        Error events:    {"type": "error", "code": str, "detail": str}
+        """
+        yield {"type": "progress", "step": "input_validation", "percent": 5}
+
+        if self._guardrails_service:
+            is_valid, rejection_reason = await self._guardrails_service.validate_input(question)
+
+            if not is_valid:
+                yield {
+                    "type": "error",
+                    "code": "input_rejected",
+                    "detail": rejection_reason or "Input rejected by guardrails.",
+                }
+                return
+
+        if not self._hublink_service.is_available():
+            yield {
+                "type": "error",
+                "code": "unavailable",
+                "detail": "HubLink service is not available. Try /api/v1/qa/init and check backend logs.",
+            }
+            return
+
+        history_text = _build_history_text(conversation_history)
+
+        # --- Step 1: ask the meta router which path applies. ---
+        yield {"type": "progress", "step": "routing_question", "percent": 10,
+               "hubCompleted": None, "hubTotal": None}
+
+        route, instant_answer, sources = await _asyncio.to_thread(
+            self._hublink_service.get_routed_response, question, history_text
+        )
+
+        # --- Step 2a: route resolved to an instant answer (general / chat_history) ---
+        if route != RouteDecision.RETRIEVAL and instant_answer is not None and instant_answer != "null":
+            yield {"type": "progress", "step": "checking_instant_response", "percent": 20,
+                   "hubCompleted": None, "hubTotal": None}
+
+            valid_response, nodes = self._validate_instant_response(sources, conversation_history)
+            if valid_response:
+                yield {
+                    "type": "complete",
+                    "answer": instant_answer,
+                    "nodes": nodes,
+                    "sources": sources or [],
+                    "guardrails_warning": None,
+                }
+                return
+
+        # --- Step 2b: route is RETRIEVAL
+        progress_queue: _asyncio.Queue = _asyncio.Queue()
+        cancel_event = threading.Event()
+
+        query_task = _asyncio.create_task(
+            self._hublink_service.query_streaming(
+                question=question,
+                retrieval_mode=retrieval_mode,
+                llm_model=llm_model,
+                number_of_hubs=number_of_hubs,
+                topic_entity_id=topic_entity_id,
+                use_direct_final_answer=use_direct_final_answer,
+                progress_queue=progress_queue,
+                conversation_history=history_text,
+                cancel_event=cancel_event,
+            )
+        )
+
+        def _queue_to_progress(evt: Dict[str, Any]) -> Dict[str, Any]:
+            step = evt.get("step", "retrieving")
+            return {
+                "type": "progress",
+                "step": step,
+                "percent": evt["percent"],
+                "hubCompleted": evt.get("completed"),
+                "hubTotal": evt.get("total"),
+            }
+
+        pending = {query_task}
+        while pending:
+            done, pending = await _asyncio.wait(
+                pending, timeout=0.1, return_when=_asyncio.FIRST_COMPLETED
+            )
+
+            while not progress_queue.empty():
+                evt = progress_queue.get_nowait()
+                if evt and evt.get("type") == "hub_progress":
+                    yield _queue_to_progress(evt)
+
+        while not progress_queue.empty():
+            evt = progress_queue.get_nowait()
+            if evt and evt.get("type") == "hub_progress":
+                yield _queue_to_progress(evt)
+
+        async for evt in self._finish_via_query_task(query_task, None):
+            yield evt
 
     async def ask_streaming(
         self,
@@ -110,14 +255,16 @@ class RetrievalService:
         """
         yield {"type": "progress", "step": "input_validation", "percent": 5}
 
-        is_valid, rejection_reason = await self._guardrails_service.validate_input(question)
-        if not is_valid:
-            yield {
-                "type": "error",
-                "code": "input_rejected",
-                "detail": rejection_reason or "Input rejected by guardrails.",
-            }
-            return
+        if self._guardrails_service:
+            is_valid, rejection_reason = await self._guardrails_service.validate_input(question)
+
+            if not is_valid:
+                yield {
+                    "type": "error",
+                    "code": "input_rejected",
+                    "detail": rejection_reason or "Input rejected by guardrails.",
+                }
+                return
 
         if not self._hublink_service.is_available():
             yield {
@@ -186,7 +333,7 @@ class RetrievalService:
                 instant_checked = True
                 instant_answer, sources = instant_task.result()
 
-                if instant_answer is not None:
+                if instant_answer is not None and instant_answer != "null":
                     valid_response, nodes = self._validate_instant_response(sources, conversation_history)
                     if valid_response:
                         async for evt in self._finish_via_instant_answer(
@@ -244,19 +391,21 @@ class RetrievalService:
         yield {"type": "progress", "step": "instant_response", "percent": 90,
                "hubCompleted": None, "hubTotal": None}
 
-        answer, validation_passed, warning = await self._guardrails_service.validate_output(instant_answer)
-        guardrails_warning = None if validation_passed else warning
+        guardrails_warning = None
+        if self._guardrails_service:
+            instant_answer, validation_passed, warning = await self._guardrails_service.validate_output(instant_answer)
+            guardrails_warning = None if validation_passed else warning
 
         yield {"type": "progress", "step": "saving", "percent": 95,
                "hubCompleted": None, "hubTotal": None}
 
         _assert_tasks_finished(query_task, instant_task, where="instant_answer_path")
-        yield {"type": "complete", "answer": answer, "nodes": nodes, "sources": [],
-               "guardrails_warning": guardrails_warning}
+        yield {"type": "complete", "answer": instant_answer, "nodes": nodes, "sources": [],
+               "guardrails_warning": guardrails_warning, "contexts": None}
 
     async def _finish_via_query_task(self, query_task, instant_task) -> AsyncIterator[Dict[str, Any]]:
         try:
-            answer, nodes, sources = await query_task
+            answer, nodes, sources, contexts = await query_task
         except Exception as e:
             _assert_tasks_finished(query_task, instant_task, where="query_task_exception")
             print(e)
@@ -266,19 +415,22 @@ class RetrievalService:
         yield {"type": "progress", "step": "processing", "percent": 93,
                "hubCompleted": None, "hubTotal": None}
 
-        answer, validation_passed, warning = await self._guardrails_service.validate_output(answer)
-        guardrails_warning = None if validation_passed else warning
+        guardrails_warning = None
+        if self._guardrails_service:
+            answer, validation_passed, warning = await self._guardrails_service.validate_output(answer)
+            guardrails_warning = None if validation_passed else warning
 
         yield {"type": "progress", "step": "saving", "percent": 95,
                "hubCompleted": None, "hubTotal": None}
 
-        _assert_tasks_finished(query_task, instant_task, where="retrieval_completion")
+        #_assert_tasks_finished(query_task, instant_task, where="retrieval_completion")
         yield {
             "type": "complete",
             "answer": answer,
             "nodes": [n.model_dump(by_alias=True) for n in nodes],
             "sources": sources,
             "guardrails_warning": guardrails_warning,
+            "contexts": contexts
         }
 
 

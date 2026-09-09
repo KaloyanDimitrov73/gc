@@ -35,6 +35,8 @@ class SequentialExperimentExecutor(BaseExperimentExecutor):
         self._disable_emission_tracker_if_necessary()
         all_results = []
 
+        print("execute_experiments")
+
         for config in configs:
             result = self._run_with_weave_evaluation(config)
 

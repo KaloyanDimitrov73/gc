@@ -1,4 +1,4 @@
-from hublink_shared.config import Config
+from hublink_shared import Config
 
 
 class PipeConfig(Config):

@@ -1,0 +1,130 @@
+uid,question,golden_answer,message_history,source_ids,golden_triples,is_generated_with,topic_entity_id,topic_entity_value,hops,based_on_template,use_case
+0001-1,"""Hi!""","Hello! I can help you with questions about software architecture research. You can ask about research findings, , specific papers, trends, datasets, evaluation methods, and more. For example, you might ask: 'Which papers evaluate the property security and have input data available?'",[],NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL
+0001-2,"""How are you?""","Hello! I'm doing well, thanks for asking. I'm here to assist with questions about software architecture research, such as inquiries about research findings, papers, trends, evaluations, and more. Let me know if you have any questions, for example: What research trends are emerging in software architecture?",[],NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL
+0001-3,"""Can you give me papers about Human-Robot Interaction in psychology?""",This chatbot focuses on software architecture research. You might ask questions like: 'Which papers investigate architectural assumptions?',[],NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL
+0002-1,"""Can you rank the papers in descending order of their publication year?""","The publications by Sten Grüner, ranked in descending order of their publication year, are: 1. A Comparison of MQTT Brokers for Distributed IoT Edge Computing (2020), 2. A Four-Layer Architecture Pattern for Constructing and Managing Digital Twins (2019).","[
+    MessageSchema(
+        id='1d4c8e72-5a3f-4b91-9c6e-2f7a8b0d3e15',
+        conversation_id='f3a6d9c2-7e11-4b88-a044-5c8f1e2d6b90',
+        role='user',
+        content='Which papers have been published by the author Sten Grüner?',
+        nodes=None, sources=None,
+        created_at=datetime.datetime(2026, 9, 2, 10, 5, 12, 445000)
+    ),
+    MessageSchema(
+        id='8f2b6a94-3d7c-4e05-b8a1-6c9e2f4a7b31',
+        conversation_id='f3a6d9c2-7e11-4b88-a044-5c8f1e2d6b90',
+        role='assistant',
+        content='The publications by Sten Grüner are: 1. A Four-Layer Architecture Pattern for Constructing and Managing Digital Twins (2019) 2. A Comparison of MQTT Brokers for Distributed IoT Edge Computing (2020). [1][2] \n\n[1] Source: A Comparison of MQTT Brokers for Distributed IoT Edge Computing, 10.1007/978-3-030-58923-3_23\n[2] Source: A Four-Layer Architecture Pattern for Constructing and Managing Digital Twins, 10.1007/978-3-030-29983-5_16\n',
+        nodes=[], sources=['10.1007/978-3-030-58923-3_23', '10.1007/978-3-030-29983-5_16'],
+        created_at=datetime.datetime(2026, 9, 2, 10, 5, 12, 445000)
+    )
+]","['10.1007/978-3-030-58923-3_23', '10.1007/978-3-030-58923-3_23', '10.1007/978-3-030-29983-5_16', '10.1007/978-3-030-29983-5_16']","['(R873729:authors list, has list element, L1531103:Sten Grüner)', '(R873728:A Comparison of MQTT Brokers for Distributed IoT Edge Computing, publication year, L1531105:2020)', '(R870310:authors list, has list element, L1524116:Sten Grüner)', '(R870309:A Four-Layer Architecture Pattern for Constructing and Managing Digital Twins, publication year, L1524119:2019)']",clustering_strategy,R659055,Software Architecture and Design,3,Which publications have been published by the author [Metadata: author name] ranked by their publication year?,1
+0002-2,"""Among the these papers, what is the distribution of paper classes per publication year?""","In the year 2021, Mohamed Soliman published two papers classified as evaluation research. In 2018, he published one paper classified as evaluation research. Therefore, the number of papers classified as evaluation research published by Mohamed Soliman per year is two in 2021 and one in 2018.","[
+    MessageSchema(
+        id='6e9a3c17-4f8b-4d02-9e5c-1a7d8f2b6c94',
+        conversation_id='b8d2f5a9-3c76-4e19-9022-7d4a6f1e8c53',
+        role='user',
+        content='Which papers has Mohamed Soliman published, and what paper class and publication year is each associated with?',
+        nodes=None, sources=None,
+        created_at=datetime.datetime(2026, 9, 2, 10, 12, 38, 220000)
+    ),
+    MessageSchema(
+        id='2c5f8b46-9a1d-4e73-8b0f-3e6c9a2d5f17',
+        conversation_id='b8d2f5a9-3c76-4e19-9022-7d4a6f1e8c53',
+        role='assistant',
+        content='Mohamed Soliman has published the following papers: 1. ""An Exploratory Study on Architectural Knowledge in Issue Tracking Systems"" (2021), classified as evaluation research. 2. ""Exploring Web Search Engines to Find Architectural Knowledge"" (2021), classified as evaluation research. 3. ""Improving the Search for Architecture Knowledge in Online Developer Communities"" (2018), classified as evaluation research. [1][2][3]\n\n[1] Source: An Exploratory Study on Architectural Knowledge in Issue Tracking Systems, 10.1007/978-3-030-86044-8_8\n[2] Source: Exploring Web Search Engines to Find Architectural Knowledge, 10.1109/ICSA51549.2021.00023\n[3] Source: Improving the Search for Architecture Knowledge in Online Developer Communities, 10.1109/ICSA.2018.00028\n',
+        nodes=[], sources=['10.1007/978-3-030-86044-8_8', '10.1109/ICSA51549.2021.00023', '10.1109/ICSA.2018.00028'],
+        created_at=datetime.datetime(2026, 9, 2, 10, 12, 38, 220000)
+    )
+]","['10.1007/978-3-030-86044-8_8', '10.1007/978-3-030-86044-8_8', '10.1007/978-3-030-86044-8_8', '10.1109/ICSA51549.2021.00023', '10.1109/ICSA51549.2021.00023', '10.1109/ICSA51549.2021.00023', '10.1109/ICSA.2018.00028', '10.1109/ICSA.2018.00028', '10.1109/ICSA.2018.00028']","['(R869226:authors list, has list element, L1521780:Mohamed Soliman)', '(R869225:An Exploratory Study on Architectural Knowledge in Issue Tracking Systems, publication year, L1521783:2021)', '(R869244:Paper Class 2, evaluation research, L1521829:True)', '(R870674:authors list, has list element, L1524849:Mohamed Soliman)', '(R870673:Exploring Web Search Engines to Find Architectural Knowledge, publication year, L1524854:2021)', '(R870692:Paper Class 2, evaluation research, L1524902:True)', '(R874394:authors list, has list element, L1532510:Mohamed Soliman)', '(R874393:Improving the Search for Architecture Knowledge in Online Developer Communities, publication year, L1532515:2018)', '(R874417:Paper Class 2, evaluation research, L1532569:True)']",clustering_strategy,R659055,Software Architecture and Design,3,What is the proportion of paper classes that have been published by the author [Metadata: author name] per year?,1
+0002-3,"""How frequently is the property Satisfaction evaluated compared to the property Context Coverage in the papers?""","The frequency with which the property Satisfaction is evaluated compared to the property Context Coverage in papers that investigate the research object Architecture Evolution is as follows: Satisfaction is evaluated three times, whereas Context Coverage is evaluated only once.","[
+    MessageSchema(
+        id='9b4e7c25-1d8a-4f36-9c05-2e7b8a4d1f63',
+        conversation_id='e4f7a2c8-9b03-4d61-8e77-4a2f9c1d6b05',
+        role='user',
+        content='Which papers investigate the research object Architecture Evolution and evaluate the property Satisfaction or Context Coverage, and which property does each of them evaluate?',
+        nodes=None, sources=None,
+        created_at=datetime.datetime(2026, 9, 2, 10, 20, 5, 890000)
+    ),
+    MessageSchema(
+        id='4a8d1f63-6c92-4b07-a3e5-8f1c9a6d2e40',
+        conversation_id='e4f7a2c8-9b03-4d61-8e77-4a2f9c1d6b05',
+        role='assistant',
+        content='The following papers investigate the research object Architecture Evolution and evaluate the properties Satisfaction and/or Context Coverage: 1. The paper with DOI 10.1109/ICSA51549.2021.00014 evaluates both Satisfaction and Context Coverage. 2. The paper with DOI 10.1109/ICSA.2018.00012 evaluates Satisfaction. 3. The paper with DOI 10.1109/ICSA.2019.00024 evaluates Satisfaction. [1][2][3]\n\n[1] Source: 10.1109/ICSA51549.2021.00014\n[2] Source: 10.1109/ICSA.2018.00012\n[3] Source: 10.1109/ICSA.2019.00024\n',
+        nodes=[], sources=['10.1109/ICSA51549.2021.00014', '10.1109/ICSA.2018.00012', '10.1109/ICSA.2019.00024'],
+        created_at=datetime.datetime(2026, 9, 2, 10, 20, 5, 890000)
+    )
+]","['10.1109/ICSA51549.2021.00014', '10.1109/ICSA51549.2021.00014', '10.1109/ICSA51549.2021.00014', '10.1109/ICSA.2018.00012', '10.1109/ICSA.2018.00012', '10.1109/ICSA.2019.00024', '10.1109/ICSA.2019.00024']","['(R874382:Research Object Entity, Name, L1532476:Architecture Evolution)', '(R874372:Property, Name, L1532467:Satisfaction)', '(R874380:Property, Name, L1532474:Context coverage)', '(R871023:Research Object Entity, Name, L1525570:Architecture Evolution)', '(R871021:Property, Name, L1525568:Satisfaction)', '(R873637:Research Object Entity, Name, L1530905:Architecture Evolution)', '(R873633:Property, Name, L1530901:Satisfaction)']",clustering_strategy,R659055,Software Architecture and Design,6,How frequently is the sub-property with the name [Content Data: sub-property name] used compared to the sub-property with the name [Content Data: sub-property name] in research that investigates the research object with the name [Content Data: research object name]?,4
+0003-1,"""In how many of these papers are focus groups employed for evaluation?""",The number of publications in which confirmability is identified as a validity threat while focus groups are employed for evaluation is two.,"[
+    MessageSchema(
+        id='4a2e9f10-3b71-4c2e-9a5d-1e7c8b0f2a91',
+        conversation_id='b1e6d3a2-7f88-4c9e-9a11-2d5f6c8e0b33',
+        role='user',
+        content='Which papers identify confirmability as a threat to validity?',
+        nodes=None, sources=None,
+        created_at=datetime.datetime(2026, 9, 2, 9, 10, 15, 120000)
+    ),
+    MessageSchema(
+        id='9c3f6e21-8a45-4d0b-b7c3-6f1a9d2e5b44',
+        conversation_id='b1e6d3a2-7f88-4c9e-9a11-2d5f6c8e0b33',
+        role='assistant',
+        content='Two papers identify confirmability as a threat to validity. This is based on evidence linking a Threat to Validity entity named ""confirmability"" (True) to these publications [1][2].\n\n[1] Source: DOI 10.1007/978-3-319-65831-5_14\n[2] Source: DOI 10.1007/978-3-030-29983-5_4\n',
+        nodes=[], sources=['10.1007/978-3-319-65831-5_14', '10.1007/978-3-030-29983-5_4'],
+        created_at=datetime.datetime(2026, 9, 2, 9, 10, 15, 120000)
+    )
+]","['10.1007/978-3-319-65831-5_14', '10.1007/978-3-319-65831-5_14', '10.1007/978-3-030-29983-5_4', '10.1007/978-3-030-29983-5_4']","['(R868656:Threat to Validity, confirmability, L1520582:True)', '(R868665:Evaluation Method Entity, Name, L1520588:Focus Group)', '(R873942:Threat to Validity, confirmability, L1531581:True)', '(R873955:Evaluation Method Entity, Name, L1531590:Focus Group)']",clustering_strategy,R659055,Software Architecture and Design,7,"How many papers, that discuss the [Content Data: threat to validity] as a threat to validity, apply [Content Data: evaluation method name] as a evaluation method?",3
+0003-2,"""Which of these have not used input data?""",The papers that use the research object Architecture Evolution but do not have any input data available are: 1) 'Using Informal Knowledge for Improving Software Quality Trade-Off Decisions' and 2) 'On Interfaces to Support Agile Architecting in Automotive: An Exploratory Case Study'.,"[
+    MessageSchema(
+        id='e5d8f120-2c4b-4a7e-9f01-3b6c8d9e4a55',
+        conversation_id='c2f7e4b3-8a99-4d0f-b122-3e6a7d9f1c44',
+        role='user',
+        content='Which papers investigate architecture evolution?',
+        nodes=None, sources=None,
+        created_at=datetime.datetime(2026, 9, 2, 9, 15, 42, 330000)
+    ),
+    MessageSchema(
+        id='7b1a4c93-6f2d-4e8b-a9c5-1d0e3f6a7b66',
+        conversation_id='c2f7e4b3-8a99-4d0f-b122-3e6a7d9f1c44',
+        role='assistant',
+        content='Two papers investigate Architecture Evolution as a research object: ""Using Informal Knowledge for Improving Software Quality Trade-Off Decisions"" and ""On Interfaces to Support Agile Architecting in Automotive: An Exploratory Case Study"" [1][2].\n\n[1] Source: Using Informal Knowledge for Improving Software Quality Trade-Off Decisions, 10.1007/978-3-030-00761-4_18\n[2] Source: On Interfaces to Support Agile Architecting in Automotive: An Exploratory Case Study, 10.1109/ICSA.2019.00025\n',
+        nodes=[], sources=['10.1007/978-3-030-00761-4_18', '10.1109/ICSA.2019.00025'],
+        created_at=datetime.datetime(2026, 9, 2, 9, 15, 42, 330000)
+    )
+]","['10.1007/978-3-030-00761-4_18', '10.1007/978-3-030-00761-4_18', '10.1109/ICSA.2019.00025', '10.1109/ICSA.2019.00025']","['(R875035:Research Object Entity, Name, L1533913:Architecture Evolution)', '(R875038:Input Data, None, L1533923:True)', '(R868837:Research Object Entity, Name, L1520959:Architecture Evolution)', '(R868840:Input Data, None, L1520969:True)']",clustering_strategy,R659055,Software Architecture and Design,6,"Which papers use the research object [Content Data: research object name], but do not have any input data available?",3
+0003-3,"""Which of these where published in 2019?""",The paper 'Improving the Consistency and Usefulness of Architecture Descriptions: Guidelines for Architects' investigated Architectural Assumptions as a research object in the year 2019.,"[
+    MessageSchema(
+        id='0f4d7a2e-9b3c-4f6e-8a12-5c7d9e0f1b22',
+        conversation_id='d3a8f5c4-9b00-4e1f-c233-4f7b8e0a2d55',
+        role='user',
+        content='Which papers investigate architectural assumptions?',
+        nodes=None, sources=None,
+        created_at=datetime.datetime(2026, 9, 2, 9, 20, 5, 870000)
+    ),
+    MessageSchema(
+        id='6a9c2e04-1d8f-4b3e-9c47-8e1a2b3c4d77',
+        conversation_id='d3a8f5c4-9b00-4e1f-c233-4f7b8e0a2d55',
+        role='assistant',
+        content='The paper ""Improving the Consistency and Usefulness of Architecture Descriptions: Guidelines for Architects"" investigates Architectural Assumptions as a research object [1].\n\n[1] Source: Improving the Consistency and Usefulness of Architecture Descriptions: Guidelines for Architects, 10.1109/ICSA.2019.00024\n',
+        nodes=[], sources=['10.1109/ICSA.2019.00024'],
+        created_at=datetime.datetime(2026, 9, 2, 9, 20, 5, 870000)
+    )
+]","['10.1109/ICSA.2019.00024', '10.1109/ICSA.2019.00024']","['(R873620:Research Object Entity, Name, L1530876:Architectural Assumptions)', '(R873599:Improving the Consistency and Usefulness of Architecture Descriptions: Guidelines for Architects, publication year, L1530833:2019)']",clustering_strategy,R659055,Software Architecture and Design,6,Which papers used [Content Data: research object name] as a research object in the year [Metadata: year]?,6
+0003-4,"""What was the evaluation method applied?""",The evaluation method that was applied the most to the research object Architecture Evolution in the year 2020 was Case Study.,"[
+    MessageSchema(
+        id='c7158d81-fee8-44e5-8c6d-97df63a9b8c7',
+        conversation_id='ac7cfead-1bdc-4b4b-91a3-9abf3f18b7df',
+        role='user',
+        content='Which paper published in 2020 evaluate architecture evolution?',
+        nodes=None, sources=None,
+        created_at=datetime.datetime(2026, 9, 2, 8, 45, 30, 833305)
+    ),
+    MessageSchema(
+        id='86299754-069d-43d2-952c-93655cdb1e87',
+        conversation_id='ac7cfead-1bdc-4b4b-91a3-9abf3f18b7df',
+        role='assistant',
+        content='The paper titled ""Architectural Concerns for Digital Twin of the Organization"" published in 2020 evaluates architecture evolution. This conclusion is drawn from the evidence that its contribution is associated with a research object entity specifically named ""Architecture Evolution"" [1].\n\n[1] Source: Architectural Concerns for Digital Twin of the Organization, 10.1007/978-3-030-58923-3_18\n',
+        nodes=[], sources=['10.1007/978-3-030-58923-3_18'],
+        created_at=datetime.datetime(2026, 9, 2, 8, 45, 30, 833305)
+    )
+]","['10.1007/978-3-030-58923-3_18', '10.1007/978-3-030-58923-3_18', '10.1007/978-3-030-58923-3_18', '10.1109/ICSA47634.2020.00011', '10.1109/ICSA47634.2020.00011', '10.1109/ICSA47634.2020.00011']","['(R869762:Research Object Entity, Name, L1522941:Architecture Evolution)', '(R869730:Architectural Concerns for Digital Twin of the Organization, publication year, L1522884:2020)', '(R869756:Evaluation Method Entity, Name, L1522935:Case Study)', '(R870091:Research Object Entity, Name, L1523621:Architecture Evolution)', '(R870059:Incremental Calibration of Architectural Performance Models with Parametric Dependencies, publication year, L1523564:2020)', '(R870085:Evaluation Method Entity, Name, L1523615:Case Study)']",clustering_strategy,R659055,Software Architecture and Design,6,Which is the most used evaluation method that is used with the research object [Content Data: research object name] in the year [Metadata: year]?,5

@@ -20,14 +20,11 @@ from implementation.experimentation.utils.visualizer.experiment_visualizer impor
 # Here you replace the name of the configs with a unique
 # name. Place the id on the left, and the name on the right.
 CONFIG_TO_NAME_MAPPING: dict = {
-    "800d5973d1783ef79636e6d3632d4b8a": "Dense",
-    "39f0c727f1c36390b5a876e7120bfff1": "BM25",
-    "c75b3cf0921537bf3249b9a498522306": "SPLADE",
-    "22dd31a8438d3cb785b302df12288cf1": "Cross-encoder",
+    "996ee957d8cfd90ed3b51003e714ed38": "Chat History",
 }
 # The base config (or name if you replace it above)
 # is highlighted in red in some plots. Should be a string.
-BASELINE_CONFIG: str = "Dense"
+BASELINE_CONFIG: str = "Chat History"
 
 
 FPM = FilePathManager()
@@ -35,11 +32,8 @@ CURRENT_DIRECTORY = os.path.dirname(os.path.realpath(__file__))
 VISUALIZATIONS_DIR = FPM.combine_paths(
     CURRENT_DIRECTORY, "result_visualizations")
 QA_DATASET_PATH = FPM.combine_paths(
-    FPM.get_parent_directory(CURRENT_DIRECTORY, 5),
-    "qa_datasets",
-    "qa_datasets",
-    "reduced",
-    "reduced_deep_distributed_graph_dataset.csv"
+    FPM.get_parent_directory(CURRENT_DIRECTORY, 3),
+    "test_qa_history_dataset.csv"
 )
 
 
@@ -116,7 +110,9 @@ def plot_metric_by_column():
             # visualize. It has to be inside of a dictionary.
             metrics={
                 "retrieval_operation": [
-                    "recall_triples",
+                    "semantic_similarity",
+                    "runtime",
+                    "llm_tokens"
                 ]
             }
         )
@@ -174,6 +170,6 @@ def plot_for_wiki():
 
 
 if __name__ == '__main__':
-    plot_average_metrics_per_config()
+    #plot_average_metrics_per_config()
     plot_metric_by_column()
     # plot_for_wiki()

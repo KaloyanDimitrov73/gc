@@ -98,8 +98,6 @@ class DirectRetrievalStrategy(BaseRetrievalStrategy):
             logger.info("Canceling after: Searching candidate hubs")
             return None
 
-        logger.info("Filling paths")
-        self.progress_handler.add_task(string_id="path_filling", description="Filling paths", total=len(candidate_hubs), reset=True)
         logger.info("Scoring and limiting candidate paths")
         self.progress_handler.add_task(string_id="path_scoring", description="Scoring candidate paths", total=len(candidate_hubs), reset=True)
         candidate_hubs = self._fill_or_remove_paths(

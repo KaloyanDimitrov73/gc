@@ -124,10 +124,13 @@ class BaseExperimentExecutor(ABC):
         )
 
         for entry in self.prepared_qa_dataset:
+            print("history")
+            print(entry["message_history"])
             result = pipeline.run(
                 input_str=entry["question"],
                 topic_entity_id=entry["topic_entity_id"],
-                topic_entity_value=entry["topic_entity_value"]
+                topic_entity_value=entry["topic_entity_value"],
+                message_history=entry["message_history"]
             )
             all_results.append(result)
 

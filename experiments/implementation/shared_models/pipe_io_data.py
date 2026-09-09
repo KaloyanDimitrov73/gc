@@ -1,6 +1,8 @@
-﻿from typing import List, Optional
-from pydantic import BaseModel, Field
+﻿import datetime
+from typing import List, Optional
+from pydantic import BaseModel, Field, field_validator
 
+from backend.app.contracts.schemas import MessageSchema
 from implementation.core import Context
 
 
@@ -33,3 +35,17 @@ class PipeIOData(BaseModel):
     question_id: Optional[str] = Field(
         default=None,
         description="An identifier for the question being processed.")
+    message_history: Optional[List[MessageSchema]] = Field(
+        default=None, description="The template that was used to generate the question")
+
+    @field_validator("message_history", mode="before")
+    def parse_message_history(cls, v):
+        if v is None:
+            return None
+        if isinstance(v, str):
+            v = v.strip()
+            if not v:
+                return None
+            namespace = {"MessageSchema": MessageSchema, "datetime": datetime}
+            return eval(v, {"__builtins__": {}}, namespace)
+        return v

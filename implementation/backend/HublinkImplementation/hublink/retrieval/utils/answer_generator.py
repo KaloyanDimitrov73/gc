@@ -26,14 +26,6 @@ from core.logging.logging import get_logger
 logger = get_logger(__name__)
 
 
-def _llm_call_config(call_type: str) -> dict:
-    """Build LangChain run config used by the shared LLM wrapper logger."""
-    return {
-        "metadata": {"llm_call_type": call_type},
-        "tags": [f"llm_call_type:{call_type}"]
-    }
-
-
 class HubAnswer(BaseModel):
     """
     Data object representing an answer generated for a hub during the retrieval process.
@@ -134,7 +126,7 @@ class AnswerGenerator:
         chain = prompt | self.llm.llm | parser
         response = chain.invoke(
             {"question": question, "partial_answers": partial_answers, "chat_history": conversation_history},
-            config=_llm_call_config("hublink.final_answer_generation"))
+            config=LLMAdapter.llm_call_config("hublink.final_answer_generation"))
 
         # Step 2 complete: LLM answered
         _ph.update_task_by_string_id("final_answer_generation")
@@ -317,7 +309,7 @@ class AnswerGenerator:
         chain = prompt | llm_runnable | parser
         response = chain.invoke(
             {"texts": texts, "question": question, "common_information": common_information},
-            config=_llm_call_config("hublink.partial_answer_generation"))
+            config=LLMAdapter.llm_call_config("hublink.partial_answer_generation"))
         logger.debug(f"Response from LLM: {response}")
         return response
 
@@ -473,7 +465,7 @@ class AnswerGenerator:
         chain = prompt | self.llm.llm | parser
         response = chain.invoke(
             {"question": question, "contexts": context_text, "answer": answer},
-            config=_llm_call_config("hublink.triple_context_filter"))
+            config=LLMAdapter.llm_call_config("hublink.triple_context_filter"))
         logger.debug(f"Response from LLM for relevant triples: {response}")
 
         relevant_ids = self._extract_id_list(response)
@@ -562,7 +554,7 @@ class AnswerGenerator:
         chain = prompt | self.llm.llm | parser
         response = chain.invoke(
             {"question": question, "contexts": context_texts},
-            config=_llm_call_config("hublink.document_context_filter"))
+            config=LLMAdapter.llm_call_config("hublink.document_context_filter"))
         logger.debug(f"Response from LLM for relevant contexts: {response}")
 
         relevant_ids = self._extract_id_list(response)
@@ -674,7 +666,7 @@ class AnswerGenerator:
         chain = prompt | self.llm.llm | parser
         raw_response = chain.invoke(
             {"question": question},
-            config=_llm_call_config("hublink.instant_response_generation"))
+            config=LLMAdapter.llm_call_config("hublink.instant_response_generation"))
 
         _ph.finish_by_string_id("instant_response_generation")
 
@@ -742,7 +734,7 @@ class AnswerGenerator:
         chain = prompt | self.llm.llm | parser
         raw_response = chain.invoke(
             {"question": question, "history": history_text},
-            config=_llm_call_config("hublink.instant_response_generation"))
+            config=LLMAdapter.llm_call_config("hublink.instant_response_generation"))
 
         _ph.finish_by_string_id("generate_instant_history_response")
 

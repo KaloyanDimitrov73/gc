@@ -60,6 +60,9 @@ class ExperimentPreparer:
 
         data = dataset.get_all_entries()
 
+        print("Data set")
+        print(data)
+
         prepared_dataset = []
         for entry in data:
             prepared_dataset.append(entry.model_dump())

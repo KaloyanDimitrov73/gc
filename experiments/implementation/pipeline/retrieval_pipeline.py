@@ -49,7 +49,8 @@ class RetrievalPipeline(Model, BaseModel):
                 question: str,
                 topic_entity_id: str = "",
                 topic_entity_value: str = "",
-                uid: str = "") -> dict:
+                uid: str = "",
+                message_history: str = None) -> dict:
         """
         This method is necessary for the weave tool as it
         outputs the data as a dict which is required by weaver
@@ -57,14 +58,15 @@ class RetrievalPipeline(Model, BaseModel):
         https://wandb.ai/
         """
         pipeline_data = self.run(
-            question, topic_entity_id, topic_entity_value, uid)
+            question, topic_entity_id, topic_entity_value, uid, message_history)
         return pipeline_data.pipe_io_data.model_dump()
 
     def run(self,
             input_str: str,
             topic_entity_id: str = "",
             topic_entity_value: str = "",
-            question_id: str = None) -> PipelineData:
+            question_id: str = None,
+            message_history: str = None) -> PipelineData:
         """
         The main method of the 'RetrievalPipeline' class. It is used to run the pipeline.
 
@@ -97,7 +99,8 @@ class RetrievalPipeline(Model, BaseModel):
                                 topic_entity_id=topic_entity_id,
                                 topic_entity_value=topic_entity_value,
                                 progress_bar_id=progress_id,
-                                question_id=question_id)
+                                question_id=question_id,
+                                message_history=message_history)
 
         retries = 3
         while retries > 0:
