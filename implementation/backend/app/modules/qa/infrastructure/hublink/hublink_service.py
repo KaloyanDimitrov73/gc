@@ -390,9 +390,6 @@ class HubLinkService:
                     except ValueError:
                         pass
 
-        print("Contextes")
-        print(retrieval_answer.contexts)
-
         answer, nodes, sources = node_builder.build_answer_nodes_sources(retrieval_answer)
         logger.info("HubLink streaming query completed: %d nodes, %d sources", len(nodes), len(sources))
         return answer, nodes, sources, retrieval_answer.contexts

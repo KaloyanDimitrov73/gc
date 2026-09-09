@@ -28,7 +28,7 @@ class Settings(BaseSettings):
     # Retrieval/LLM
     answer_llm_model: Optional[str] = None
     n_messages_history: int = 8
-    indexing_interval_seconds = 3600
+    indexing_interval_seconds: int  = 3600
     retrieval_kg_config_path: str = str(
         _CONFIG_DIR
         / "hublink" / "default_hublink_config_deep_distributed.json"
