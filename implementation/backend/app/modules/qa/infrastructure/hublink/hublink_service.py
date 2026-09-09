@@ -20,8 +20,10 @@ from backend.app.modules.graph_explore.infrastructure.orkg import node_builder
 from backend.app.modules.qa.infrastructure.hublink.setup_manager import (
     SetupManager,
 )
+from core.data.models import Context
 from hublink.core.hub_storage_manager import HubStorageManager
 from hublink.retrieval.utils.answer_generator import AnswerGenerator
+from hublink.retrieval.utils.meta_router import RouteDecision, MetaRouter
 
 logger = logging.getLogger(__name__)
 
@@ -46,6 +48,7 @@ class HubLinkService:
         self.hublink_available = False
         self.retriever = None
         self.answer_generator = None
+        self.meta_router = None
         self.graph = graph
         self.hub_storage_manager = hub_storage_manager
         self.config_loader = HublinkConfigLoader()
@@ -78,6 +81,7 @@ class HubLinkService:
             self.retriever = HubLinkRetrieverForUser(config, self.graph, self.hub_storage_manager)
 
             self.answer_generator = AnswerGenerator(graph=self.graph, llm=self.retriever._retrieval_llm)
+            self.meta_router = MetaRouter(llm=self.retriever._retrieval_llm)
             # --- Override the LLM used for answer generation ---
             ANSWER_LLM_MODEL = os.getenv("ANSWER_LLM_MODEL")
             if ANSWER_LLM_MODEL:
@@ -246,7 +250,7 @@ class HubLinkService:
         conversation_history: Optional[str] = None,
         cancel_event: Optional[threading.Event] = None,
 
-    ) -> Tuple[str, List[GraphNode], List[str]]:
+    ) -> Tuple[str, List[GraphNode], List[str], List[Context]]:
         """
         Like query(), but pushes per-hub progress events to progress_queue while
         HubLink runs in a background thread.
@@ -386,9 +390,12 @@ class HubLinkService:
                     except ValueError:
                         pass
 
+        print("Contextes")
+        print(retrieval_answer.contexts)
+
         answer, nodes, sources = node_builder.build_answer_nodes_sources(retrieval_answer)
         logger.info("HubLink streaming query completed: %d nodes, %d sources", len(nodes), len(sources))
-        return answer, nodes, sources
+        return answer, nodes, sources, retrieval_answer.contexts
 
     def is_available(self) -> bool:
         """Check if HubLink is available."""
@@ -415,6 +422,43 @@ class HubLinkService:
             status["message"] = "HubLink not initialized. Check credentials and configuration."
 
         return status
+
+    def get_routed_response(
+            self,
+            question: str,
+            history: Optional[str] = None,
+    ) -> Tuple[RouteDecision, Optional[str], Optional[list]]:
+        """
+        Replaces the old get_instant_response(). Instead of always running
+        both the "general" and "chat_history" instant-answer generators in
+        parallel, this first asks the MetaRouter which route applies, and
+        only runs the ONE matching generator -- saving an LLM call whenever
+        the route turns out to be "retrieval" (no instant generation at all
+        in that case) or "general"/"chat_history" (only one generator call
+        instead of two).
+
+        Returns:
+            (route, answer, sources)
+            - route == RETRIEVAL:      answer is None, sources is None.
+                                        Caller should run the retrieval pipeline.
+            - route == GENERAL:        answer is the instant answer, sources is None.
+            - route == CHAT_HISTORY:   answer is the instant answer, sources is the
+                                        list of source ids it was grounded on.
+        """
+        route = self.meta_router.check_route(question, history)
+
+        if route == RouteDecision.GENERAL:
+            answer = self.answer_generator.generate_instant_response(question, history)
+            return route, answer, None
+
+        if route == RouteDecision.CHAT_HISTORY:
+            answer, sources = self.answer_generator.generate_instant_history_response(
+                question, history
+            )
+            return route, answer, sources
+
+        # RouteDecision.RETRIEVAL
+        return route, None, None
 
     def get_instant_response(self,
         question: str,

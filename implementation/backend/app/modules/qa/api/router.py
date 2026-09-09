@@ -233,7 +233,7 @@ async def ask_question_stream(
 
     async def _sse_generator() -> AsyncIterator[str]:
         try:
-            async for event in retrieval_svc.ask_streaming(
+            async for event in retrieval_svc.ask_streaming_with_meta_router(
                 question=request.question,
                 retrieval_mode=request.retrieval_mode,
                 llm_model=request.llm_model,

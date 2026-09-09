@@ -29,14 +29,6 @@ from hublink.core.hub_storage_manager import HubStorageManager
 logger = get_logger(__name__)
 
 
-def _llm_call_config(call_type: str) -> dict:
-    """Build LangChain run config used by the shared LLM wrapper logger."""
-    return {
-        "metadata": {"llm_call_type": call_type},
-        "tags": [f"llm_call_type:{call_type}"]
-    }
-
-
 @dataclass
 class RetrievalStrategyData:
     """
@@ -414,7 +406,7 @@ class BaseRetrievalStrategy(ABC):
         chain = prompt | self.llm_adapter.llm | parser
         response = chain.invoke(
             {"question": question, "chat_history": conversation_history},
-            config=_llm_call_config("hublink.question_processing"))
+            config=LLMAdapter.llm_call_config("hublink.question_processing"))
         logger.info("Response from LLM for Question Processing: %s", response)
 
         components, keywords, history_information = self._extract_question_processing(response)

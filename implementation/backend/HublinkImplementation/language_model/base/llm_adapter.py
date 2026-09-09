@@ -50,3 +50,11 @@ class LLMAdapter(ABC):
         A abstract method that needs to be implemented by the child class.
         It should prepare the LLM for use.
         """
+
+    @staticmethod
+    def llm_call_config(call_type: str) -> dict:
+        """Build LangChain run config used by the shared LLM wrapper logger."""
+        return {
+            "metadata": {"llm_call_type": call_type},
+            "tags": [f"llm_call_type:{call_type}"]
+        }
