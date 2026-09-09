@@ -17,6 +17,8 @@ class QAPair(BaseModel):
     golden_answer: str = Field(
         ..., description="An example of an answer that is truthful to the question")
 
+    message_history: Optional[str] = Field(
+        default=None, description="The template that was used to generate the question")
     source_ids: Optional[list[str]] = Field(
         default=None, description="The DOIs of the sources from which the question was generated")
     golden_doc_chunks: Optional[list[str]] = Field(
@@ -28,7 +30,7 @@ class QAPair(BaseModel):
         description=("The triples that the retrieval process should include if "
                      "the question is related to a knowledge graph"))
     is_generated_with: Optional[str] = Field(
-        ..., description="What strategy was used to generate the question")
+        default=None, description="What strategy was used to generate the question")
     topic_entity_id: Optional[str] = Field(
         default=None,
         description="The entry id in the knowledge graph from which the search is started from"

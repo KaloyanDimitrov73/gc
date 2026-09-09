@@ -13,6 +13,7 @@ from ..retrieval.implementations.kg_retrieval_pipe import KGRetrievalPipe
 from ..retrieval.implementations.document_retrieval_pipe import DocumentRetrievalPipe
 from ..post_retrieval.reranking_pipe import ReRankingPipe
 from ..pre_retrieval.question_augmentation_pipe import QuestionAugmentationPipe
+from ..retrieval.implementations.kg_retrieval_with_history_pipe import KGRetrievalWithHistoryPipe
 
 logger = get_logger(__name__)
 
@@ -42,7 +43,10 @@ class PipeFactory:
         if isinstance(config, GenerationConfig):
             return GenerationPipe(config)
         if isinstance(config, KGRetrievalConfig):
-            return KGRetrievalPipe(config)
+            if config.use_history:
+                return KGRetrievalWithHistoryPipe(config)
+            else:
+                return KGRetrievalPipe(config)
         if isinstance(config, DocumentRetrievalConfig):
             return DocumentRetrievalPipe(config)
         if isinstance(config, PostRetrievalConfig):

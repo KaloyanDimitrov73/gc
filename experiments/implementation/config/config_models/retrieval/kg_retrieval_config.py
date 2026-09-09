@@ -10,6 +10,7 @@ class KGRetrievalConfig(RetrievalConfig):
     """
     type: Literal["kg_retrieval"] = "kg_retrieval"
     retriever_type: str
+    use_history: bool
     index_llm_config: LLMConfig
     query_llm_config: LLMConfig
     knowledge_graph_config: KnowledgeGraphConfig

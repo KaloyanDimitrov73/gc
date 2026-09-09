@@ -5,6 +5,7 @@ from hublink_shared.config import (
     RestrictionType,
 )
 
+
 from .chunking_strategy_config import ChunkingStrategyConfig
 from .embedding_config import EmbeddingConfig
 from .experiment_config import ExperimentConfig

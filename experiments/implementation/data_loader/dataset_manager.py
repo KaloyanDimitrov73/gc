@@ -1,6 +1,6 @@
 from typing import Dict, Optional
 
-from implementation.config.config_models.dataset_config import DatasetConfig
+from hublink_shared import DatasetConfig
 from implementation.data_loader.csv_qa_loader import CSVQALoader
 from implementation.shared_models.qa_dataset import QADataset
 from implementation.file_path_management import FilePathManager
