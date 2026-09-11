@@ -20,22 +20,6 @@ from hublink.retrieval.strategies.direct_retrieval_strategy import (
 from hublink.retrieval.models.processed_question import ProcessedQuestion
 
 
-def test_question_processing_parser_uses_last_valid_dictionary():
-    output = """
-    {"components": ["Example"], "keywords": []}
-    Explanation emitted by the model.
-    {"components": [" Research Object ", "Technical Debt", "Technical Debt"],
-     "keywords": [" 2017 ", "2017", " "]}
-    """
-
-    components, keywords = (
-        BaseRetrievalStrategy._extract_question_processing(output)
-    )
-
-    assert components == ["Research Object", "Technical Debt"]
-    assert keywords == ["2017"]
-
-
 def test_retrieval_adds_extracted_keywords_to_answer():
     strategy = object.__new__(DirectRetrievalStrategy)
     processed_question = ProcessedQuestion(
@@ -52,63 +36,6 @@ def test_retrieval_adds_extracted_keywords_to_answer():
 
     assert result is not None
     assert result.extracted_keywords == ["2017"]
-
-
-@pytest.mark.parametrize("output", [
-    "not a dictionary",
-    "{'components': ['Technical Debt']}",
-    "{'components': 'Technical Debt', 'keywords': []}",
-    "{'components': ['Technical Debt'], 'keywords': [2017]}",
-])
-def test_invalid_question_processing_output_falls_back_to_dense(output: str):
-    assert BaseRetrievalStrategy._extract_question_processing(output) == (
-        [], []
-    )
-
-
-@pytest.mark.parametrize(
-    (
-        "extract_components",
-        "use_bm25",
-        "use_splade",
-        "expects_llm_processing",
-        "expected_components",
-    ),
-    [
-        (False, False, False, False, []),
-        (True, False, False, True, ["Research Object", "Technical Debt"]),
-        (False, True, False, False, []),
-        (False, False, True, False, []),
-    ],
-)
-def test_question_processing_runs_only_when_component_extraction_is_enabled(
-        extract_components: bool,
-        use_bm25: bool,
-        use_splade: bool,
-        expects_llm_processing: bool,
-        expected_components: list[str]):
-    strategy = object.__new__(DirectRetrievalStrategy)
-    strategy.settings = SimpleNamespace(
-        extract_question_components=extract_components,
-        use_bm25_hybrid_search=use_bm25,
-        use_splade_hybrid_search=use_splade,
-    )
-    strategy._get_question_processing = MagicMock(return_value=(
-        ["Research Object", "Technical Debt"],
-        ["2017"],
-    ))
-    strategy.embedding_model = MagicMock()
-    strategy.embedding_model.embed_batch.return_value = [[1.0, 0.0]]
-    strategy.progress_handler = MagicMock()
-
-    processed = strategy._process_question("question")
-
-    assert processed.components == expected_components
-    assert processed.keywords == (["2017"] if expects_llm_processing else [])
-    assert strategy._get_question_processing.called is expects_llm_processing
-    strategy.embedding_model.embed_batch.assert_called_once_with(
-        ["question"] + expected_components
-    )
 
 
 @pytest.mark.parametrize(

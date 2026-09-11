@@ -31,6 +31,7 @@ def test_bm25_index_path_rejects_unsafe_cache_keys(index_key: str):
         bm25_index_path(index_key)
 
 
+# tests index store can be reloaded for search after indexing
 def test_bm25s_index_round_trip_preserves_path_metadata(tmp_path: Path):
     documents = [
         SparseIndexDocument(
