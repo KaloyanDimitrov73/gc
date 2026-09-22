@@ -6,8 +6,10 @@ embedding is a non-empty list of floats.  Tests are auto-skipped when the
 required service is unavailable or an API key is missing.
 
 Required environment variables (loaded from .env automatically):
-  VDL_API_KEY              — API key for the VDL embedding endpoint
-  TEST_VDL_EMBED_MODEL     — VDL model to use (default: nomic-embed-text:v1.5)
+  VDL_API_KEY                    — API key for the VDL embedding endpoint
+  TEST_VDL_EMBED_MODEL           — VDL model to use (default: nomic-embed-text:v1.5)
+  KIT_TOOLBOX_API_KEY            — API key for the KIT KI-Toolbox embedding endpoint
+  TEST_KIT_TOOLBOX_EMBED_MODEL   — KIT KI-Toolbox model to use (default: kit.qwen3-embedding-8b)
 """
 import os
 from pathlib import Path
@@ -38,14 +40,17 @@ def _assert_embedding_vector(vector):
 def _get_embedding_components():
     """Import embedding classes from sqa_system, skipping the test if unavailable."""
     try:
-        from sqa_system.core.config.models import EmbeddingConfig
-        from sqa_system.core.language_model.implementations.vdl_embedding_adapter import (
+        from core import EmbeddingConfig
+        from language_model.implementations.vdl_embedding_adapter import (
             VDLEmbeddingAdapter,
+        )
+        from language_model.implementations.kittoolbox_embedding_adapter import (
+            KitToolboxEmbeddingAdapter,
         )
     except Exception as exc:
         pytest.skip(f"sqa_system dependencies are unavailable: {exc}")
 
-    return EmbeddingConfig, VDLEmbeddingAdapter
+    return EmbeddingConfig, VDLEmbeddingAdapter, KitToolboxEmbeddingAdapter
 
 
 @pytest.fixture(scope="module", autouse=True)
@@ -57,7 +62,7 @@ def load_env():
 @pytest.fixture(scope="module")
 def vdl_adapter():
     """Prepared VDLEmbeddingAdapter; skipped if VDL_API_KEY is missing or the service is unreachable."""
-    EmbeddingConfig, _, VDLEmbeddingAdapter = _get_embedding_components()
+    EmbeddingConfig, VDLEmbeddingAdapter, _ = _get_embedding_components()
     _require_env("VDL_API_KEY")
 
     config = EmbeddingConfig(
@@ -72,7 +77,25 @@ def vdl_adapter():
     return adapter
 
 
-@pytest.mark.parametrize("fixture_name", ["vdl_adapter"])
+@pytest.fixture(scope="module")
+def kit_toolbox_adapter():
+    """Prepared KitToolboxEmbeddingAdapter; skipped if KIT_TOOLBOX_API_KEY is missing or the service is unreachable."""
+    EmbeddingConfig, _, KitToolboxEmbeddingAdapter = _get_embedding_components()
+    _require_env("KIT_TOOLBOX_API_KEY")
+
+    config = EmbeddingConfig(
+        endpoint="KitToolbox",
+        name_model=os.getenv("TEST_KIT_TOOLBOX_EMBED_MODEL", "kit.qwen3-embedding-8b"),
+    )
+    adapter = KitToolboxEmbeddingAdapter(config)
+    try:
+        adapter.prepare()
+    except Exception as exc:
+        pytest.skip(f"KIT KI-Toolbox embedding adapter is not available: {exc}")
+    return adapter
+
+
+@pytest.mark.parametrize("fixture_name", ["vdl_adapter", "kit_toolbox_adapter"])
 def test_embed_returns_numeric_vector(request, fixture_name):
     """Each adapter's embed() call should return a non-empty list of floats."""
     adapter = request.getfixturevalue(fixture_name)

@@ -2,27 +2,34 @@
 Question-Answering API endpoints.
 Handles user questions and returns answers with knowledge graph visualization.
 """
+import asyncio
 import json
+import threading
+
 from fastapi import APIRouter, HTTPException, Depends
 from fastapi.responses import StreamingResponse
 import logging
 from datetime import datetime
 import uuid
-from typing import AsyncIterator
+from typing import AsyncIterator, Optional, List
 
+from backend.app.config.base_settings import get_settings
 from backend.app.contracts.schemas import (
     QuestionRequest,
     AnswerResponse,
-    ErrorResponse,
+    ErrorResponse, MessageSchema,
 )
-from backend.app.core.dependencies import get_retrieval_service, get_retrieval_service_if_ready, get_conversation_service, get_llm_config_registry
+from backend.app.core.dependencies import get_retrieval_service, get_retrieval_service_if_ready, \
+    get_conversation_service, get_llm_config_registry, get_or_create_user_id
 from backend.app.modules.qa.application.service import (
     RetrievalService,
     RetrievalInputRejectedError,
     RetrievalUnavailableError,
 )
 from backend.app.modules.conversations.application.service import ConversationService
-from backend.app.modules.qa.infrastructure.hublink.llm_config_registry import LLMConfigRegistry
+from backend.app.config.llm.llm_config_registry import LLMConfigRegistry
+from backend.tests.integration.modules.qa.conftest import hublink_service
+from hublink.retrieval.utils import answer_generator
 
 logger = logging.getLogger(__name__)
 
@@ -94,6 +101,7 @@ async def ask_question(
     request: QuestionRequest,
     retrieval_svc: RetrievalService = Depends(get_retrieval_service),
     conversation_svc: ConversationService = Depends(get_conversation_service),
+    user_id: str = Depends(get_or_create_user_id),
 ) -> AnswerResponse:
     """
     Process a user question and return an answer with knowledge graph.
@@ -106,14 +114,22 @@ async def ask_question(
         AnswerResponse with answer text, graph nodes, and metadata
     """
     request_id = f"req-{uuid.uuid4()}"
+
     logger.info(
-        "Received question request_id=%s mode=%s llm=%s hubs=%s question_len=%s",
+        "Received question request_id=%s mode=%s llm=%s hubs=%s question_len=%s conversation_id=%s",
         request_id,
         request.retrieval_mode,
         request.llm_model,
         request.number_of_hubs,
         len(request.question),
+        request.conversation_id
     )
+
+    conversation_history = None
+    if request.conversation_id:
+        conversation_history = await _get_conversation_history(
+            request.conversation_id, user_id, conversation_svc
+        )
 
     try:
         retrieval_result = await retrieval_svc.ask(
@@ -190,44 +206,44 @@ async def ask_question(
     """,
     response_class=StreamingResponse,
 )
+
 async def ask_question_stream(
     request: QuestionRequest,
     retrieval_svc: RetrievalService = Depends(get_retrieval_service),
     conversation_svc: ConversationService = Depends(get_conversation_service),
+    user_id: str = Depends(get_or_create_user_id),
 ) -> StreamingResponse:
     """Stream pipeline progress events followed by the final answer."""
     request_id = f"req-{uuid.uuid4()}"
     logger.info(
-        "Received streaming question request_id=%s mode=%s llm=%s hubs=%s question_len=%s",
+        "Received streaming question request_id=%s mode=%s llm=%s hubs=%s question_len=%s conversation_id=%s",
         request_id,
         request.retrieval_mode,
         request.llm_model,
         request.number_of_hubs,
         len(request.question),
+        request.conversation_id
     )
+
+    conversation_history = None
+    if request.conversation_id:
+        conversation_history = await _get_conversation_history(
+            request.conversation_id, user_id, conversation_svc
+        )
 
     async def _sse_generator() -> AsyncIterator[str]:
         try:
-            async for event in retrieval_svc.ask_streaming(
+            async for event in retrieval_svc.ask_streaming_with_meta_router(
                 question=request.question,
                 retrieval_mode=request.retrieval_mode,
                 llm_model=request.llm_model,
                 number_of_hubs=request.number_of_hubs,
                 topic_entity_id=request.topic_entity_id,
                 use_direct_final_answer=request.use_direct_final_answer,
+                conversation_history=conversation_history
             ):
                 if event.get("type") == "complete":
                     message_id = f"msg-{uuid.uuid4()}"
-                    payload = {
-                        "type": "complete",
-                        "answer": event["answer"],
-                        "nodes": event["nodes"],
-                        "sources": event["sources"],
-                        "messageId": message_id,
-                        "retrievalMode": request.retrieval_mode,
-                        "guardrailsWarning": event.get("guardrails_warning"),
-                    }
-                    yield f"data: {json.dumps(payload)}\n\n"
 
                     if request.conversation_id:
                         try:
@@ -243,6 +259,20 @@ async def ask_question_stream(
                                 "Failed to persist messages for conversation %s — answer still sent",
                                 request.conversation_id,
                             )
+
+                    payload = {
+                        "type": "complete",
+                        "answer": event["answer"],
+                        "nodes": event["nodes"],
+                        "sources": event["sources"],
+                        "messageId": message_id,
+                        "retrievalMode": request.retrieval_mode,
+                        "guardrailsWarning": event.get("guardrails_warning"),
+                    }
+
+                    yield f"data: {json.dumps(payload)}\n\n"
+
+
                 else:
                     yield f"data: {json.dumps(event)}\n\n"
 
@@ -296,3 +326,38 @@ async def health_check():
         "message": status["message"],
         "timestamp": datetime.utcnow().isoformat()
     }
+
+
+async def _get_conversation_history(
+    conversation_id: str,
+    user_id: str,
+    conversation_svc: ConversationService,
+    settings = get_settings()
+) -> Optional[List[MessageSchema]]:
+    """Fetch the last 4 messages of a conversation, if it exists and belongs to the user."""
+    try:
+        conversation_details = await conversation_svc.get_conversation_detail(conversation_id, user_id)
+
+        if conversation_details is None:
+            logger.warning(
+                "Conversation %s not found or not owned by user %s",
+                conversation_id,
+                user_id,
+            )
+            return None
+
+        messages = conversation_details.messages[-settings.n_messages_history:]
+        logger.info(
+            "Get conversation history for conversation_id=%s with messages: \n%s",
+            conversation_id,
+            messages,
+        )
+
+        return messages
+
+    except Exception:
+        logger.warning(
+            "Failed to get prior messages for conversation %s",
+            conversation_id,
+        )
+        return None

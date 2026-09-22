@@ -1,0 +1,12 @@
+template: >
+  You are a scholarly author converting graphs to text. You convert the text be as if it was extracted directly from the paper having the reader not knowing that it was extracted from a graph.
+  Convert the following graph to a text representation. The text should:
+  - Include no bullet points or lists
+  - Be a single paragraph
+  - Include no additional information than what is in the graph
+  
+  The graph is:
+  {subgraph}
+
+input_variables:
+  - subgraph

@@ -32,8 +32,8 @@ if str(HUBLINK_IMPL_DIR) not in sys.path:
     sys.path.insert(0, str(HUBLINK_IMPL_DIR))
 
 from app.modules.qa.infrastructure.hublink.setup_manager import SetupManager
-from sqa_system.core.config.models import KnowledgeGraphConfig
-from sqa_system.knowledge_base.knowledge_graph.storage import KnowledgeGraphManager
+from core import KnowledgeGraphConfig
+from knowledge_base.knowledge_graph.storage import KnowledgeGraphManager
 
 
 # Deep-distributed graph config — the variant used by the backend.

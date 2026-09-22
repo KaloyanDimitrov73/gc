@@ -1,23 +1,178 @@
 template: >
   ### Task Description:
-  Please analyze the following question and break it down into its key components or claims. 
+  Analyze the question to support retrieval from a knowledge graph. Information
+  in the graph is represented as entities, relationships, and values according
+  to an ontology. The Knowledge Graph Context below provides an example of how
+  such information may be structured, but it must not limit extraction to the
+  listed entities or relationships.
 
-  ### Instructions:
-  - Break down the question into its key components or claims.
+  Extract semantic components directly from the question to improve matching
+  against relevant graph entities, relationships, and paths. Also extract
+  keywords that indicate whether sparse retrieval using BM25 and/or SPLADE
+  could complement dense retrieval. Follow the component and keyword extraction
+  rules below.
+
+  ### Knowledge Graph Context Example:
+  The knowledge graph represents scientific publications.
+
+  - A "Paper" node represents a publication, and its node text is the paper title.
+  - Papers can have direct metadata through:
+    - "authors" -> an author list whose names use "has list element"
+    - "doi" -> DOI value
+    - "publication year" -> year value
+    - "venue" -> publication venue
+    - "research field" -> broader research field
+  - Papers connect through "contribution" to information described by:
+    - "paper class"
+    - "research level"
+    - "Research Object"
+    - "Evaluation method"
+    - "Evaluation Property"
+    - "Evaluation Sub-Property"
+    - "threat to validity"
+    - "Uses Input Data"
+    - "Uses Tool Support"
+    - "Provides Replication Package"
+
+  ### Instructions for Chat History:
+  - Step 1 (Relevance Check): Look at the chat history. Decide whether the current question implicitly refers to something mentioned earlier (e.g. "these papers", "that paper", "the latter", "of them", "before/after that year", or any other reference that only makes sense together with prior context). 
+    - If the question is fully self-contained and does NOT depend on the chat history, ignore the chat history completely.
+    - If the question DOES depend on the chat history, identify exactly which entities (e.g. paper titles, authors, publishers, years, topics) from the history are being referenced.
+  - Step 2 (Enrichment): If relevant prior entities were identified in Step 1, resolve the reference and use the EXACT, full names/titles of those entities (e.g. exact paper titles, not "the paper" or "it") as part of the components. Only carry over entities that are actually relevant to answering the current question — do not dump the entire history into the output.
+  - Step 3 (Decomposition): Break down the (possibly enriched) question into its key components or claims, following the style of the examples below.
   - Your output has to be a valid python list of strings.
-  - Do not use any external information, personal opinions, or interpretations beyond the given texts. Do not make any assumptions and do not answer the question.
+  - Do not use any external information, personal opinions, or interpretations beyond the given texts and chat history. Do not make any assumptions and do not answer the question.
   - Do not include any additional explanations or commentary. Just provide the list of components.
+  
+  ### Instructions:
+  - Extract the key components or claims from the question.
+  - Be conservative when extracting sparse-search keywords. The extracted
+    keywords are routing indicators for deciding whether sparse retrieval is
+    useful; they are not required to be exact-match search query terms.
+  - A non-empty keyword list switches retrieval from dense-only search to hybrid
+    search using the enabled BM25 and/or SPLADE channels.
+  - Common qualifying keyword types include, but are not limited to:
+    1. A numeric or date-like value explicitly written in the question, such as
+       a year, quantity, threshold, range endpoint, date, or version number.
+    2. A proper name explicitly written in the question, such as the full name
+       of a person, organization, publisher, venue, or place.
+    3. The full, specific title of an identifiable publication or other named
+       work explicitly presented as that work's title.
+    4. A persistent identifier or exact record locator explicitly written in
+       the question, such as a DOI, ORCID, ISBN, arXiv identifier, accession
+       number, or URL.
+    5. Another uniquely identifying literal code or label, but only when it
+       identifies a concrete entity or record rather than a subject category.
+  - Do not extract distinctive technical terms, research objects, research
+    fields, methods, approaches, properties, classifications, validity threats,
+    domain concepts, or other subject terminology merely because they are
+    specialized, capitalized, or enclosed in quotation marks.
+  - A short, generic, topic-like phrase is not a specific publication title,
+    even when it is quoted or described as a title in the question.
+  - Do not treat a requested answer type as a keyword. For example, a question
+    asking for an author, title, year, or number does not contain such a keyword
+    unless the actual name, title, or numeric value is written in the question.
+  - Do not include question words, generic relation labels, or broad domain
+    terms as keywords.
+  - Preserve their original spelling and casing.
+  - The examples above are not an exhaustive allowlist. Other keywords may be
+    extracted when they are high-precision indicators for a concrete entity,
+    work, record, or value and are likely to benefit sparse retrieval.
+  - If a candidate is merely descriptive or is not clearly useful as a
+    high-precision routing indicator, exclude it. When uncertain, return an
+    empty keyword list.
+  - When the question contains a short inclusive numeric range, expand it into every value in that range. Do not expand large or open-ended ranges.
+  - An empty keyword list means that only dense search should be used.
+  
+  ### Output Format Instructions: 
+  - Return a valid Python dictionary with exactly three keys: "components", "keywords", "history_information"
+  - All values must be lists of strings.
+  - Do not answer the question.
+  - Do not include explanations, Markdown, or commentary.
 
   ### Examples:
-  Question: What are the research questions in the paper titled 'Artificial Intelligence in Healthcare'?
-  Components: ['Research Questions', 'Artificial Intelligence in Healthcare']
+
+  #### Dense-only: quoted or technical terms are not automatically keywords
+
+  Question: What are the research questions concerning 'Artificial Intelligence in Healthcare'?
+  Output: {{"components": ["Research Questions", "Artificial Intelligence in Healthcare"], "keywords": [], "history_information": []}}
+
   Question: Which publications include the research object 'Architecture Analysis Method'?
-  Components: ['Research Object', 'Architecture Analysis Method']
-  Question: Which papers have been published by SpringerLink in 2020?
-  Components: ['Publisher', 'SpringerLink', '2020']
+  Output: {{"components": ["Research Object", "Architecture Analysis Method"], "keywords": [], "history_information": []}}
+
+  #### Dense-only: the requested answer type is not a keyword
+
+  Question: What is the title of the paper that investigates the research object Architecture Decision Making and has the paper class philosophical paper?
+  Output: {{"components": ["Paper Title", "Architecture Decision Making", "Philosophical Paper"], "keywords": [], "history_information": []}}
+
+  #### Hybrid: proper name
+
+  Question: How many papers did Manar Mazkatli publish?
+  Output: {{"components": ["Paper Count", "Manar Mazkatli"], "keywords": ["Manar Mazkatli"], "history_information": []}}
+
+  #### Hybrid: specific publication title
+
+  Question: In which venue has the paper with the title 'Availability-Driven Architectural Change Propagation Through Bidirectional Model Transformations Between UML and Petri Net Models' been published?
+  Output: {{"components": ["Venue", "Availability-Driven Architectural Change Propagation Through Bidirectional Model Transformations Between UML and Petri Net Models"], "keywords": ["Availability-Driven Architectural Change Propagation Through Bidirectional Model Transformations Between UML and Petri Net Models"], "history_information": []}}
+
+  #### Hybrid: persistent identifier
+
+  Question: Which paper has the DOI 10.1109/ICSA.2018.00022?
+  Output: {{"components": ["Paper", "10.1109/ICSA.2018.00022"], "keywords": ["10.1109/ICSA.2018.00022"], "history_information": []}}
+
+  #### Hybrid: multiple qualifying keywords
+
+  Question: Which papers were published by SpringerLink in 2020?
+  Output: {{"components": ["Publisher", "SpringerLink", "2020"], "keywords": ["SpringerLink", "2020"], "history_information": []}}
+
+  #### Boundary pair: extract only the qualifying anchor
+
+  Question: Which papers investigate the research object Technical Debt in the publication year 2017?
+  Output: {{"components": ["Research Object", "Technical Debt", "2017"], "keywords": ["2017"], "history_information": []}}
+
+  Question: Which papers investigate the research object Technical Debt?
+  Output: {{"components": ["Research Object", "Technical Debt"], "keywords": [], "history_information": []}}
+  
+  ### Examples with Chat History:
+   Chat History:
+   - User: Which papers have been published by SpringerLink in 2020?
+   - Assistant: ['Deep Learning for Medical Imaging', 'AI Ethics Frameworks', 'Neural Networks in Diagnostics']
+   Question: Which of these have input data available?
+   # Relevant, because "these" refers to the three papers listed above.
+   Output: {{"components": ['Input data'], "keywords": [], "history_information": ['Deep Learning for Medical Imaging', 'AI Ethics Frameworks', 'Neural Networks in Diagnostics']}}
+
+
+   Chat History:
+   - User: What are the research questions in the paper titled 'Artificial Intelligence in Healthcare'?
+   - Assistant: ['RQ1: ...', 'RQ2: ...', 'RQ3: ...']
+   Question: Who are the authors of that paper?
+   # Relevant, because "that paper" refers to 'Artificial Intelligence in Healthcare'.
+   Output: {{"components": ['Authors'], "keywords": [], "history_information":'Artificial Intelligence in Healthcare']}}
+
+
+   Chat History:
+   - User: In how many publications is confirmability identified as a validity threat??
+   - Assistant: Confirmability is mentioned as a validity threat in three distinct publications: 
+       - Incremental Calibration of Architectural Performance Models with Parametric Dependencies, 10.1109/ICSA47634.2020.00011
+       - Technical Architectures for Automotive Systems, 10.1109/ICSA47634.2020.00013
+       - On the Understandability of Semantic Constraints for Behavioral Software Architecture Compliance: A Controlled Experiment, 10.1109/ICSA.2017.10
+   Question: Which of these papers use focus groups for evaluation?
+   # Relevant, because "these" refers to the three papers listed above.
+   Output: {{"components": ['Evaluation', 'Focus Groups], "keywords": [Focus Groups], "history_information":'Incremental Calibration of Architectural Performance Models with Parametric Dependencies', 'Technical Architectures for Automotive Systems', 'On the Understandability of Semantic Constraints for Behavioral Software Architecture Compliance: A Controlled Experiment']}}
+
+   Chat History:
+   User: What are the research questions in the paper titled 'Artificial Intelligence in Healthcare'?
+   Assistant: ['RQ1: ...', 'RQ2: ...', 'RQ3: ...']
+   Question: Which papers were published by Elsevier in 2019?
+   # Not relevant, because this question is fully self-contained and does not reference the prior paper.
+   Output: {{"components": ["Publisher", "Elsevier", "2019"], "keywords": ["Elsevier", "2019"], "history_information": []}}
+
+
 
   ### Start Your Task:
+  Chat History: {chat_history}
   Question: {question}
 
 input_variables:
- - question
+  - question
+  - chat_history

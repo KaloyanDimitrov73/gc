@@ -1,11 +1,11 @@
-import pytest
-from experimentation.config.experiment_config import ExperimentConfig
-from sqa_system.core.config.models.pipeline_config import PipelineConfig
-from sqa_system.core.data.models.parameter_range import ParameterRange
-from sqa_system.core.config.models.pipe.generation_config import GenerationConfig
-from sqa_system.core.config.models.llm_config import LLMConfig
-from sqa_system.core.config.models.dataset_config import DatasetConfig
-from experimentation.experiment_runner import ExperimentRunner
+﻿import pytest
+from implementation.config.config_models import ExperimentConfig
+from implementation.config.config_models import PipelineConfig
+from implementation.config.data_models.parameter_range import ParameterRange
+from implementation.config.config_models import GenerationConfig
+from language_model.config.llm_config import LLMConfig
+from implementation.core import DatasetConfig
+from implementation.experimentation.experiment_runner import ExperimentRunner
 
 @pytest.fixture
 def experiment_config():

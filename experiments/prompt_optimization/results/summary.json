@@ -1,0 +1,24 @@
+{
+  "pipeline_config": "C:\\Users\\lc542\\Documents\\Pratikum-CSE\\Pratikum2.0\\scigraphchat-dev\\experiments\\experiment_runs\\1_experiment\\base_configs\\base_config_kit.json",
+  "initial_prompt": "C:\\Users\\lc542\\Documents\\Pratikum-CSE\\Pratikum2.0\\scigraphchat-dev\\implementation\\backend\\HublinkImplementation\\data\\prompts\\novel_retriever\\question_processing_prompt.yaml",
+  "optimizer": "COPRO",
+  "copro_breadth": 5,
+  "copro_depth": 2,
+  "optimization_metric": "hit@10_triples",
+  "train_examples": 100,
+  "validation_examples": 35,
+  "test_examples": 35,
+  "legacy_validation_score": 19.36,
+  "unoptimized_validation_score": 12.09,
+  "copro_candidate_validation_score": 12.09,
+  "selected_program": "unoptimized",
+  "test_scores": {
+    "legacy": 17.91,
+    "unoptimized": 15.73,
+    "copro_candidate": 15.73,
+    "optimized": 15.73
+  },
+  "optimized_artifact": "C:\\Users\\lc542\\Documents\\Pratikum-CSE\\Pratikum2.0\\scigraphchat-dev\\experiments\\prompt_optimization\\results\\optimized_question_processing.json",
+  "initial_instruction": "C:\\Users\\lc542\\Documents\\Pratikum-CSE\\Pratikum2.0\\scigraphchat-dev\\experiments\\prompt_optimization\\results\\initial_instruction.txt",
+  "optimized_instruction": "C:\\Users\\lc542\\Documents\\Pratikum-CSE\\Pratikum2.0\\scigraphchat-dev\\experiments\\prompt_optimization\\results\\optimized_instruction.txt"
+}

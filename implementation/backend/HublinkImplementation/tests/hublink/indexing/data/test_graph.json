@@ -1,0 +1,1370 @@
+[
+  {
+        "entity_subject": {
+            "uid": "R873379",
+            "text": "Predicting the Performance of Privacy-Preserving Data Analytics Using Architecture Modelling and Simulation",
+            "knowledge_types": [
+                "Paper"
+            ]
+        },
+        "predicate": "research field",
+        "entity_object": {
+            "uid": "R659055",
+            "text": "Software Architecture and Design",
+            "knowledge_types": [
+                "ResearchField"
+            ]
+        }
+    },
+    {
+        "entity_subject": {
+            "uid": "R873379",
+            "text": "Predicting the Performance of Privacy-Preserving Data Analytics Using Architecture Modelling and Simulation",
+            "knowledge_types": [
+                "Paper"
+            ]
+        },
+        "predicate": "venue",
+        "entity_object": {
+            "uid": "R820814",
+            "text": "International Conference on Software Architecture (ICSA)",
+            "knowledge_types": [
+                "Venue"
+            ]
+        }
+    },
+    {
+        "entity_subject": {
+            "uid": "R873379",
+            "text": "Predicting the Performance of Privacy-Preserving Data Analytics Using Architecture Modelling and Simulation",
+            "knowledge_types": [
+                "Paper"
+            ]
+        },
+        "predicate": "publication year",
+        "entity_object": {
+            "uid": "L1530392",
+            "text": "2018",
+            "knowledge_types": []
+        }
+    },
+    {
+        "entity_subject": {
+            "uid": "R873379",
+            "text": "Predicting the Performance of Privacy-Preserving Data Analytics Using Architecture Modelling and Simulation",
+            "knowledge_types": [
+                "Paper"
+            ]
+        },
+        "predicate": "doi",
+        "entity_object": {
+            "uid": "L1530387",
+            "text": "10.1109/ICSA.2018.00026",
+            "knowledge_types": []
+        }
+    },
+    {
+        "entity_subject": {
+            "uid": "R873379",
+            "text": "Predicting the Performance of Privacy-Preserving Data Analytics Using Architecture Modelling and Simulation",
+            "knowledge_types": [
+                "Paper"
+            ]
+        },
+        "predicate": "contribution",
+        "entity_object": {
+            "uid": "R873417",
+            "text": "Evidence 1",
+            "knowledge_types": [
+                "Contribution"
+            ]
+        }
+    },
+    {
+        "entity_subject": {
+            "uid": "R873417",
+            "text": "Evidence 1",
+            "knowledge_types": [
+                "Contribution"
+            ]
+        },
+        "predicate": "Uses Tool Support",
+        "entity_object": {
+            "uid": "L1530470",
+            "text": "Tool was used but is not available",
+            "knowledge_types": []
+        }
+    },
+    {
+        "entity_subject": {
+            "uid": "R873417",
+            "text": "Evidence 1",
+            "knowledge_types": [
+                "Contribution"
+            ]
+        },
+        "predicate": "Uses Input Data",
+        "entity_object": {
+            "uid": "L1530469",
+            "text": "Input data is available",
+            "knowledge_types": []
+        }
+    },
+    {
+        "entity_subject": {
+            "uid": "R873417",
+            "text": "Evidence 1",
+            "knowledge_types": [
+                "Contribution"
+            ]
+        },
+        "predicate": "Provides Replication Package",
+        "entity_object": {
+            "uid": "L1530468",
+            "text": "False",
+            "knowledge_types": []
+        }
+    },
+    {
+        "entity_subject": {
+            "uid": "R873379",
+            "text": "Predicting the Performance of Privacy-Preserving Data Analytics Using Architecture Modelling and Simulation",
+            "knowledge_types": [
+                "Paper"
+            ]
+        },
+        "predicate": "contribution",
+        "entity_object": {
+            "uid": "R873416",
+            "text": "Validity 1",
+            "knowledge_types": [
+                "Contribution"
+            ]
+        }
+    },
+    {
+        "entity_subject": {
+            "uid": "R873416",
+            "text": "Validity 1",
+            "knowledge_types": [
+                "Contribution"
+            ]
+        },
+        "predicate": "Referenced Threats to Validity Guideline",
+        "entity_object": {
+            "uid": "L1530467",
+            "text": "False",
+            "knowledge_types": []
+        }
+    },
+    {
+        "entity_subject": {
+            "uid": "R873416",
+            "text": "Validity 1",
+            "knowledge_types": [
+                "Contribution"
+            ]
+        },
+        "predicate": "threat to validity",
+        "entity_object": {
+            "uid": "L1530466",
+            "text": "Internal Validity",
+            "knowledge_types": []
+        }
+    },
+    {
+        "entity_subject": {
+            "uid": "R873416",
+            "text": "Validity 1",
+            "knowledge_types": [
+                "Contribution"
+            ]
+        },
+        "predicate": "threat to validity",
+        "entity_object": {
+            "uid": "L1530465",
+            "text": "External Validity",
+            "knowledge_types": []
+        }
+    },
+    {
+        "entity_subject": {
+            "uid": "R873379",
+            "text": "Predicting the Performance of Privacy-Preserving Data Analytics Using Architecture Modelling and Simulation",
+            "knowledge_types": [
+                "Paper"
+            ]
+        },
+        "predicate": "contribution",
+        "entity_object": {
+            "uid": "R873415",
+            "text": "First Research Object 1",
+            "knowledge_types": [
+                "Contribution"
+            ]
+        }
+    },
+    {
+        "entity_subject": {
+            "uid": "R873415",
+            "text": "First Research Object 1",
+            "knowledge_types": [
+                "Contribution"
+            ]
+        },
+        "predicate": "Evaluation Property",
+        "entity_object": {
+            "uid": "L1530464",
+            "text": "Product Quality",
+            "knowledge_types": []
+        }
+    },
+    {
+        "entity_subject": {
+            "uid": "R873415",
+            "text": "First Research Object 1",
+            "knowledge_types": [
+                "Contribution"
+            ]
+        },
+        "predicate": "Evaluation Sub-Property",
+        "entity_object": {
+            "uid": "L1530463",
+            "text": "Performance efficiency",
+            "knowledge_types": []
+        }
+    },
+    {
+        "entity_subject": {
+            "uid": "R873415",
+            "text": "First Research Object 1",
+            "knowledge_types": [
+                "Contribution"
+            ]
+        },
+        "predicate": "Research Object",
+        "entity_object": {
+            "uid": "L1530462",
+            "text": "Architectural Assumptions",
+            "knowledge_types": []
+        }
+    },
+    {
+        "entity_subject": {
+            "uid": "R873415",
+            "text": "First Research Object 1",
+            "knowledge_types": [
+                "Contribution"
+            ]
+        },
+        "predicate": "Evaluation method",
+        "entity_object": {
+            "uid": "L1530461",
+            "text": "Case Study",
+            "knowledge_types": []
+        }
+    },
+    {
+        "entity_subject": {
+            "uid": "R873415",
+            "text": "First Research Object 1",
+            "knowledge_types": [
+                "Contribution"
+            ]
+        },
+        "predicate": "Has Evaluation Guideline",
+        "entity_object": {
+            "uid": "L1530460",
+            "text": "False",
+            "knowledge_types": []
+        }
+    },
+    {
+        "entity_subject": {
+            "uid": "R873379",
+            "text": "Predicting the Performance of Privacy-Preserving Data Analytics Using Architecture Modelling and Simulation",
+            "knowledge_types": [
+                "Paper"
+            ]
+        },
+        "predicate": "contribution",
+        "entity_object": {
+            "uid": "R873414",
+            "text": "Research Level 1",
+            "knowledge_types": [
+                "Contribution"
+            ]
+        }
+    },
+    {
+        "entity_subject": {
+            "uid": "R873414",
+            "text": "Research Level 1",
+            "knowledge_types": [
+                "Contribution"
+            ]
+        },
+        "predicate": "research level",
+        "entity_object": {
+            "uid": "L1530459",
+            "text": "Primary Research",
+            "knowledge_types": []
+        }
+    },
+    {
+        "entity_subject": {
+            "uid": "R873379",
+            "text": "Predicting the Performance of Privacy-Preserving Data Analytics Using Architecture Modelling and Simulation",
+            "knowledge_types": [
+                "Paper"
+            ]
+        },
+        "predicate": "contribution",
+        "entity_object": {
+            "uid": "R873413",
+            "text": "Paper Class 1",
+            "knowledge_types": [
+                "Contribution"
+            ]
+        }
+    },
+    {
+        "entity_subject": {
+            "uid": "R873413",
+            "text": "Paper Class 1",
+            "knowledge_types": [
+                "Contribution"
+            ]
+        },
+        "predicate": "paper class",
+        "entity_object": {
+            "uid": "L1530458",
+            "text": "Evaluation Research",
+            "knowledge_types": []
+        }
+    },
+    {
+        "entity_subject": {
+            "uid": "R873379",
+            "text": "Predicting the Performance of Privacy-Preserving Data Analytics Using Architecture Modelling and Simulation",
+            "knowledge_types": [
+                "Paper"
+            ]
+        },
+        "predicate": "authors",
+        "entity_object": {
+            "uid": "R873380",
+            "text": "authors list",
+            "knowledge_types": [
+                "List"
+            ]
+        }
+    },
+    {
+        "entity_subject": {
+            "uid": "R873380",
+            "text": "authors list",
+            "knowledge_types": [
+                "List"
+            ]
+        },
+        "predicate": "has list element",
+        "entity_object": {
+            "uid": "L1530391",
+            "text": "Hye-Young Paik",
+            "knowledge_types": []
+        }
+    },
+    {
+        "entity_subject": {
+            "uid": "R873380",
+            "text": "authors list",
+            "knowledge_types": [
+                "List"
+            ]
+        },
+        "predicate": "has list element",
+        "entity_object": {
+            "uid": "L1530390",
+            "text": "Ingo Weber",
+            "knowledge_types": []
+        }
+    },
+    {
+        "entity_subject": {
+            "uid": "R873380",
+            "text": "authors list",
+            "knowledge_types": [
+                "List"
+            ]
+        },
+        "predicate": "has list element",
+        "entity_object": {
+            "uid": "L1530389",
+            "text": "Mark Staples",
+            "knowledge_types": []
+        }
+    },
+    {
+        "entity_subject": {
+            "uid": "R873380",
+            "text": "authors list",
+            "knowledge_types": [
+                "List"
+            ]
+        },
+        "predicate": "has list element",
+        "entity_object": {
+            "uid": "L1530388",
+            "text": "Rajitha Yasaweerasinghelage",
+            "knowledge_types": []
+        }
+    },
+    {
+        "uid": "R659055",
+        "text": "Software Architecture and Design",
+        "knowledge_types": [
+            "ResearchField"
+        ]
+    },
+    {
+        "uid": "R820814",
+        "text": "International Conference on Software Architecture (ICSA)",
+        "knowledge_types": [
+            "Venue"
+        ]
+    },
+    {
+        "uid": "R873379",
+        "text": "Predicting the Performance of Privacy-Preserving Data Analytics Using Architecture Modelling and Simulation",
+        "knowledge_types": [
+            "Paper"
+        ]
+    },
+    {
+        "uid": "L1530392",
+        "text": "2018",
+        "knowledge_types": []
+    },
+    {
+        "uid": "L1530387",
+        "text": "10.1109/ICSA.2018.00026",
+        "knowledge_types": []
+    },
+    {
+        "uid": "R873417",
+        "text": "Evidence 1",
+        "knowledge_types": [
+            "Contribution"
+        ]
+    },
+    {
+        "uid": "L1530470",
+        "text": "Tool was used but is not available",
+        "knowledge_types": []
+    },
+    {
+        "uid": "L1530469",
+        "text": "Input data is available",
+        "knowledge_types": []
+    },
+    {
+        "uid": "L1530468",
+        "text": "False",
+        "knowledge_types": []
+    },
+    {
+        "uid": "R873416",
+        "text": "Validity 1",
+        "knowledge_types": [
+            "Contribution"
+        ]
+    },
+    {
+        "uid": "L1530467",
+        "text": "False",
+        "knowledge_types": []
+    },
+    {
+        "uid": "L1530466",
+        "text": "Internal Validity",
+        "knowledge_types": []
+    },
+    {
+        "uid": "L1530465",
+        "text": "External Validity",
+        "knowledge_types": []
+    },
+    {
+        "uid": "R873415",
+        "text": "First Research Object 1",
+        "knowledge_types": [
+            "Contribution"
+        ]
+    },
+    {
+        "uid": "L1530464",
+        "text": "Product Quality",
+        "knowledge_types": []
+    },
+    {
+        "uid": "L1530463",
+        "text": "Performance efficiency",
+        "knowledge_types": []
+    },
+    {
+        "uid": "L1530462",
+        "text": "Architectural Assumptions",
+        "knowledge_types": []
+    },
+    {
+        "uid": "L1530461",
+        "text": "Case Study",
+        "knowledge_types": []
+    },
+    {
+        "uid": "L1530460",
+        "text": "False",
+        "knowledge_types": []
+    },
+    {
+        "uid": "R873414",
+        "text": "Research Level 1",
+        "knowledge_types": [
+            "Contribution"
+        ]
+    },
+    {
+        "uid": "L1530459",
+        "text": "Primary Research",
+        "knowledge_types": []
+    },
+    {
+        "uid": "R873413",
+        "text": "Paper Class 1",
+        "knowledge_types": [
+            "Contribution"
+        ]
+    },
+    {
+        "uid": "L1530458",
+        "text": "Evaluation Research",
+        "knowledge_types": []
+    },
+    {
+        "uid": "R873380",
+        "text": "authors list",
+        "knowledge_types": [
+            "List"
+        ]
+    },
+    {
+        "uid": "L1530391",
+        "text": "Hye-Young Paik",
+        "knowledge_types": []
+    },
+    {
+        "uid": "L1530390",
+        "text": "Ingo Weber",
+        "knowledge_types": []
+    },
+    {
+        "uid": "L1530389",
+        "text": "Mark Staples",
+        "knowledge_types": []
+    },
+    {
+        "uid": "L1530388",
+        "text": "Rajitha Yasaweerasinghelage",
+        "knowledge_types": []
+    },
+  {
+        "entity_subject": {
+            "uid": "R873599",
+            "text": "Improving the Consistency and Usefulness of Architecture Descriptions: Guidelines for Architects",
+            "knowledge_types": [
+                "Paper"
+            ]
+        },
+        "predicate": "research field",
+        "entity_object": {
+            "uid": "R659055",
+            "text": "Software Architecture and Design",
+            "knowledge_types": [
+                "ResearchField"
+            ]
+        }
+    },
+    {
+        "entity_subject": {
+            "uid": "R873599",
+            "text": "Improving the Consistency and Usefulness of Architecture Descriptions: Guidelines for Architects",
+            "knowledge_types": [
+                "Paper"
+            ]
+        },
+        "predicate": "venue",
+        "entity_object": {
+            "uid": "R820814",
+            "text": "International Conference on Software Architecture (ICSA)",
+            "knowledge_types": [
+                "Venue"
+            ]
+        }
+    },
+    {
+        "entity_subject": {
+            "uid": "R873599",
+            "text": "Improving the Consistency and Usefulness of Architecture Descriptions: Guidelines for Architects",
+            "knowledge_types": [
+                "Paper"
+            ]
+        },
+        "predicate": "publication year",
+        "entity_object": {
+            "uid": "L1530833",
+            "text": "2019",
+            "knowledge_types": []
+        }
+    },
+    {
+        "entity_subject": {
+            "uid": "R873599",
+            "text": "Improving the Consistency and Usefulness of Architecture Descriptions: Guidelines for Architects",
+            "knowledge_types": [
+                "Paper"
+            ]
+        },
+        "predicate": "doi",
+        "entity_object": {
+            "uid": "L1530828",
+            "text": "10.1109/ICSA.2019.00024",
+            "knowledge_types": []
+        }
+    },
+    {
+        "entity_subject": {
+            "uid": "R873599",
+            "text": "Improving the Consistency and Usefulness of Architecture Descriptions: Guidelines for Architects",
+            "knowledge_types": [
+                "Paper"
+            ]
+        },
+        "predicate": "contribution",
+        "entity_object": {
+            "uid": "R873652",
+            "text": "Evidence 1",
+            "knowledge_types": [
+                "Contribution"
+            ]
+        }
+    },
+    {
+        "entity_subject": {
+            "uid": "R873652",
+            "text": "Evidence 1",
+            "knowledge_types": [
+                "Contribution"
+            ]
+        },
+        "predicate": "Uses Tool Support",
+        "entity_object": {
+            "uid": "L1530945",
+            "text": "No tool used",
+            "knowledge_types": []
+        }
+    },
+    {
+        "entity_subject": {
+            "uid": "R873652",
+            "text": "Evidence 1",
+            "knowledge_types": [
+                "Contribution"
+            ]
+        },
+        "predicate": "Uses Input Data",
+        "entity_object": {
+            "uid": "L1530944",
+            "text": "Input data is available",
+            "knowledge_types": []
+        }
+    },
+    {
+        "entity_subject": {
+            "uid": "R873652",
+            "text": "Evidence 1",
+            "knowledge_types": [
+                "Contribution"
+            ]
+        },
+        "predicate": "Provides Replication Package",
+        "entity_object": {
+            "uid": "L1530943",
+            "text": "False",
+            "knowledge_types": []
+        }
+    },
+    {
+        "entity_subject": {
+            "uid": "R873599",
+            "text": "Improving the Consistency and Usefulness of Architecture Descriptions: Guidelines for Architects",
+            "knowledge_types": [
+                "Paper"
+            ]
+        },
+        "predicate": "contribution",
+        "entity_object": {
+            "uid": "R873651",
+            "text": "Validity 1",
+            "knowledge_types": [
+                "Contribution"
+            ]
+        }
+    },
+    {
+        "entity_subject": {
+            "uid": "R873651",
+            "text": "Validity 1",
+            "knowledge_types": [
+                "Contribution"
+            ]
+        },
+        "predicate": "Referenced Threats to Validity Guideline",
+        "entity_object": {
+            "uid": "L1530942",
+            "text": "False",
+            "knowledge_types": []
+        }
+    },
+    {
+        "entity_subject": {
+            "uid": "R873651",
+            "text": "Validity 1",
+            "knowledge_types": [
+                "Contribution"
+            ]
+        },
+        "predicate": "threat to validity",
+        "entity_object": {
+            "uid": "L1530941",
+            "text": "Confirmability",
+            "knowledge_types": []
+        }
+    },
+    {
+        "entity_subject": {
+            "uid": "R873651",
+            "text": "Validity 1",
+            "knowledge_types": [
+                "Contribution"
+            ]
+        },
+        "predicate": "threat to validity",
+        "entity_object": {
+            "uid": "L1530940",
+            "text": "Internal Validity",
+            "knowledge_types": []
+        }
+    },
+    {
+        "entity_subject": {
+            "uid": "R873651",
+            "text": "Validity 1",
+            "knowledge_types": [
+                "Contribution"
+            ]
+        },
+        "predicate": "threat to validity",
+        "entity_object": {
+            "uid": "L1530939",
+            "text": "External Validity",
+            "knowledge_types": []
+        }
+    },
+    {
+        "entity_subject": {
+            "uid": "R873651",
+            "text": "Validity 1",
+            "knowledge_types": [
+                "Contribution"
+            ]
+        },
+        "predicate": "threat to validity",
+        "entity_object": {
+            "uid": "L1530938",
+            "text": "Construct Validity",
+            "knowledge_types": []
+        }
+    },
+    {
+        "entity_subject": {
+            "uid": "R873599",
+            "text": "Improving the Consistency and Usefulness of Architecture Descriptions: Guidelines for Architects",
+            "knowledge_types": [
+                "Paper"
+            ]
+        },
+        "predicate": "contribution",
+        "entity_object": {
+            "uid": "R873650",
+            "text": "Second Research Object 1",
+            "knowledge_types": [
+                "Contribution"
+            ]
+        }
+    },
+    {
+        "entity_subject": {
+            "uid": "R873650",
+            "text": "Second Research Object 1",
+            "knowledge_types": [
+                "Contribution"
+            ]
+        },
+        "predicate": "Evaluation Property",
+        "entity_object": {
+            "uid": "L1530937",
+            "text": "False",
+            "knowledge_types": []
+        }
+    },
+    {
+        "entity_subject": {
+            "uid": "R873650",
+            "text": "Second Research Object 1",
+            "knowledge_types": [
+                "Contribution"
+            ]
+        },
+        "predicate": "Evaluation Sub-Property",
+        "entity_object": {
+            "uid": "L1530936",
+            "text": "False",
+            "knowledge_types": []
+        }
+    },
+    {
+        "entity_subject": {
+            "uid": "R873650",
+            "text": "Second Research Object 1",
+            "knowledge_types": [
+                "Contribution"
+            ]
+        },
+        "predicate": "Research Object",
+        "entity_object": {
+            "uid": "L1530935",
+            "text": "Architectural Assumptions",
+            "knowledge_types": []
+        }
+    },
+    {
+        "entity_subject": {
+            "uid": "R873650",
+            "text": "Second Research Object 1",
+            "knowledge_types": [
+                "Contribution"
+            ]
+        },
+        "predicate": "Evaluation method",
+        "entity_object": {
+            "uid": "L1530934",
+            "text": "False",
+            "knowledge_types": []
+        }
+    },
+    {
+        "entity_subject": {
+            "uid": "R873650",
+            "text": "Second Research Object 1",
+            "knowledge_types": [
+                "Contribution"
+            ]
+        },
+        "predicate": "Has Evaluation Guideline",
+        "entity_object": {
+            "uid": "L1530933",
+            "text": "False",
+            "knowledge_types": []
+        }
+    },
+    {
+        "entity_subject": {
+            "uid": "R873599",
+            "text": "Improving the Consistency and Usefulness of Architecture Descriptions: Guidelines for Architects",
+            "knowledge_types": [
+                "Paper"
+            ]
+        },
+        "predicate": "contribution",
+        "entity_object": {
+            "uid": "R873649",
+            "text": "First Research Object 1",
+            "knowledge_types": [
+                "Contribution"
+            ]
+        }
+    },
+    {
+        "entity_subject": {
+            "uid": "R873649",
+            "text": "First Research Object 1",
+            "knowledge_types": [
+                "Contribution"
+            ]
+        },
+        "predicate": "Evaluation Property",
+        "entity_object": {
+            "uid": "L1530932",
+            "text": "Product Quality",
+            "knowledge_types": []
+        }
+    },
+    {
+        "entity_subject": {
+            "uid": "R873649",
+            "text": "First Research Object 1",
+            "knowledge_types": [
+                "Contribution"
+            ]
+        },
+        "predicate": "Evaluation Property",
+        "entity_object": {
+            "uid": "L1530931",
+            "text": "Quality in Use",
+            "knowledge_types": []
+        }
+    },
+    {
+        "entity_subject": {
+            "uid": "R873649",
+            "text": "First Research Object 1",
+            "knowledge_types": [
+                "Contribution"
+            ]
+        },
+        "predicate": "Evaluation Sub-Property",
+        "entity_object": {
+            "uid": "L1530930",
+            "text": "Functional Suitability",
+            "knowledge_types": []
+        }
+    },
+    {
+        "entity_subject": {
+            "uid": "R873649",
+            "text": "First Research Object 1",
+            "knowledge_types": [
+                "Contribution"
+            ]
+        },
+        "predicate": "Evaluation Sub-Property",
+        "entity_object": {
+            "uid": "L1530929",
+            "text": "Satisfaction",
+            "knowledge_types": []
+        }
+    },
+    {
+        "entity_subject": {
+            "uid": "R873649",
+            "text": "First Research Object 1",
+            "knowledge_types": [
+                "Contribution"
+            ]
+        },
+        "predicate": "Evaluation Sub-Property",
+        "entity_object": {
+            "uid": "L1530928",
+            "text": "Effectiveness",
+            "knowledge_types": []
+        }
+    },
+    {
+        "entity_subject": {
+            "uid": "R873649",
+            "text": "First Research Object 1",
+            "knowledge_types": [
+                "Contribution"
+            ]
+        },
+        "predicate": "Research Object",
+        "entity_object": {
+            "uid": "L1530927",
+            "text": "Architecture Evolution",
+            "knowledge_types": []
+        }
+    },
+    {
+        "entity_subject": {
+            "uid": "R873649",
+            "text": "First Research Object 1",
+            "knowledge_types": [
+                "Contribution"
+            ]
+        },
+        "predicate": "Evaluation method",
+        "entity_object": {
+            "uid": "L1530926",
+            "text": "Questionnaire",
+            "knowledge_types": []
+        }
+    },
+    {
+        "entity_subject": {
+            "uid": "R873649",
+            "text": "First Research Object 1",
+            "knowledge_types": [
+                "Contribution"
+            ]
+        },
+        "predicate": "Has Evaluation Guideline",
+        "entity_object": {
+            "uid": "L1530925",
+            "text": "True",
+            "knowledge_types": []
+        }
+    },
+    {
+        "entity_subject": {
+            "uid": "R873599",
+            "text": "Improving the Consistency and Usefulness of Architecture Descriptions: Guidelines for Architects",
+            "knowledge_types": [
+                "Paper"
+            ]
+        },
+        "predicate": "contribution",
+        "entity_object": {
+            "uid": "R873648",
+            "text": "Research Level 1",
+            "knowledge_types": [
+                "Contribution"
+            ]
+        }
+    },
+    {
+        "entity_subject": {
+            "uid": "R873648",
+            "text": "Research Level 1",
+            "knowledge_types": [
+                "Contribution"
+            ]
+        },
+        "predicate": "research level",
+        "entity_object": {
+            "uid": "L1530924",
+            "text": "Primary Research",
+            "knowledge_types": []
+        }
+    },
+    {
+        "entity_subject": {
+            "uid": "R873599",
+            "text": "Improving the Consistency and Usefulness of Architecture Descriptions: Guidelines for Architects",
+            "knowledge_types": [
+                "Paper"
+            ]
+        },
+        "predicate": "contribution",
+        "entity_object": {
+            "uid": "R873647",
+            "text": "Paper Class 1",
+            "knowledge_types": [
+                "Contribution"
+            ]
+        }
+    },
+    {
+        "entity_subject": {
+            "uid": "R873647",
+            "text": "Paper Class 1",
+            "knowledge_types": [
+                "Contribution"
+            ]
+        },
+        "predicate": "paper class",
+        "entity_object": {
+            "uid": "L1530923",
+            "text": "Evaluation Research",
+            "knowledge_types": []
+        }
+    },
+    {
+        "entity_subject": {
+            "uid": "R873599",
+            "text": "Improving the Consistency and Usefulness of Architecture Descriptions: Guidelines for Architects",
+            "knowledge_types": [
+                "Paper"
+            ]
+        },
+        "predicate": "authors",
+        "entity_object": {
+            "uid": "R873600",
+            "text": "authors list",
+            "knowledge_types": [
+                "List"
+            ]
+        }
+    },
+    {
+        "entity_subject": {
+            "uid": "R873600",
+            "text": "authors list",
+            "knowledge_types": [
+                "List"
+            ]
+        },
+        "predicate": "has list element",
+        "entity_object": {
+            "uid": "L1530832",
+            "text": "Rogardt Heldal",
+            "knowledge_types": []
+        }
+    },
+    {
+        "entity_subject": {
+            "uid": "R873600",
+            "text": "authors list",
+            "knowledge_types": [
+                "List"
+            ]
+        },
+        "predicate": "has list element",
+        "entity_object": {
+            "uid": "L1530831",
+            "text": "Patrizio Pelliccione",
+            "knowledge_types": []
+        }
+    },
+    {
+        "entity_subject": {
+            "uid": "R873600",
+            "text": "authors list",
+            "knowledge_types": [
+                "List"
+            ]
+        },
+        "predicate": "has list element",
+        "entity_object": {
+            "uid": "L1530830",
+            "text": "Ulf Eliasson",
+            "knowledge_types": []
+        }
+    },
+    {
+        "entity_subject": {
+            "uid": "R873600",
+            "text": "authors list",
+            "knowledge_types": [
+                "List"
+            ]
+        },
+        "predicate": "has list element",
+        "entity_object": {
+            "uid": "L1530829",
+            "text": "Rebekka Wohlrab",
+            "knowledge_types": []
+        }
+    },
+    {
+        "uid": "R873599",
+        "text": "Improving the Consistency and Usefulness of Architecture Descriptions: Guidelines for Architects",
+        "knowledge_types": [
+            "Paper"
+        ]
+    },
+    {
+        "uid": "L1530833",
+        "text": "2019",
+        "knowledge_types": []
+    },
+    {
+        "uid": "L1530828",
+        "text": "10.1109/ICSA.2019.00024",
+        "knowledge_types": []
+    },
+    {
+        "uid": "R873652",
+        "text": "Evidence 1",
+        "knowledge_types": [
+            "Contribution"
+        ]
+    },
+    {
+        "uid": "L1530945",
+        "text": "No tool used",
+        "knowledge_types": []
+    },
+    {
+        "uid": "L1530944",
+        "text": "Input data is available",
+        "knowledge_types": []
+    },
+    {
+        "uid": "L1530943",
+        "text": "False",
+        "knowledge_types": []
+    },
+    {
+        "uid": "R873651",
+        "text": "Validity 1",
+        "knowledge_types": [
+            "Contribution"
+        ]
+    },
+    {
+        "uid": "L1530942",
+        "text": "False",
+        "knowledge_types": []
+    },
+    {
+        "uid": "L1530941",
+        "text": "Confirmability",
+        "knowledge_types": []
+    },
+    {
+        "uid": "L1530940",
+        "text": "Internal Validity",
+        "knowledge_types": []
+    },
+    {
+        "uid": "L1530939",
+        "text": "External Validity",
+        "knowledge_types": []
+    },
+    {
+        "uid": "L1530938",
+        "text": "Construct Validity",
+        "knowledge_types": []
+    },
+    {
+        "uid": "R873650",
+        "text": "Second Research Object 1",
+        "knowledge_types": [
+            "Contribution"
+        ]
+    },
+    {
+        "uid": "L1530937",
+        "text": "False",
+        "knowledge_types": []
+    },
+    {
+        "uid": "L1530936",
+        "text": "False",
+        "knowledge_types": []
+    },
+    {
+        "uid": "L1530935",
+        "text": "Architectural Assumptions",
+        "knowledge_types": []
+    },
+    {
+        "uid": "L1530934",
+        "text": "False",
+        "knowledge_types": []
+    },
+    {
+        "uid": "L1530933",
+        "text": "False",
+        "knowledge_types": []
+    },
+    {
+        "uid": "R873649",
+        "text": "First Research Object 1",
+        "knowledge_types": [
+            "Contribution"
+        ]
+    },
+    {
+        "uid": "L1530932",
+        "text": "Product Quality",
+        "knowledge_types": []
+    },
+    {
+        "uid": "L1530931",
+        "text": "Quality in Use",
+        "knowledge_types": []
+    },
+    {
+        "uid": "L1530930",
+        "text": "Functional Suitability",
+        "knowledge_types": []
+    },
+    {
+        "uid": "L1530929",
+        "text": "Satisfaction",
+        "knowledge_types": []
+    },
+    {
+        "uid": "L1530928",
+        "text": "Effectiveness",
+        "knowledge_types": []
+    },
+    {
+        "uid": "L1530927",
+        "text": "Architecture Evolution",
+        "knowledge_types": []
+    },
+    {
+        "uid": "L1530926",
+        "text": "Questionnaire",
+        "knowledge_types": []
+    },
+    {
+        "uid": "L1530925",
+        "text": "True",
+        "knowledge_types": []
+    },
+    {
+        "uid": "R873648",
+        "text": "Research Level 1",
+        "knowledge_types": [
+            "Contribution"
+        ]
+    },
+    {
+        "uid": "L1530924",
+        "text": "Primary Research",
+        "knowledge_types": []
+    },
+    {
+        "uid": "R873647",
+        "text": "Paper Class 1",
+        "knowledge_types": [
+            "Contribution"
+        ]
+    },
+    {
+        "uid": "L1530923",
+        "text": "Evaluation Research",
+        "knowledge_types": []
+    },
+    {
+        "uid": "R873600",
+        "text": "authors list",
+        "knowledge_types": [
+            "List"
+        ]
+    },
+    {
+        "uid": "L1530832",
+        "text": "Rogardt Heldal",
+        "knowledge_types": []
+    },
+    {
+        "uid": "L1530831",
+        "text": "Patrizio Pelliccione",
+        "knowledge_types": []
+    },
+    {
+        "uid": "L1530830",
+        "text": "Ulf Eliasson",
+        "knowledge_types": []
+    },
+    {
+        "uid": "L1530829",
+        "text": "Rebekka Wohlrab",
+        "knowledge_types": []
+    }
+]

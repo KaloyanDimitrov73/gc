@@ -6,6 +6,10 @@ from typing import Any, Dict
 import json
 import logging
 
+from core.data.file_path_manager import FilePathManager
+from core.data.models import Triple, Knowledge
+from knowledge_base.knowledge_graph.storage.implementations.orkg_remote_graph import ORKGRemoteGraph
+
 logger = logging.getLogger(__name__)
 
 
@@ -29,10 +33,11 @@ class GraphLoader:
 
         Respects force_cache_update from config.knowledge_graph_config.additional_params.
         """
-        from sqa_system.knowledge_base.knowledge_graph.storage.implementations.orkg_remote_graph import ORKGRemoteGraph
+
 
         kg_config = config.knowledge_graph_config
         force_cache_update = kg_config.additional_params.get("force_cache_update", False)
+        logger.info("KG_config: %s.", kg_config.config_hash)
 
         graph = ORKGRemoteGraph(kg_config)
 
@@ -104,7 +109,7 @@ class GraphLoader:
 
     def _get_orkg_cache_path(self, kg_config) -> str:
         """Return local ORKG JSON cache path for a KnowledgeGraphConfig."""
-        from sqa_system.core.data.file_path_manager import FilePathManager
+
 
         fpm = FilePathManager()
         return fpm.combine_paths(
@@ -126,7 +131,6 @@ class GraphLoader:
         Load ORKG cached objects from JSON file into CacheManager sqlite tables.
         Uses batch inserts for performance.
         """
-        from sqa_system.core.data.models import Knowledge, Triple
 
         with open(cache_path, "r", encoding="utf-8") as f:
             raw_items = json.load(f)

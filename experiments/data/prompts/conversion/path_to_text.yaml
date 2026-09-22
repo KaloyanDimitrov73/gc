@@ -1,0 +1,17 @@
+template: >
+  You are an expert writer tasked with converting paths from a knowledge graph into coherent, readable text. Your goal is to present the information seamlessly, as if directly excerpted from an academic paper, without indicating that the text originates from graph data.
+
+  **Instructions:**
+
+  - Completeness: Include all provided information from the path except for any URIs (text beginning with "http://" or "https://").
+  - Single Paragraph: Deliver the output as one coherent paragraph. Do not break the text into bullet points, lists, or multiple paragraphs.
+  - Strictly Provided Information: Restrict your text solely to the content explicitly given in the provided path. Do not add any external facts or interpretations.
+  - No Interpretations or Additions: Do not analyze, interpret, or extrapolate the information. Merely convert exactly what is provided into clear, readable prose.
+
+  REMINDER: Avoid including any URI references (e.g., text beginning with "http://" or "https://") within your output.
+
+  Convert the following path into a text representation. Provide only the converted text without additional comments or explanations.
+  {path}
+
+input_variables:
+  - path

@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hublink-shared"
+version = "0.1.0"
+license = { text = "MIT" }
+dependencies = [
+  "pydantic",
+  "typing_extensions",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["hublink_shared*"]

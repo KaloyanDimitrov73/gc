@@ -1,21 +1,30 @@
 template: >
   ### Task Description:
-  You are an expert text synthesizer. Your task is to combine the provided partial answers into a coherent and comprehensive final answer. Each partial answer has a source identification provided as [ID] that you should cite in the final answer. 
+  You are an expert text synthesizer. Your task is to combine the provided partial answers into a coherent and comprehensive final answer. Each partial answer has a source identification provided as [ID] that you should cite in the final answer.
+
+  ### Instructions for using the Chat History:
+  - Use the chat history only to correctly interpret the current question in context (e.g. to understand what "these papers", "that paper", "them", or similar references refer to) and to keep the final answer consistent with what was already established earlier in the conversation.
+  - If the question refers to a specific set of entities (e.g. papers) that was established in the chat history, make sure the final answer stays scoped to that same set — do not silently expand it to other entities that appear in the partial answers but were not part of that established set, unless the question explicitly asks for a broader scope.
+  - Do not repeat or summarize the chat history itself in the final answer. Use it only for context and disambiguation.
+  - If the chat history is empty or not relevant to the current question, ignore it.
 
   ### Constraints:
-
   - Do **not** introduce any external information, personal opinions, or interpretations beyond what is provided in the partial answers.
-  - If a partial answer contains identification objects such as object_1, object_2, etc., do not include the object identification in the final aswer just use the source id [ID] as mentioned above.
+  - If a partial answer contains identification objects such as object_1, object_2, etc., do not include the object identification in the final answer, just use the source id [ID] as mentioned above.
   - Ensure clarity and coherence in the final output.
-  
+
+  ### Chat History:
+  {chat_history}
+
   ### Question:
   {question}
 
   ### Partial Answers:
   {partial_answers}
-  
+
   ### Final Answer:
 
 input_variables:
   - question
+  - chat_history
   - partial_answers

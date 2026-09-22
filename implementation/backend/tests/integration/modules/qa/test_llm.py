@@ -6,10 +6,12 @@ contains non-empty text content.  Tests are auto-skipped when the required
 service is unreachable or an API key is missing.
 
 Required environment variables (loaded from .env automatically):
-  VDL_API_KEY         — API key for the VDL LLM endpoint
-  TEST_VDL_MODEL      — VDL model to use (default: gpt-oss:20b)
-  OPENAI_API_KEY      — API key for the OpenAI endpoint
-  TEST_OPENAI_MODEL   — OpenAI model to use (default: o3-mini)
+  VDL_API_KEY           — API key for the VDL LLM endpoint
+  TEST_VDL_MODEL        — VDL model to use (default: gpt-oss:20b)
+  OPENAI_API_KEY        — API key for the OpenAI endpoint
+  TEST_OPENAI_MODEL     — OpenAI model to use (default: o3-mini)
+  KIT_TOOLBOX_API_KEY   — API key for the KIT KI-Toolbox endpoint
+  TEST_KIT_TOOLBOX_MODEL — KIT KI-Toolbox model to use (default: kit.qwen3.5-397b-A17b)
 """
 import os
 from pathlib import Path
@@ -33,29 +35,28 @@ def _require_env(name: str) -> str:
 def _get_llm_components():
     """Import LLM adapter classes from sqa_system, skipping the test if unavailable."""
     try:
-        from sqa_system.core.config.models.llm_config import LLMConfig
-        from sqa_system.core.language_model.implementations.openai_llm_adapter import (
-            OpenAiLLMAdapter,
-        )
-        from sqa_system.core.language_model.implementations.vdl_llm_adapter import (
-            VDLLLMAdapter,
+        from language_model.config.llm_config import LLMConfig
+        from language_model import OpenAiLLMAdapter
+        from language_model.implementations.vdl_llm_adapter import VDLLLMAdapter
+        from language_model.implementations.kittoolbox_llm_adapter import (
+            KitToolboxLLMAdapter,
         )
     except Exception as exc:
         pytest.skip(f"sqa_system dependencies are unavailable: {exc}")
 
-    return LLMConfig, VDLLLMAdapter, OpenAiLLMAdapter
+    return LLMConfig, VDLLLMAdapter, OpenAiLLMAdapter, KitToolboxLLMAdapter
 
 
 @pytest.fixture(scope="module", autouse=True)
 def load_env():
     """Load .env from the project root so adapter credentials are available."""
-    load_dotenv(Path(__file__).resolve().parents[5] / ".env")
+    load_dotenv(Path(__file__).resolve().parents[4] / ".env")
 
 
 @pytest.fixture(scope="module")
 def vdl_llm():
     """Prepared VDLLLMAdapter; skipped if VDL_API_KEY is missing or the service is unreachable."""
-    LLMConfig, _, VDLLLMAdapter, _ = _get_llm_components()
+    LLMConfig, VDLLLMAdapter, _, _ = _get_llm_components()
     _require_env("VDL_API_KEY")
 
     config = LLMConfig(
@@ -67,7 +68,17 @@ def vdl_llm():
     adapter = VDLLLMAdapter(config)
     try:
         adapter.prepare()
+        # Probe call to catch auth errors (401) before the test body runs
+        adapter.generate("ping")
     except Exception as exc:
+        err = str(exc).lower()
+        if "401" in err or "session" in err or "token" in err or "unauthorized" in err:
+            pytest.fail(
+                f"VDL auth failed — key is invalid or expired. "
+                f"Generate a permanent API key at "
+                f"https://chat.vdl.sdq.kastel.kit.edu (Settings → Account → API Keys).\n"
+                f"Original error: {exc}"
+            )
         pytest.skip(f"VDL adapter is not available: {exc}")
     return adapter
 
@@ -75,7 +86,7 @@ def vdl_llm():
 @pytest.fixture(scope="module")
 def openai_llm():
     """Prepared OpenAiLLMAdapter; skipped if OPENAI_API_KEY is missing or the service is unreachable."""
-    LLMConfig, _, _, OpenAiLLMAdapter = _get_llm_components()
+    LLMConfig, _, OpenAiLLMAdapter, _ = _get_llm_components()
     _require_env("OPENAI_API_KEY")
 
     config = LLMConfig(
@@ -94,7 +105,31 @@ def openai_llm():
     return adapter
 
 
-@pytest.mark.parametrize("fixture_name", ["vdl_llm", "openai_llm"])
+@pytest.fixture(scope="module")
+def kit_toolbox_llm():
+    """Prepared KitToolboxLLMAdapter; skipped if KIT_TOOLBOX_API_KEY is missing or the service is unreachable."""
+    LLMConfig, _, _, KitToolboxLLMAdapter = _get_llm_components()
+    _require_env("KIT_TOOLBOX_API_KEY")
+
+    config = LLMConfig(
+        additional_params={},
+        endpoint="KitToolbox",
+        name_model=os.getenv("TEST_KIT_TOOLBOX_MODEL", "kit.qwen3.5-397b-A17b"),
+        temperature=None,
+        max_tokens=-1,
+        reasoning_effort=None,
+    )
+    adapter = KitToolboxLLMAdapter(config)
+    try:
+        adapter.prepare()
+        # Probe call to catch auth/model errors before the test body runs
+        adapter.generate("ping")
+    except Exception as exc:
+        pytest.skip(f"KIT KI-Toolbox adapter is not available: {exc}")
+    return adapter
+
+
+@pytest.mark.parametrize("fixture_name", ["vdl_llm", "openai_llm", "kit_toolbox_llm"])
 def test_generate_returns_non_empty_content(request, fixture_name):
     """Each adapter's generate() call should return a response with non-empty string content."""
     adapter = request.getfixturevalue(fixture_name)

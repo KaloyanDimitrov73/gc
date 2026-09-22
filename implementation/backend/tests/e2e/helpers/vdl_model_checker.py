@@ -5,11 +5,17 @@ Usage:
     python -c "from backend.app.modules.qa.tests.helpers.vdl_model_checker import list_vdl_models; list_vdl_models()"
 """
 import os
+from pathlib import Path
+
 import requests
 import logging
 from typing import List, Dict, Any
 
+from dotenv import load_dotenv
+
 logger = logging.getLogger(__name__)
+
+load_dotenv(Path(__file__).resolve().parents[3] / ".env")
 
 
 def list_vdl_models() -> List[Dict[str, Any]]:

@@ -1,0 +1,10 @@
+# Local packages used by the HubLink experiment adapter.
+-e ../../implementation/hublink_shared
+-e ../../implementation/backend/HublinkImplementation
+
+# DSPy is isolated in prompt_optimization/.venv. Newer LiteLLM versions select
+# OpenAI/Pydantic versions that conflict with the currently pinned HubLink stack.
+dspy==3.3.1
+litellm==1.65.8
+PyYAML>=6,<7
+pytest>=8,<9

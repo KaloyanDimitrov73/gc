@@ -14,13 +14,13 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 
 from backend.app.core.module_registry import api_v1_router
-from backend.app.core.config import get_settings
+from backend.app.config.base_settings import get_settings
 from backend.app.core.dependencies import (
     get_graph_load_service,
     get_guardrails_service,
     get_graph_explore_service,
     get_hublink_service,
-    get_retrieval_service,
+    get_retrieval_service, get_vector_store_service, get_hub_indexing_service, get_indexing_service,
 )
 from backend.app.modules.conversations.infrastructure.database.db import init_db, AsyncSessionLocal
 from backend.app.modules.conversations.infrastructure.database.models import RequestLogModel
@@ -133,17 +133,23 @@ async def lifespan(app: FastAPI):
             await asyncio.gather(
                 asyncio.to_thread(get_graph_load_service),
                 asyncio.to_thread(get_guardrails_service),
+                asyncio.to_thread(get_vector_store_service)
             )
             logger.info("Graph and guardrails services initialized.")
             # Phase B: services that depend on graph_load, in parallel
             await asyncio.gather(
                 asyncio.to_thread(get_graph_explore_service),
                 asyncio.to_thread(get_hublink_service),
+                asyncio.to_thread(get_hub_indexing_service)
             )
             logger.info("Graph explore and HubLink services initialized.")
             # Phase C: retrieval service depends on hublink + guardrails
             await asyncio.to_thread(get_retrieval_service)
             logger.info("All services initialized and ready.")
+
+            indexing_svc = get_indexing_service()
+            indexing_svc.start_scheduler(interval_seconds=settings.indexing_interval_seconds)
+            logger.info("Indexing scheduler started, interval=%ss", settings.indexing_interval_seconds)
         except Exception:
             logger.exception("Background service initialization failed")
 

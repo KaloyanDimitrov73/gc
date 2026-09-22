@@ -2,23 +2,28 @@
 Service layer for interacting with the HubLink implementation.
 Handles the integration between FastAPI and the HubLink retrieval system.
 """
+from concurrent.futures import ThreadPoolExecutor
 from typing import Optional, List, Tuple, Dict, Any
 import asyncio
 import logging
 import os
 import threading
 
-from backend.app.contracts.schemas import GraphNode
-from backend.app.modules.qa.infrastructure.hublink.config_loader import (
+from backend.app.contracts.schemas import GraphNode, MessageSchema
+from backend.app.config.hublink.config_loader import (
     HublinkConfigLoader,
 )
-from backend.app.modules.qa.infrastructure.hublink.llm_config_registry import (
+from backend.app.config.llm.llm_config_registry import (
     LLMConfigRegistry,
 )
 from backend.app.modules.graph_explore.infrastructure.orkg import node_builder
 from backend.app.modules.qa.infrastructure.hublink.setup_manager import (
     SetupManager,
 )
+from core.data.models import Context
+from hublink.core.hub_storage_manager import HubStorageManager
+from hublink.retrieval.utils.answer_generator import AnswerGenerator
+from hublink.retrieval.utils.meta_router import RouteDecision, MetaRouter
 
 logger = logging.getLogger(__name__)
 
@@ -34,7 +39,7 @@ class HubLinkService:
     - Transforms contexts to graph nodes for visualization
     """
 
-    def __init__(self, graph: Any):
+    def __init__(self, graph: Any, hub_storage_manager: HubStorageManager):
         """Initialize the HubLink service.
 
         Args:
@@ -42,7 +47,10 @@ class HubLinkService:
         """
         self.hublink_available = False
         self.retriever = None
+        self.answer_generator = None
+        self.meta_router = None
         self.graph = graph
+        self.hub_storage_manager = hub_storage_manager
         self.config_loader = HublinkConfigLoader()
         self.llm_config_registry = LLMConfigRegistry()
         self.setup_manager = SetupManager()
@@ -57,7 +65,7 @@ class HubLinkService:
                 raise RuntimeError("No knowledge graph provided to HubLinkService")
 
             # Import HubLink components
-            from sqa_system.retrieval.implementations.HubLink.hub_link_retriever_for_user import HubLinkRetrieverForUser
+            from hublink.retrieval.hub_link_retriever_for_user import HubLinkRetrieverForUser
             logger.info("HubLink modules imported successfully")
 
             # load default config for HubLink from JSON file
@@ -67,11 +75,13 @@ class HubLinkService:
             self.setup_manager.set_up_vdl_api_key()
 
             # Disable CLI progress bar - not needed in GUI context
-            from sqa_system.app.cli.cli_progress_handler import ProgressHandler
+            from core.progress.progress_handler import ProgressHandler
             ProgressHandler().disabled = False
 
-            self.retriever = HubLinkRetrieverForUser(config, self.graph)
+            self.retriever = HubLinkRetrieverForUser(config, self.graph, self.hub_storage_manager)
 
+            self.answer_generator = AnswerGenerator(graph=self.graph, llm=self.retriever._retrieval_llm)
+            self.meta_router = MetaRouter(llm=self.retriever._retrieval_llm)
             # --- Override the LLM used for answer generation ---
             ANSWER_LLM_MODEL = os.getenv("ANSWER_LLM_MODEL")
             if ANSWER_LLM_MODEL:
@@ -100,7 +110,7 @@ class HubLinkService:
         streaming callbacks. Safe to call multiple times (no-op after first call).
         """
         try:
-            from sqa_system.app.cli.cli_progress_handler import ProgressHandler
+            from core.progress.progress_handler import ProgressHandler
             ph = ProgressHandler()
 
             if getattr(ph, '_streaming_callbacks_installed', False):
@@ -159,6 +169,8 @@ class HubLinkService:
         number_of_hubs: int,
         topic_entity_id: Optional[str] = None,
         use_direct_final_answer: bool = False,
+        conversation_history: Optional[str] = None,
+        cancel_event: Optional[threading.Event] = None,
     ) -> Tuple[str, List[GraphNode], List[str]]:
         """
         Query the HubLink system with a question.
@@ -169,6 +181,9 @@ class HubLinkService:
             llm_model: LLM model identifier (e.g. 'llama3.1:8b', 'gpt-4o-mini')
             number_of_hubs: Number of hubs to retrieve
             topic_entity_id: Optional topic entity for graph traversal
+            use_direct_final_answer: Skipping per-hub partial answer generation.
+            conversation_history: The last chat messages
+            cancel_event: Canceling of retrieval process
 
         Returns:
             Tuple of (answer_text, graph_nodes, source_identifiers)
@@ -176,6 +191,8 @@ class HubLinkService:
         Raises:
             RuntimeError: If HubLink is not initialized
         """
+        logger.info("Query Hublink")
+
         if not self.hublink_available or self.retriever is None:
             logger.info("HubLink not available")
             raise RuntimeError("HubLink retriever not initialized")
@@ -207,6 +224,8 @@ class HubLinkService:
                 llm_config=llm_config,
                 topic_entity_id=topic_entity_id,
                 use_direct_final_answer=use_direct_final_answer,
+                conversation_history=conversation_history,
+                cancel_event=cancel_event
             )
 
             answer, nodes, sources = node_builder.build_answer_nodes_sources(retrieval_answer)
@@ -228,7 +247,10 @@ class HubLinkService:
         topic_entity_id: Optional[str] = None,
         use_direct_final_answer: bool = False,
         progress_queue: Optional[asyncio.Queue] = None,
-    ) -> Tuple[str, List[GraphNode], List[str]]:
+        conversation_history: Optional[str] = None,
+        cancel_event: Optional[threading.Event] = None,
+
+    ) -> Tuple[str, List[GraphNode], List[str], List[Context]]:
         """
         Like query(), but pushes per-hub progress events to progress_queue while
         HubLink runs in a background thread.
@@ -239,7 +261,7 @@ class HubLinkService:
             raise RuntimeError("HubLink retriever not initialized")
 
         try:
-            from sqa_system.app.cli.cli_progress_handler import ProgressHandler
+            from core.progress.progress_handler import ProgressHandler
             ph = ProgressHandler()
         except Exception:
             ph = None
@@ -341,6 +363,9 @@ class HubLinkService:
                     f"Available models: {list(self.llm_config_registry._configs_by_model.keys())}"
                 )
 
+            if cancel_event is not None and cancel_event.is_set():
+                return "", [], []
+
             def _threaded_query():
                 # Record this thread's identity so _progress_callback can filter
                 # out events from other concurrent requests.
@@ -352,6 +377,8 @@ class HubLinkService:
                     llm_config=llm_config,
                     topic_entity_id=topic_entity_id,
                     use_direct_final_answer=use_direct_final_answer,
+                    conversation_history=conversation_history,
+                    cancel_event=cancel_event
                 )
 
             retrieval_answer = await asyncio.to_thread(_threaded_query)
@@ -365,7 +392,7 @@ class HubLinkService:
 
         answer, nodes, sources = node_builder.build_answer_nodes_sources(retrieval_answer)
         logger.info("HubLink streaming query completed: %d nodes, %d sources", len(nodes), len(sources))
-        return answer, nodes, sources
+        return answer, nodes, sources, retrieval_answer.contexts
 
     def is_available(self) -> bool:
         """Check if HubLink is available."""
@@ -392,3 +419,53 @@ class HubLinkService:
             status["message"] = "HubLink not initialized. Check credentials and configuration."
 
         return status
+
+    def get_routed_response(
+            self,
+            question: str,
+            history: Optional[str] = None,
+    ) -> Tuple[RouteDecision, Optional[str], Optional[list]]:
+        """
+        Replaces the old get_instant_response(). Instead of always running answer generators in
+        parallel, this first asks the MetaRouter which route applies, and only runs teh matching path.
+
+        Returns:
+            (route, answer, sources)
+            - route == RETRIEVAL:      no answer, sources is None. --> run the retrieval pipeline.
+            - route == GENERAL:        instant answer, sources is None.
+            - route == CHAT_HISTORY:   instant answer, sources = list of message ids it was grounded on.
+        """
+        route = self.meta_router.check_route(question, history)
+
+        if route == RouteDecision.GENERAL:
+            answer = self.answer_generator.generate_instant_response(question, history)
+            return route, answer, None
+
+        if route == RouteDecision.CHAT_HISTORY:
+            answer, sources = self.answer_generator.generate_instant_history_response(
+                question, history
+            )
+            return route, answer, sources
+
+        # RouteDecision.RETRIEVAL
+        return route, None, None
+
+    def get_instant_response(self,
+        question: str,
+        history: Optional[str] = None):
+        with ThreadPoolExecutor(max_workers=2) as executor:
+            future_general = executor.submit(
+                self.answer_generator.generate_instant_response, question, history
+            )
+            future_history = executor.submit(
+                self.answer_generator.generate_instant_history_response, question, history
+            )
+
+            general_answer = future_general.result()
+            history_answer, sources = future_history.result()
+
+            if history_answer:
+                return history_answer, sources
+            else:
+                return general_answer, None
+

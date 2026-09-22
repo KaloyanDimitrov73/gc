@@ -19,9 +19,11 @@ class GibberishValidator:
         self._guard = None
         try:
             from guardrails import Guard
-            from guardrails.hub import GibberishText
+            from guardrails_ai.gibberish_text import GibberishText
 
-            self._guard = Guard().use(GibberishText(on_fail="noop"))
+            self._guard = Guard().use(
+                GibberishText(on_fail="noop", use_local=True)
+            )
             self._available = True
             logger.info("GibberishValidator initialized successfully")
         except Exception as e:

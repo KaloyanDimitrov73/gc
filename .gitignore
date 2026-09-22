@@ -1,0 +1,13 @@
+#local setup files in vscode
+.vscode/
+pyrightconfig.json
+
+# Python package build metadata
+*.egg-info/
+
+# runtime SQLite database (recreated by init_db on backend startup)
+implementation/backend/data/*.db
+
+# secrets (see implementation/.env.example for the template)
+implementation/.env
+implementation/backend/.env

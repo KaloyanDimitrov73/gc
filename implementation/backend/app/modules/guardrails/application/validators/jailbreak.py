@@ -19,9 +19,11 @@ class JailbreakValidator:
         try:
             ensure_nltk_resources()
             from guardrails import Guard
-            from guardrails.hub import DetectJailbreak
+            from guardrails_ai.detect_jailbreak import DetectJailbreak
 
-            self._guard = Guard().use(DetectJailbreak(on_fail="noop"))
+            self._guard = Guard().use(
+                DetectJailbreak(on_fail="noop", use_local=True)
+            )
             self._available = True
             logger.info("JailbreakValidator initialized successfully")
         except Exception as e:

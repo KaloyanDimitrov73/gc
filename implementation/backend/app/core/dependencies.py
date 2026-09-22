@@ -1,11 +1,14 @@
 '''All Depends() factories'''
-
+import uuid
 from typing import Optional
 import threading
 
+from backend.app.modules.indexing.application.service import IndexingService
+from backend.app.modules.indexing.infrastructure.hublink.hub_indexing_service import HubIndexingService
+from backend.app.modules.indexing.infrastructure.hublink.hub_store_service import HubStoreService
 from backend.app.modules.qa.infrastructure.hublink.hublink_service import HubLinkService
-from backend.app.modules.qa.infrastructure.hublink.config_loader import HublinkConfigLoader
-from backend.app.modules.qa.infrastructure.hublink.llm_config_registry import LLMConfigRegistry
+from backend.app.config.hublink.config_loader import HublinkConfigLoader
+from backend.app.config.llm.llm_config_registry import LLMConfigRegistry
 from backend.app.modules.guardrails.application.service import GuardrailsService
 from backend.app.modules.qa.application.service import RetrievalService
 from backend.app.modules.graph_load.application.graph_load_service import GraphLoadService
@@ -13,12 +16,18 @@ from backend.app.modules.graph_explore.application.graph_explore_service import 
 
 _graph_load_lock = threading.Lock()
 _graph_explore_lock = threading.Lock()
+_vector_store_lock = threading.Lock()
+_hub_indexing_lock = threading.Lock()
+_indexing_lock = threading.Lock()
 _hublink_lock = threading.Lock()
 _guardrails_lock = threading.Lock()
 _retrieval_lock = threading.Lock()
 
 _graph_load_service: Optional[GraphLoadService] = None
 _graph_explore_service: Optional[GraphExploreService] = None
+_vector_store_service: Optional[HubStoreService] = None
+_hub_indexing_service: Optional[HubIndexingService] = None
+_indexing_service: Optional[IndexingService] = None
 _hublink_service: Optional[HubLinkService] = None
 _guardrails_service: Optional[GuardrailsService] = None
 _retrieval_service: Optional[RetrievalService] = None
@@ -55,6 +64,60 @@ def get_graph_explore_service() -> GraphExploreService:
     return _graph_explore_service
 
 
+def get_vector_store_service() -> HubStoreService:
+    """Return the singleton ``HubStoreService``, creating it on first call.
+
+    Wraps ``HubStorageManager`` and is the single shared access point to the
+    vector store used for indexing write-path and the retrieval read-path.
+    """
+    global _vector_store_service
+    if _vector_store_service is None:
+        with _vector_store_lock:
+            if _vector_store_service is None:
+                config = HublinkConfigLoader().load_kg_retrieval_config()
+                _vector_store_service = HubStoreService(config)
+    return _vector_store_service
+
+
+def get_hub_indexing_service() -> HubIndexingService:
+    """Return the singleton ``HubIndexingService``, creating it on first call.
+
+    Wraps ``HubIndexer``. Only consumed by the indexing module — retrieval
+    never depends on this.
+    Thread-safe via a double-checked locking pattern.
+    """
+    global _hub_indexing_service
+    if _hub_indexing_service is None:
+        with _hub_indexing_lock:
+            if _hub_indexing_service is None:
+                config = HublinkConfigLoader().load_kg_retrieval_config()
+                vector_store = get_vector_store_service()
+                graph_load = get_graph_load_service()
+                _hub_indexing_service = HubIndexingService(config, graph_load.graph, vector_store.hub_storage_manager)
+    return _hub_indexing_service
+
+
+def get_indexing_service() -> IndexingService:
+    """Return the singleton ``IndexingService``, creating it on first call.
+
+    Composes ``HubIndexingService`` and the shared ``HubStoreService``.
+    Thread-safe via a double-checked locking pattern.
+    """
+    global _indexing_service
+    if _indexing_service is None:
+        hub_indexing = get_hub_indexing_service()
+        vector_store = get_vector_store_service()
+        graph_load = get_graph_load_service()
+        with _indexing_lock:
+            if _indexing_service is None:
+                _indexing_service = IndexingService(
+                    hub_indexing_service=hub_indexing,
+                    vector_store_service=vector_store,
+                    graph_load_service=graph_load
+                )
+    return _indexing_service
+
+
 def get_hublink_service() -> HubLinkService:
     """Return the singleton ``HubLinkService``, creating it on first call.
 
@@ -66,7 +129,8 @@ def get_hublink_service() -> HubLinkService:
         with _hublink_lock:
             if _hublink_service is None:
                 graph_load = get_graph_load_service()
-                _hublink_service = HubLinkService(graph=graph_load.graph)
+                vector_store = get_vector_store_service()
+                _hublink_service = HubLinkService(graph=graph_load.graph, hub_storage_manager=vector_store.hub_storage_manager)
     return _hublink_service
 
 
@@ -124,7 +188,7 @@ def get_retrieval_service_if_ready() -> "RetrievalService | None":
 
 # ConversationService is request-scoped (depends on a per-request AsyncSession) —
 # no singleton pattern needed.
-from fastapi import Depends  # noqa: E402 — placed here to avoid circular imports
+from fastapi import Depends, Request, Response # noqa: E402 — placed here to avoid circular imports
 from sqlalchemy.ext.asyncio import AsyncSession
 from backend.app.modules.conversations.infrastructure.database.db import get_db
 from backend.app.modules.conversations.infrastructure.database.conversation_repo import ConversationRepository
@@ -146,3 +210,21 @@ def get_llm_config_registry() -> LLMConfigRegistry:
     if _llm_config_registry is None:
         _llm_config_registry = LLMConfigRegistry()
     return _llm_config_registry
+
+_USER_ID_COOKIE = "user_id"
+_COOKIE_MAX_AGE = 60 * 60 * 24 * 365  # 1 year
+
+
+def get_or_create_user_id(request: Request, response: Response) -> str:
+    """Read the user_id cookie, or create and set a fresh one if absent."""
+    user_id = request.cookies.get(_USER_ID_COOKIE)
+    if not user_id:
+        user_id = str(uuid.uuid4())
+        response.set_cookie(
+            key=_USER_ID_COOKIE,
+            value=user_id,
+            max_age=_COOKIE_MAX_AGE,
+            httponly=True,
+            samesite="lax",
+        )
+    return user_id

@@ -1,0 +1,56 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hublink-experiments"
+version = "0.1.0"
+license = { text = "MIT" }
+dependencies = [
+  # Shared config/file-path code — install first with:
+  # pip install -e ../implementation/hublink_shared
+  "hublink-shared",
+
+  # Core deployment library — install first with:
+  # pip install -e ../implementation/backend/HublinkImplementation
+  "HubLink-Backend",
+
+  # Production indexing/store infrastructure; install locally with:
+  # pip install -e ../implementation/backend
+  "sgc-app-backend",
+
+  # W&B experiment tracking
+  "weave",
+
+  # LangChain (pipes, generation, QA generation)
+  "langchain-core",
+  "langchain",
+
+  # Clustering (QA generation)
+  "scikit-learn",
+
+  # Moved from sqa_system (research/QA-generation only)
+  "language_tool_python==2.8.2",
+  "multiprocess==0.70.16",
+  "regex==2024.11.6",
+
+  "codecarbon",
+
+  # Evaluation libraries (used by experimentation/evaluation/)
+  "ragas",
+  "evaluate",       # HuggingFace evaluate — backend for bert_score
+  "sacrebleu",      # BLEU scoring
+  "rouge-score",    # ROUGE scoring
+  "bert-score",
+  "numpy==1.26.4",
+  "pandas==2.2.3",
+  "tqdm",
+  "matplotlib",
+  "seaborn",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+
+[tool.setuptools.package-data]
+"experiments" = ["**/*.yaml", "**/*.json"]

@@ -1,7 +1,7 @@
-import pytest
-from experimentation.evaluation.implementations.hit_at_k_evaluator import HitAtKEvaluator
-from experimentation.config.evaluator_config import EvaluatorConfig
-from sqa_system.core.data.models import Triple, Knowledge
+﻿import pytest
+from implementation.experimentation.evaluation.implementations.hit_at_k_evaluator import HitAtKEvaluator
+from implementation.config.config_models import EvaluatorConfig
+from core.data.models import Knowledge, Triple
 
 TEST_TRIPLES = [
     Triple(
