@@ -1,0 +1,24 @@
+template: >
+  **Task:** You will receive a question and additional information. Your task is to add the provided information to the question to make it more specific or detailed. Do not add additional information that is not provided. Only return the improved question, do not provide any additional information, explanations or answers.
+
+  **Examples:**
+
+  Original: Which papers discuss the concept of Architecture Description Languages?
+  Additional Information: Research Field 'Software Architecture and Design'
+  Improved: Which papers in the research field 'Software Architecture and Design' discuss the concept of Architecture Description Languages?
+
+  Original: Which authors have published the most papers with the research object Architecture Decision Making?
+  Additional Information: SpringerLink
+  Improved: Which authors have published the most papers with the research object Architecture Decision Making on SpringerLink?
+
+  Original: How many publications have the research object Architecture Description?
+  Additional Information: before 2017
+  Improved: How many publications published before 2017 have the research object Architecture Description?
+
+  Original: {question}
+  Additional Information: {additional_information}
+  Improved: 
+
+input_variables:
+  - question
+  - additional_information

@@ -1,0 +1,44 @@
+[
+    {
+        "config_name": "retrieval_config",
+        "parameter_name": "llm_config",
+        "values": [
+            {
+                "additional_params": {},
+                "endpoint": "Ollama",
+                "name_model": "qwen2.5:14b",
+                "temperature": 0.0,
+                "max_tokens": 4096
+            },
+            {
+                "additional_params": {},
+                "endpoint": "Ollama",
+                "name_model": "llama3.1",
+                "temperature": 0.0,
+                "max_tokens": 4096
+            }
+        ]
+    },
+    {
+        "config_name": "retrieval_config",
+        "parameter_name": "additional_params",
+        "dict_key": "embedding_config",
+        "values": [
+            {
+                "additional_params": {},
+                "endpoint": "Ollama",
+                "name_model": "mxbai-embed-large"
+            },
+            {
+                "additional_params": {},
+                "endpoint": "Ollama",
+                "name_model": "granite-embedding"
+            },
+            {
+                "additional_params": {},
+                "endpoint": "OpenAI",
+                "name_model": "text-embedding-3-large"
+            }
+        ]
+    }
+]

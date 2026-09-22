@@ -1,0 +1,19 @@
+{
+    "pre_retrieval_pipes": [
+        {
+            "name": "pre_retrieval_processingaugmentation_openai_gpt-4o-mini_tmp0.0_maxt-1",
+            "additional_params": {},
+            "type": "pre_retrieval_processing",
+            "pre_technique": "augmentation",
+            "llm_config": {
+                "name": "openai_gpt-4o-mini_tmp0.0_maxt-1",
+                "additional_params": {},
+                "endpoint": "OpenAI",
+                "name_model": "gpt-4o-mini",
+                "temperature": 0.1,
+                "max_tokens": -1
+            },
+            "enabled": true
+        }
+    ]
+}

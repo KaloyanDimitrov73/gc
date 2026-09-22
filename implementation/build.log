@@ -1,0 +1,1199 @@
+--progress is a global compose flag, better use `docker compose --progress xx build ...
+ Image implementation-backend Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 651B done
+#1 DONE 0.0s
+
+#2 [internal] load build definition from Dockerfile
+#2 transferring dockerfile: 2.23kB done
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/python:3.12-slim
+#3 DONE 1.2s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 586B done
+#4 DONE 0.0s
+
+#5 [stage-0  1/10] FROM docker.io/library/python:3.12-slim@sha256:78387bc3881b8273120a12ebe6c1ab22b018ccc2c9adf565ae1ac9b536e184ea
+#5 resolve docker.io/library/python:3.12-slim@sha256:78387bc3881b8273120a12ebe6c1ab22b018ccc2c9adf565ae1ac9b536e184ea 0.0s done
+#5 DONE 0.0s
+
+#6 [stage-0  2/10] WORKDIR /app
+#6 CACHED
+
+#7 [internal] load build context
+#7 transferring context: 64.20kB 0.0s done
+#7 DONE 0.0s
+
+#8 [stage-0  3/10] RUN --mount=type=cache,target=/root/.cache/pip pip install --upgrade pip
+#8 1.003 Requirement already satisfied: pip in /usr/local/lib/python3.12/site-packages (25.0.1)
+#8 1.113 Collecting pip
+#8 1.184   Downloading pip-26.2.1-py3-none-any.whl.metadata (4.6 kB)
+#8 1.209 Downloading pip-26.2.1-py3-none-any.whl (1.8 MB)
+#8 1.372    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.8/1.8 MB 12.3 MB/s eta 0:00:00
+#8 1.389 Installing collected packages: pip
+#8 1.389   Attempting uninstall: pip
+#8 1.391     Found existing installation: pip 25.0.1
+#8 1.412     Uninstalling pip-25.0.1:
+#8 1.591       Successfully uninstalled pip-25.0.1
+#8 2.148 Successfully installed pip-26.2.1
+#8 2.149 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+#8 DONE 2.3s
+
+#9 [stage-0  4/10] COPY backend/HublinkImplementation/pyproject.toml backend/HublinkImplementation/pyproject.toml
+#9 DONE 0.0s
+
+#10 [stage-0  5/10] COPY backend/pyproject.toml backend/pyproject.toml
+#10 DONE 0.0s
+
+#11 [stage-0  6/10] RUN install -d backend/HublinkImplementation/sqa_system backend/app &&     touch backend/HublinkImplementation/sqa_system/__init__.py           backend/__init__.py backend/app/__init__.py __init__.py
+#11 DONE 0.1s
+
+#12 [stage-0  7/10] RUN --mount=type=cache,target=/root/.cache/pip pip install -e backend/HublinkImplementation/
+#12 0.653 Obtaining file:///app/backend/HublinkImplementation
+#12 0.655   Installing build dependencies: started
+#12 1.763   Installing build dependencies: finished with status 'done'
+#12 1.764   Checking if build backend supports build_editable: started
+#12 2.209   Checking if build backend supports build_editable: finished with status 'done'
+#12 2.210   Getting requirements to build editable: started
+#12 2.782   Getting requirements to build editable: finished with status 'done'
+#12 2.783   Preparing editable metadata (pyproject.toml): started
+#12 3.353   Preparing editable metadata (pyproject.toml): finished with status 'done'
+#12 3.429 Collecting chroma-hnswlib==0.7.6 (from HubLink-Backend==0.1.0)
+#12 3.491   Downloading chroma_hnswlib-0.7.6-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (252 bytes)
+#12 3.554 Collecting chromadb==0.6.3 (from HubLink-Backend==0.1.0)
+#12 3.563   Downloading chromadb-0.6.3-py3-none-any.whl.metadata (6.8 kB)
+#12 3.618 Collecting posthog==5.3.0 (from HubLink-Backend==0.1.0)
+#12 3.628   Downloading posthog-5.3.0-py3-none-any.whl.metadata (5.7 kB)
+#12 3.658 Collecting chromadb-ops==0.1.3 (from HubLink-Backend==0.1.0)
+#12 3.668   Downloading chromadb_ops-0.1.3-py3-none-any.whl.metadata (21 kB)
+#12 3.708 Collecting click==8.1.8 (from HubLink-Backend==0.1.0)
+#12 3.724   Downloading click-8.1.8-py3-none-any.whl.metadata (2.3 kB)
+#12 3.891 Collecting cryptography==43.0.3 (from HubLink-Backend==0.1.0)
+#12 3.901   Downloading cryptography-43.0.3-cp39-abi3-manylinux_2_28_x86_64.whl.metadata (5.4 kB)
+#12 3.931 Collecting httpcore==1.0.7 (from HubLink-Backend==0.1.0)
+#12 3.940   Downloading httpcore-1.0.7-py3-none-any.whl.metadata (21 kB)
+#12 3.976 Collecting httplib2==0.22.0 (from HubLink-Backend==0.1.0)
+#12 3.986   Downloading httplib2-0.22.0-py3-none-any.whl.metadata (2.6 kB)
+#12 4.028 Collecting importlib_metadata==8.5.0 (from HubLink-Backend==0.1.0)
+#12 4.036   Downloading importlib_metadata-8.5.0-py3-none-any.whl.metadata (4.8 kB)
+#12 4.077 Collecting importlib_resources==6.5.2 (from HubLink-Backend==0.1.0)
+#12 4.085   Downloading importlib_resources-6.5.2-py3-none-any.whl.metadata (3.9 kB)
+#12 4.132 Collecting inquirerpy==0.3.4 (from HubLink-Backend==0.1.0)
+#12 4.146   Downloading InquirerPy-0.3.4-py3-none-any.whl.metadata (8.1 kB)
+#12 4.236 Collecting jiter==0.8.2 (from HubLink-Backend==0.1.0)
+#12 4.247   Downloading jiter-0.8.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (5.2 kB)
+#12 4.278 Collecting joblib==1.4.2 (from HubLink-Backend==0.1.0)
+#12 4.285   Downloading joblib-1.4.2-py3-none-any.whl.metadata (5.4 kB)
+#12 4.358 Collecting langchain==0.3.19 (from HubLink-Backend==0.1.0)
+#12 4.368   Downloading langchain-0.3.19-py3-none-any.whl.metadata (7.9 kB)
+#12 4.392 Collecting langchain-chroma==0.2.2 (from HubLink-Backend==0.1.0)
+#12 4.402   Downloading langchain_chroma-0.2.2-py3-none-any.whl.metadata (1.3 kB)
+#12 4.450 Collecting langchain-community==0.3.18 (from HubLink-Backend==0.1.0)
+#12 4.468   Downloading langchain_community-0.3.18-py3-none-any.whl.metadata (2.4 kB)
+#12 4.520 Collecting langchain-core==0.3.37 (from HubLink-Backend==0.1.0)
+#12 4.533   Downloading langchain_core-0.3.37-py3-none-any.whl.metadata (5.9 kB)
+#12 4.560 Collecting langchain-ollama==0.2.3 (from HubLink-Backend==0.1.0)
+#12 4.571   Downloading langchain_ollama-0.2.3-py3-none-any.whl.metadata (1.9 kB)
+#12 4.614 Collecting langchain-openai==0.3.6 (from HubLink-Backend==0.1.0)
+#12 4.623   Downloading langchain_openai-0.3.6-py3-none-any.whl.metadata (2.3 kB)
+#12 4.652 Collecting langchain-text-splitters==0.3.6 (from HubLink-Backend==0.1.0)
+#12 4.663   Downloading langchain_text_splitters-0.3.6-py3-none-any.whl.metadata (1.9 kB)
+#12 4.729 Collecting langsmith==0.3.8 (from HubLink-Backend==0.1.0)
+#12 4.979   Downloading langsmith-0.3.8-py3-none-any.whl.metadata (14 kB)
+#12 5.041 Collecting language_tool_python==2.8.2 (from HubLink-Backend==0.1.0)
+#12 5.053   Downloading language_tool_python-2.8.2-py3-none-any.whl.metadata (14 kB)
+#12 5.262 Collecting multidict==6.1.0 (from HubLink-Backend==0.1.0)
+#12 5.273   Downloading multidict-6.1.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (5.0 kB)
+#12 5.302 Collecting multiprocess==0.70.16 (from HubLink-Backend==0.1.0)
+#12 5.312   Downloading multiprocess-0.70.16-py312-none-any.whl.metadata (7.2 kB)
+#12 5.340 Collecting nest-asyncio==1.6.0 (from HubLink-Backend==0.1.0)
+#12 5.350   Downloading nest_asyncio-1.6.0-py3-none-any.whl.metadata (2.8 kB)
+#12 5.519 Collecting numpy==1.26.4 (from HubLink-Backend==0.1.0)
+#12 5.528   Downloading numpy-1.26.4-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (61 kB)
+#12 5.576 Collecting orkg==0.21.3 (from HubLink-Backend==0.1.0)
+#12 5.584   Downloading orkg-0.21.3-py3-none-any.whl.metadata (3.3 kB)
+#12 5.598 Collecting packaging==24.2 (from HubLink-Backend==0.1.0)
+#12 5.606   Downloading packaging-24.2-py3-none-any.whl.metadata (3.2 kB)
+#12 5.713 Collecting pandas==2.2.3 (from HubLink-Backend==0.1.0)
+#12 5.720   Downloading pandas-2.2.3-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (89 kB)
+#12 5.783 Collecting pylatexenc==2.10 (from HubLink-Backend==0.1.0)
+#12 5.799   Downloading pylatexenc-2.10.tar.gz (162 kB)
+#12 5.858   Installing build dependencies: started
+#12 6.518   Installing build dependencies: finished with status 'done'
+#12 6.518   Getting requirements to build wheel: started
+#12 6.991   Getting requirements to build wheel: finished with status 'done'
+#12 6.992   Preparing metadata (pyproject.toml): started
+#12 7.471   Preparing metadata (pyproject.toml): finished with status 'done'
+#12 7.564 Collecting pydantic==2.10.6 (from HubLink-Backend==0.1.0)
+#12 7.574   Downloading pydantic-2.10.6-py3-none-any.whl.metadata (30 kB)
+#12 8.160 Collecting pydantic_core==2.27.2 (from HubLink-Backend==0.1.0)
+#12 8.171   Downloading pydantic_core-2.27.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (6.6 kB)
+#12 8.212 Collecting pytest==8.3.4 (from HubLink-Backend==0.1.0)
+#12 8.223   Downloading pytest-8.3.4-py3-none-any.whl.metadata (7.5 kB)
+#12 8.255 Collecting rdflib==7.1.3 (from HubLink-Backend==0.1.0)
+#12 8.264   Downloading rdflib-7.1.3-py3-none-any.whl.metadata (11 kB)
+#12 8.600 Collecting regex==2024.11.6 (from HubLink-Backend==0.1.0)
+#12 8.613   Downloading regex-2024.11.6-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (40 kB)
+#12 8.701 Collecting scikit-learn==1.6.1 (from HubLink-Backend==0.1.0)
+#12 8.711   Downloading scikit_learn-1.6.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (18 kB)
+#12 8.759 Collecting tqdm==4.67.1 (from HubLink-Backend==0.1.0)
+#12 8.767   Downloading tqdm-4.67.1-py3-none-any.whl.metadata (57 kB)
+#12 8.822 Collecting typer==0.9.4 (from HubLink-Backend==0.1.0)
+#12 8.831   Downloading typer-0.9.4-py3-none-any.whl.metadata (14 kB)
+#12 8.872 Collecting urllib3==2.3.0 (from HubLink-Backend==0.1.0)
+#12 8.881   Downloading urllib3-2.3.0-py3-none-any.whl.metadata (6.5 kB)
+#12 8.919 Collecting weave==0.51.37 (from HubLink-Backend==0.1.0)
+#12 8.929   Downloading weave-0.51.37-py3-none-any.whl.metadata (23 kB)
+#12 8.967 Collecting build>=1.0.3 (from chromadb==0.6.3->HubLink-Backend==0.1.0)
+#12 8.975   Downloading build-1.6.0-py3-none-any.whl.metadata (5.6 kB)
+#12 9.024 Collecting fastapi>=0.95.2 (from chromadb==0.6.3->HubLink-Backend==0.1.0)
+#12 9.032   Downloading fastapi-0.141.1-py3-none-any.whl.metadata (27 kB)
+#12 9.075 Collecting uvicorn>=0.18.3 (from uvicorn[standard]>=0.18.3->chromadb==0.6.3->HubLink-Backend==0.1.0)
+#12 9.084   Downloading uvicorn-0.52.4-py3-none-any.whl.metadata (6.6 kB)
+#12 9.116 Collecting typing_extensions>=4.5.0 (from chromadb==0.6.3->HubLink-Backend==0.1.0)
+#12 9.125   Downloading typing_extensions-4.16.0-py3-none-any.whl.metadata (3.3 kB)
+#12 9.197 Collecting onnxruntime>=1.14.1 (from chromadb==0.6.3->HubLink-Backend==0.1.0)
+#12 9.206   Downloading onnxruntime-1.29.0-cp312-cp312-manylinux_2_28_x86_64.whl.metadata (5.6 kB)
+#12 9.233 Collecting opentelemetry-api>=1.2.0 (from chromadb==0.6.3->HubLink-Backend==0.1.0)
+#12 9.240   Downloading opentelemetry_api-1.44.0-py3-none-any.whl.metadata (1.4 kB)
+#12 9.274 Collecting opentelemetry-exporter-otlp-proto-grpc>=1.2.0 (from chromadb==0.6.3->HubLink-Backend==0.1.0)
+#12 9.282   Downloading opentelemetry_exporter_otlp_proto_grpc-1.44.0-py3-none-any.whl.metadata (2.6 kB)
+#12 9.322 Collecting opentelemetry-instrumentation-fastapi>=0.41b0 (from chromadb==0.6.3->HubLink-Backend==0.1.0)
+#12 9.329   Downloading opentelemetry_instrumentation_fastapi-0.65b0-py3-none-any.whl.metadata (2.2 kB)
+#12 9.364 Collecting opentelemetry-sdk>=1.2.0 (from chromadb==0.6.3->HubLink-Backend==0.1.0)
+#12 9.372   Downloading opentelemetry_sdk-1.44.0-py3-none-any.whl.metadata (1.6 kB)
+#12 9.491 Collecting tokenizers>=0.13.2 (from chromadb==0.6.3->HubLink-Backend==0.1.0)
+#12 9.499   Downloading tokenizers-0.23.1-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (9.8 kB)
+#12 9.530 Collecting pypika>=0.48.9 (from chromadb==0.6.3->HubLink-Backend==0.1.0)
+#12 9.539   Downloading pypika-0.51.1-py2.py3-none-any.whl.metadata (51 kB)
+#12 9.616 Collecting overrides>=7.3.1 (from chromadb==0.6.3->HubLink-Backend==0.1.0)
+#12 9.623   Downloading overrides-7.7.0-py3-none-any.whl.metadata (5.8 kB)
+#12 10.01 Collecting grpcio>=1.58.0 (from chromadb==0.6.3->HubLink-Backend==0.1.0)
+#12 10.02   Downloading grpcio-1.83.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (3.7 kB)
+#12 10.07 Collecting bcrypt>=4.0.1 (from chromadb==0.6.3->HubLink-Backend==0.1.0)
+#12 10.08   Downloading bcrypt-5.0.0-cp39-abi3-manylinux_2_34_x86_64.whl.metadata (10 kB)
+#12 10.12 Collecting kubernetes>=28.1.0 (from chromadb==0.6.3->HubLink-Backend==0.1.0)
+#12 10.13   Downloading kubernetes-36.0.3-py2.py3-none-any.whl.metadata (1.8 kB)
+#12 10.16 Collecting tenacity>=8.2.3 (from chromadb==0.6.3->HubLink-Backend==0.1.0)
+#12 10.17   Downloading tenacity-9.1.4-py3-none-any.whl.metadata (1.2 kB)
+#12 10.23 Collecting PyYAML>=6.0.0 (from chromadb==0.6.3->HubLink-Backend==0.1.0)
+#12 10.24   Downloading pyyaml-6.0.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.4 kB)
+#12 10.30 Collecting mmh3>=4.0.1 (from chromadb==0.6.3->HubLink-Backend==0.1.0)
+#12 10.31   Downloading mmh3-5.3.0-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (14 kB)
+#12 10.57 Collecting orjson>=3.9.12 (from chromadb==0.6.3->HubLink-Backend==0.1.0)
+#12 10.58   Downloading orjson-3.12.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (41 kB)
+#12 10.62 Collecting httpx>=0.27.0 (from chromadb==0.6.3->HubLink-Backend==0.1.0)
+#12 10.63   Downloading httpx-0.28.1-py3-none-any.whl.metadata (7.1 kB)
+#12 10.68 Collecting rich>=10.11.0 (from chromadb==0.6.3->HubLink-Backend==0.1.0)
+#12 10.69   Downloading rich-15.0.0-py3-none-any.whl.metadata (18 kB)
+#12 10.80 Collecting cffi>=1.12 (from cryptography==43.0.3->HubLink-Backend==0.1.0)
+#12 10.81   Downloading cffi-2.1.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (2.5 kB)
+#12 10.84 Collecting certifi (from httpcore==1.0.7->HubLink-Backend==0.1.0)
+#12 10.85   Downloading certifi-2026.7.22-py3-none-any.whl.metadata (2.5 kB)
+#12 10.87 Collecting h11<0.15,>=0.13 (from httpcore==1.0.7->HubLink-Backend==0.1.0)
+#12 10.88   Downloading h11-0.14.0-py3-none-any.whl.metadata (8.2 kB)
+#12 10.92 Collecting pyparsing!=3.0.0,!=3.0.1,!=3.0.2,!=3.0.3,<4,>=2.4.2 (from httplib2==0.22.0->HubLink-Backend==0.1.0)
+#12 10.93   Downloading pyparsing-3.3.2-py3-none-any.whl.metadata (5.8 kB)
+#12 10.96 Collecting zipp>=3.20 (from importlib_metadata==8.5.0->HubLink-Backend==0.1.0)
+#12 10.97   Downloading zipp-4.1.0-py3-none-any.whl.metadata (3.6 kB)
+#12 11.01 Collecting pfzy<0.4.0,>=0.3.1 (from inquirerpy==0.3.4->HubLink-Backend==0.1.0)
+#12 11.02   Downloading pfzy-0.3.4-py3-none-any.whl.metadata (4.9 kB)
+#12 11.06 Collecting prompt-toolkit<4.0.0,>=3.0.1 (from inquirerpy==0.3.4->HubLink-Backend==0.1.0)
+#12 11.07   Downloading prompt_toolkit-3.0.53-py3-none-any.whl.metadata (6.4 kB)
+#12 11.30 Collecting SQLAlchemy<3,>=1.4 (from langchain==0.3.19->HubLink-Backend==0.1.0)
+#12 11.31   Downloading sqlalchemy-2.0.52-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (9.6 kB)
+#12 11.40 Collecting requests<3,>=2 (from langchain==0.3.19->HubLink-Backend==0.1.0)
+#12 11.41   Downloading requests-2.34.2-py3-none-any.whl.metadata (4.8 kB)
+#12 11.79 Collecting aiohttp<4.0.0,>=3.8.3 (from langchain==0.3.19->HubLink-Backend==0.1.0)
+#12 11.80   Downloading aiohttp-3.14.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (8.3 kB)
+#12 11.83 Collecting jsonpatch<2.0,>=1.33 (from langchain-core==0.3.37->HubLink-Backend==0.1.0)
+#12 11.84   Downloading jsonpatch-1.33-py2.py3-none-any.whl.metadata (3.0 kB)
+#12 11.88 Collecting requests-toolbelt<2.0.0,>=1.0.0 (from langsmith==0.3.8->HubLink-Backend==0.1.0)
+#12 11.89   Downloading requests_toolbelt-1.0.0-py2.py3-none-any.whl.metadata (14 kB)
+#12 11.97 Collecting zstandard<0.24.0,>=0.23.0 (from langsmith==0.3.8->HubLink-Backend==0.1.0)
+#12 11.98   Downloading zstandard-0.23.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (3.0 kB)
+#12 12.00 Collecting annotated-types>=0.6.0 (from pydantic==2.10.6->HubLink-Backend==0.1.0)
+#12 12.01   Downloading annotated_types-0.8.0-py3-none-any.whl.metadata (15 kB)
+#12 12.05 Collecting dataclasses-json<0.7,>=0.5.7 (from langchain-community==0.3.18->HubLink-Backend==0.1.0)
+#12 12.06   Downloading dataclasses_json-0.6.7-py3-none-any.whl.metadata (25 kB)
+#12 12.10 Collecting pydantic-settings<3.0.0,>=2.4.0 (from langchain-community==0.3.18->HubLink-Backend==0.1.0)
+#12 12.11   Downloading pydantic_settings-2.15.0-py3-none-any.whl.metadata (3.9 kB)
+#12 12.13 Collecting httpx-sse<1.0.0,>=0.4.0 (from langchain-community==0.3.18->HubLink-Backend==0.1.0)
+#12 12.14   Downloading httpx_sse-0.4.3-py3-none-any.whl.metadata (9.7 kB)
+#12 12.18 Collecting ollama<1,>=0.4.4 (from langchain-ollama==0.2.3->HubLink-Backend==0.1.0)
+#12 12.19   Downloading ollama-0.6.2-py3-none-any.whl.metadata (5.8 kB)
+#12 12.25 Collecting openai<2.0.0,>=1.58.1 (from langchain-openai==0.3.6->HubLink-Backend==0.1.0)
+#12 12.26   Downloading openai-1.109.1-py3-none-any.whl.metadata (29 kB)
+#12 12.37 Collecting tiktoken<1,>=0.7 (from langchain-openai==0.3.6->HubLink-Backend==0.1.0)
+#12 12.38   Downloading tiktoken-0.14.0-cp312-cp312-manylinux_2_28_x86_64.whl.metadata (6.7 kB)
+#12 12.38 Requirement already satisfied: pip in /usr/local/lib/python3.12/site-packages (from language_tool_python==2.8.2->HubLink-Backend==0.1.0) (26.2.1)
+#12 12.39 Collecting wheel (from language_tool_python==2.8.2->HubLink-Backend==0.1.0)
+#12 12.39   Using cached wheel-0.48.0-py3-none-any.whl.metadata (2.3 kB)
+#12 12.41 Collecting dill>=0.3.8 (from multiprocess==0.70.16->HubLink-Backend==0.1.0)
+#12 12.42   Downloading dill-0.4.1-py3-none-any.whl.metadata (10 kB)
+#12 12.44 Collecting Deprecated<2.0.0,>=1.2.14 (from orkg==0.21.3->HubLink-Backend==0.1.0)
+#12 12.45   Downloading deprecated-1.3.1-py2.py3-none-any.whl.metadata (5.9 kB)
+#12 12.51 Collecting Faker<20.0.0,>=19.1.0 (from orkg==0.21.3->HubLink-Backend==0.1.0)
+#12 12.52   Downloading Faker-19.13.0-py3-none-any.whl.metadata (15 kB)
+#12 12.56 Collecting Inflector<4.0.0,>=3.1.0 (from orkg==0.21.3->HubLink-Backend==0.1.0)
+#12 12.57   Downloading Inflector-3.1.1-py3-none-any.whl.metadata (3.4 kB)
+#12 12.61 Collecting cardinality<0.2.0,>=0.1.1 (from orkg==0.21.3->HubLink-Backend==0.1.0)
+#12 12.62   Downloading cardinality-0.1.1.tar.gz (2.3 kB)
+#12 12.63   Installing build dependencies: started
+#12 13.32   Installing build dependencies: finished with status 'done'
+#12 13.32   Getting requirements to build wheel: started
+#12 13.86   Getting requirements to build wheel: finished with status 'done'
+#12 13.86   Preparing metadata (pyproject.toml): started
+#12 14.34   Preparing metadata (pyproject.toml): finished with status 'done'
+#12 14.36 Collecting hammock<0.3.0,>=0.2.4 (from orkg==0.21.3->HubLink-Backend==0.1.0)
+#12 14.37   Downloading hammock-0.2.4.tar.gz (4.8 kB)
+#12 14.38   Installing build dependencies: started
+#12 15.05   Installing build dependencies: finished with status 'done'
+#12 15.05   Getting requirements to build wheel: started
+#12 15.52   Getting requirements to build wheel: finished with status 'done'
+#12 15.52   Preparing metadata (pyproject.toml): started
+#12 15.99   Preparing metadata (pyproject.toml): finished with status 'done'
+#12 16.02 Collecting loguru<0.8.0,>=0.7.2 (from orkg==0.21.3->HubLink-Backend==0.1.0)
+#12 16.03   Downloading loguru-0.7.3-py3-none-any.whl.metadata (22 kB)
+#12 16.08 Collecting networkx<4.0,>=3.1 (from orkg==0.21.3->HubLink-Backend==0.1.0)
+#12 16.11   Downloading networkx-3.6.1-py3-none-any.whl.metadata (6.8 kB)
+#12 16.15 Collecting undecorated<0.4.0,>=0.3.0 (from orkg==0.21.3->HubLink-Backend==0.1.0)
+#12 16.17   Downloading undecorated-0.3.0-py3-none-any.whl.metadata (2.5 kB)
+#12 16.21 Collecting python-dateutil>=2.8.2 (from pandas==2.2.3->HubLink-Backend==0.1.0)
+#12 16.22   Downloading python_dateutil-2.9.0.post0-py2.py3-none-any.whl.metadata (8.4 kB)
+#12 16.27 Collecting pytz>=2020.1 (from pandas==2.2.3->HubLink-Backend==0.1.0)
+#12 16.28   Downloading pytz-2026.3.post1-py2.py3-none-any.whl.metadata (22 kB)
+#12 16.31 Collecting tzdata>=2022.7 (from pandas==2.2.3->HubLink-Backend==0.1.0)
+#12 16.32   Downloading tzdata-2026.3-py2.py3-none-any.whl.metadata (1.4 kB)
+#12 16.35 Collecting six>=1.5 (from posthog==5.3.0->HubLink-Backend==0.1.0)
+#12 16.36   Downloading six-1.17.0-py2.py3-none-any.whl.metadata (1.7 kB)
+#12 16.39 Collecting backoff>=1.10.0 (from posthog==5.3.0->HubLink-Backend==0.1.0)
+#12 16.40   Downloading backoff-2.2.1-py3-none-any.whl.metadata (14 kB)
+#12 16.43 Collecting distro>=1.5.0 (from posthog==5.3.0->HubLink-Backend==0.1.0)
+#12 16.44   Downloading distro-1.9.0-py3-none-any.whl.metadata (6.8 kB)
+#12 16.47 Collecting iniconfig (from pytest==8.3.4->HubLink-Backend==0.1.0)
+#12 16.48   Downloading iniconfig-2.3.0-py3-none-any.whl.metadata (2.5 kB)
+#12 16.52 Collecting pluggy<2,>=1.5 (from pytest==8.3.4->HubLink-Backend==0.1.0)
+#12 16.53   Downloading pluggy-1.6.0-py3-none-any.whl.metadata (4.8 kB)
+#12 16.65 Collecting scipy>=1.6.0 (from scikit-learn==1.6.1->HubLink-Backend==0.1.0)
+#12 16.66   Downloading scipy-1.18.1-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (62 kB)
+#12 16.70 Collecting threadpoolctl>=3.1.0 (from scikit-learn==1.6.1->HubLink-Backend==0.1.0)
+#12 16.71   Downloading threadpoolctl-3.6.0-py3-none-any.whl.metadata (13 kB)
+#12 16.75 Collecting diskcache==5.6.3 (from weave==0.51.37->HubLink-Backend==0.1.0)
+#12 16.76   Downloading diskcache-5.6.3-py3-none-any.whl.metadata (20 kB)
+#12 16.80 Collecting emoji>=2.12.1 (from weave==0.51.37->HubLink-Backend==0.1.0)
+#12 16.81   Downloading emoji-2.15.0-py3-none-any.whl.metadata (5.7 kB)
+#12 16.85 Collecting gql[aiohttp,requests] (from weave==0.51.37->HubLink-Backend==0.1.0)
+#12 16.86   Downloading gql-4.0.0-py3-none-any.whl.metadata (10 kB)
+#12 16.91 Collecting jsonschema>=4.23.0 (from weave==0.51.37->HubLink-Backend==0.1.0)
+#12 16.92   Downloading jsonschema-4.26.0-py3-none-any.whl.metadata (7.6 kB)
+#12 17.03 Collecting uuid-utils>=0.9.0 (from weave==0.51.37->HubLink-Backend==0.1.0)
+#12 17.04   Downloading uuid_utils-0.17.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (6.4 kB)
+#12 17.10 Collecting wandb>=0.17.1 (from weave==0.51.37->HubLink-Backend==0.1.0)
+#12 17.11   Downloading wandb-0.29.0-py3-none-manylinux_2_28_x86_64.whl.metadata (11 kB)
+#12 17.15 Collecting aiohappyeyeballs>=2.5.0 (from aiohttp<4.0.0,>=3.8.3->langchain==0.3.19->HubLink-Backend==0.1.0)
+#12 17.16   Downloading aiohappyeyeballs-2.7.1-py3-none-any.whl.metadata (5.9 kB)
+#12 17.18 Collecting aiosignal>=1.4.0 (from aiohttp<4.0.0,>=3.8.3->langchain==0.3.19->HubLink-Backend==0.1.0)
+#12 17.26   Downloading aiosignal-1.4.0-py3-none-any.whl.metadata (3.7 kB)
+#12 17.30 Collecting attrs>=17.3.0 (from aiohttp<4.0.0,>=3.8.3->langchain==0.3.19->HubLink-Backend==0.1.0)
+#12 17.31   Downloading attrs-26.1.0-py3-none-any.whl.metadata (8.8 kB)
+#12 17.38 Collecting frozenlist>=1.1.1 (from aiohttp<4.0.0,>=3.8.3->langchain==0.3.19->HubLink-Backend==0.1.0)
+#12 17.39   Downloading frozenlist-1.8.0-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (20 kB)
+#12 17.45 Collecting propcache>=0.2.0 (from aiohttp<4.0.0,>=3.8.3->langchain==0.3.19->HubLink-Backend==0.1.0)
+#12 17.46   Downloading propcache-0.5.2-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (16 kB)
+#12 17.73 Collecting yarl<2.0,>=1.17.0 (from aiohttp<4.0.0,>=3.8.3->langchain==0.3.19->HubLink-Backend==0.1.0)
+#12 17.74   Downloading yarl-1.24.5-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (103 kB)
+#12 17.80 Collecting marshmallow<4.0.0,>=3.18.0 (from dataclasses-json<0.7,>=0.5.7->langchain-community==0.3.18->HubLink-Backend==0.1.0)
+#12 17.81   Downloading marshmallow-3.26.2-py3-none-any.whl.metadata (7.3 kB)
+#12 17.83 Collecting typing-inspect<1,>=0.4.0 (from dataclasses-json<0.7,>=0.5.7->langchain-community==0.3.18->HubLink-Backend==0.1.0)
+#12 17.84   Downloading typing_inspect-0.9.0-py3-none-any.whl.metadata (1.5 kB)
+#12 18.09 Collecting wrapt<3,>=1.10 (from Deprecated<2.0.0,>=1.2.14->orkg==0.21.3->HubLink-Backend==0.1.0)
+#12 18.10   Downloading wrapt-2.4.0-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (7.4 kB)
+#12 18.15 Collecting anyio (from httpx>=0.27.0->chromadb==0.6.3->HubLink-Backend==0.1.0)
+#12 18.16   Downloading anyio-4.14.2-py3-none-any.whl.metadata (4.6 kB)
+#12 18.20 Collecting idna (from httpx>=0.27.0->chromadb==0.6.3->HubLink-Backend==0.1.0)
+#12 18.21   Downloading idna-3.19-py3-none-any.whl.metadata (9.2 kB)
+#12 18.24 Collecting jsonpointer>=1.9 (from jsonpatch<2.0,>=1.33->langchain-core==0.3.37->HubLink-Backend==0.1.0)
+#12 18.25   Downloading jsonpointer-3.1.1-py3-none-any.whl.metadata (2.4 kB)
+#12 18.28 Collecting sniffio (from openai<2.0.0,>=1.58.1->langchain-openai==0.3.6->HubLink-Backend==0.1.0)
+#12 18.29   Downloading sniffio-1.3.1-py3-none-any.whl.metadata (3.9 kB)
+#12 18.33 Collecting wcwidth>=0.1.4 (from prompt-toolkit<4.0.0,>=3.0.1->inquirerpy==0.3.4->HubLink-Backend==0.1.0)
+#12 18.34   Downloading wcwidth-0.8.3-py3-none-any.whl.metadata (43 kB)
+#12 18.38 Collecting python-dotenv>=0.21.0 (from pydantic-settings<3.0.0,>=2.4.0->langchain-community==0.3.18->HubLink-Backend==0.1.0)
+#12 18.39   Downloading python_dotenv-1.2.3-py3-none-any.whl.metadata (29 kB)
+#12 18.42 Collecting typing-inspection>=0.4.0 (from pydantic-settings<3.0.0,>=2.4.0->langchain-community==0.3.18->HubLink-Backend==0.1.0)
+#12 18.43   Downloading typing_inspection-0.4.4-py3-none-any.whl.metadata (2.6 kB)
+#12 18.54 Collecting charset_normalizer<4,>=2 (from requests<3,>=2->langchain==0.3.19->HubLink-Backend==0.1.0)
+#12 18.55   Downloading charset_normalizer-3.5.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (45 kB)
+#12 18.75 Collecting greenlet>=1 (from SQLAlchemy<3,>=1.4->langchain==0.3.19->HubLink-Backend==0.1.0)
+#12 18.76   Downloading greenlet-3.5.5-cp312-cp312-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl.metadata (3.8 kB)
+#12 18.79 Collecting colorama<0.5.0,>=0.4.3 (from typer[all]<0.10.0,>=0.9.0->chromadb-ops==0.1.3->HubLink-Backend==0.1.0)
+#12 18.80   Downloading colorama-0.4.6-py2.py3-none-any.whl.metadata (17 kB)
+#12 18.84 Collecting shellingham<2.0.0,>=1.3.0 (from typer[all]<0.10.0,>=0.9.0->chromadb-ops==0.1.3->HubLink-Backend==0.1.0)
+#12 18.84   Downloading shellingham-1.5.4-py2.py3-none-any.whl.metadata (3.5 kB)
+#12 18.86 Collecting rich>=10.11.0 (from chromadb==0.6.3->HubLink-Backend==0.1.0)
+#12 18.87   Downloading rich-13.9.4-py3-none-any.whl.metadata (18 kB)
+#12 18.91 Collecting markdown-it-py>=2.2.0 (from rich>=10.11.0->chromadb==0.6.3->HubLink-Backend==0.1.0)
+#12 18.92   Downloading markdown_it_py-4.2.0-py3-none-any.whl.metadata (7.4 kB)
+#12 18.95 Collecting pygments<3.0.0,>=2.13.0 (from rich>=10.11.0->chromadb==0.6.3->HubLink-Backend==0.1.0)
+#12 18.96   Downloading pygments-2.21.0-py3-none-any.whl.metadata (2.5 kB)
+#12 19.00 Collecting mypy-extensions>=0.3.0 (from typing-inspect<1,>=0.4.0->dataclasses-json<0.7,>=0.5.7->langchain-community==0.3.18->HubLink-Backend==0.1.0)
+#12 19.01   Downloading mypy_extensions-1.1.0-py3-none-any.whl.metadata (1.1 kB)
+#12 19.05 Collecting pyproject_hooks (from build>=1.0.3->chromadb==0.6.3->HubLink-Backend==0.1.0)
+#12 19.06   Downloading pyproject_hooks-1.2.0-py3-none-any.whl.metadata (1.3 kB)
+#12 19.09 Collecting pycparser (from cffi>=1.12->cryptography==43.0.3->HubLink-Backend==0.1.0)
+#12 19.10   Downloading pycparser-3.0-py3-none-any.whl.metadata (8.2 kB)
+#12 19.15 Collecting starlette>=0.46.0 (from fastapi>=0.95.2->chromadb==0.6.3->HubLink-Backend==0.1.0)
+#12 19.16   Downloading starlette-1.6.0-py3-none-any.whl.metadata (6.4 kB)
+#12 19.19 Collecting annotated-doc>=0.0.2 (from fastapi>=0.95.2->chromadb==0.6.3->HubLink-Backend==0.1.0)
+#12 19.20   Downloading annotated_doc-0.0.5-py3-none-any.whl.metadata (6.5 kB)
+#12 19.23 Collecting jsonschema-specifications>=2023.03.6 (from jsonschema>=4.23.0->weave==0.51.37->HubLink-Backend==0.1.0)
+#12 19.24   Downloading jsonschema_specifications-2025.9.1-py3-none-any.whl.metadata (2.9 kB)
+#12 19.28 Collecting referencing>=0.28.4 (from jsonschema>=4.23.0->weave==0.51.37->HubLink-Backend==0.1.0)
+#12 19.29   Downloading referencing-0.37.0-py3-none-any.whl.metadata (2.8 kB)
+#12 19.50 Collecting rpds-py>=0.25.0 (from jsonschema>=4.23.0->weave==0.51.37->HubLink-Backend==0.1.0)
+#12 19.51   Downloading rpds_py-2026.6.3-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.1 kB)
+#12 19.54 Collecting websocket-client!=0.40.0,!=0.41.*,!=0.42.*,>=0.32.0 (from kubernetes>=28.1.0->chromadb==0.6.3->HubLink-Backend==0.1.0)
+#12 19.55   Downloading websocket_client-1.9.2-py3-none-any.whl.metadata (8.3 kB)
+#12 19.59 Collecting requests-oauthlib (from kubernetes>=28.1.0->chromadb==0.6.3->HubLink-Backend==0.1.0)
+#12 19.60   Downloading requests_oauthlib-2.0.0-py2.py3-none-any.whl.metadata (11 kB)
+#12 19.63 Collecting durationpy>=0.7 (from kubernetes>=28.1.0->chromadb==0.6.3->HubLink-Backend==0.1.0)
+#12 19.64   Downloading durationpy-0.11-py3-none-any.whl.metadata (474 bytes)
+#12 19.68 Collecting mdurl~=0.1 (from markdown-it-py>=2.2.0->rich>=10.11.0->chromadb==0.6.3->HubLink-Backend==0.1.0)
+#12 19.69   Downloading mdurl-0.1.2-py3-none-any.whl.metadata (1.6 kB)
+#12 19.73 Collecting flatbuffers (from onnxruntime>=1.14.1->chromadb==0.6.3->HubLink-Backend==0.1.0)
+#12 19.74   Downloading flatbuffers-25.12.19-py2.py3-none-any.whl.metadata (1.0 kB)
+#12 19.87 Collecting protobuf>=4.25.8 (from onnxruntime>=1.14.1->chromadb==0.6.3->HubLink-Backend==0.1.0)
+#12 20.16   Downloading protobuf-7.36.1-cp310-abi3-manylinux2014_x86_64.whl.metadata (595 bytes)
+#12 20.21 Collecting googleapis-common-protos~=1.57 (from opentelemetry-exporter-otlp-proto-grpc>=1.2.0->chromadb==0.6.3->HubLink-Backend==0.1.0)
+#12 20.22   Downloading googleapis_common_protos-1.75.2-py3-none-any.whl.metadata (8.5 kB)
+#12 20.27 Collecting opentelemetry-exporter-otlp-proto-common==1.44.0 (from opentelemetry-exporter-otlp-proto-grpc>=1.2.0->chromadb==0.6.3->HubLink-Backend==0.1.0)
+#12 20.28   Downloading opentelemetry_exporter_otlp_proto_common-1.44.0-py3-none-any.whl.metadata (1.8 kB)
+#12 20.32 Collecting opentelemetry-proto==1.44.0 (from opentelemetry-exporter-otlp-proto-grpc>=1.2.0->chromadb==0.6.3->HubLink-Backend==0.1.0)
+#12 20.33   Downloading opentelemetry_proto-1.44.0-py3-none-any.whl.metadata (2.3 kB)
+#12 20.38 Collecting opentelemetry-semantic-conventions==0.65b0 (from opentelemetry-sdk>=1.2.0->chromadb==0.6.3->HubLink-Backend==0.1.0)
+#12 20.39   Downloading opentelemetry_semantic_conventions-0.65b0-py3-none-any.whl.metadata (2.4 kB)
+#12 20.42 Collecting opentelemetry-instrumentation-asgi==0.65b0 (from opentelemetry-instrumentation-fastapi>=0.41b0->chromadb==0.6.3->HubLink-Backend==0.1.0)
+#12 20.43   Downloading opentelemetry_instrumentation_asgi-0.65b0-py3-none-any.whl.metadata (2.0 kB)
+#12 20.47 Collecting opentelemetry-instrumentation==0.65b0 (from opentelemetry-instrumentation-fastapi>=0.41b0->chromadb==0.6.3->HubLink-Backend==0.1.0)
+#12 20.48   Downloading opentelemetry_instrumentation-0.65b0-py3-none-any.whl.metadata (7.2 kB)
+#12 20.52 Collecting opentelemetry-util-http==0.65b0 (from opentelemetry-instrumentation-fastapi>=0.41b0->chromadb==0.6.3->HubLink-Backend==0.1.0)
+#12 20.53   Downloading opentelemetry_util_http-0.65b0-py3-none-any.whl.metadata (2.6 kB)
+#12 20.57 Collecting asgiref~=3.0 (from opentelemetry-instrumentation-asgi==0.65b0->opentelemetry-instrumentation-fastapi>=0.41b0->chromadb==0.6.3->HubLink-Backend==0.1.0)
+#12 20.58   Downloading asgiref-3.12.1-py3-none-any.whl.metadata (9.4 kB)
+#12 20.62 INFO: pip is looking at multiple versions of scipy to determine which version is compatible with other requirements. This could take a while.
+#12 20.62 Collecting scipy>=1.6.0 (from scikit-learn==1.6.1->HubLink-Backend==0.1.0)
+#12 20.63   Downloading scipy-1.18.0-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (62 kB)
+#12 20.67   Downloading scipy-1.17.1-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (62 kB)
+#12 20.74 Collecting huggingface-hub<2.0,>=0.16.4 (from tokenizers>=0.13.2->chromadb==0.6.3->HubLink-Backend==0.1.0)
+#12 20.75   Downloading huggingface_hub-1.29.0-py3-none-any.whl.metadata (16 kB)
+#12 20.77 INFO: pip is looking at multiple versions of huggingface-hub to determine which version is compatible with other requirements. This could take a while.
+#12 20.78   Downloading huggingface_hub-1.28.0-py3-none-any.whl.metadata (16 kB)
+#12 20.80   Downloading huggingface_hub-1.27.0-py3-none-any.whl.metadata (16 kB)
+#12 20.82   Downloading huggingface_hub-1.26.1-py3-none-any.whl.metadata (16 kB)
+#12 20.85   Downloading huggingface_hub-1.26.0-py3-none-any.whl.metadata (16 kB)
+#12 20.88   Downloading huggingface_hub-1.25.1-py3-none-any.whl.metadata (16 kB)
+#12 20.90   Downloading huggingface_hub-1.25.0-py3-none-any.whl.metadata (16 kB)
+#12 20.92   Downloading huggingface_hub-1.24.0-py3-none-any.whl.metadata (16 kB)
+#12 20.94 INFO: pip is still looking at multiple versions of huggingface-hub to determine which version is compatible with other requirements. This could take a while.
+#12 20.95   Downloading huggingface_hub-1.23.0-py3-none-any.whl.metadata (14 kB)
+#12 20.97   Downloading huggingface_hub-1.22.0-py3-none-any.whl.metadata (14 kB)
+#12 20.99   Downloading huggingface_hub-1.21.0-py3-none-any.whl.metadata (14 kB)
+#12 21.02   Downloading huggingface_hub-1.20.1-py3-none-any.whl.metadata (14 kB)
+#12 21.05   Downloading huggingface_hub-1.20.0-py3-none-any.whl.metadata (14 kB)
+#12 21.06 INFO: This is taking longer than usual. You might need to provide the dependency resolver with stricter constraints to reduce runtime. See https://pip.pypa.io/warnings/backtracking for guidance. If you want to abort this run, press Ctrl + C.
+#12 21.08   Downloading huggingface_hub-1.19.0-py3-none-any.whl.metadata (14 kB)
+#12 21.10   Downloading huggingface_hub-1.18.0-py3-none-any.whl.metadata (14 kB)
+#12 21.13   Downloading huggingface_hub-1.17.0-py3-none-any.whl.metadata (14 kB)
+#12 21.16   Downloading huggingface_hub-1.16.4-py3-none-any.whl.metadata (14 kB)
+#12 21.18   Downloading huggingface_hub-1.16.1-py3-none-any.whl.metadata (14 kB)
+#12 21.24 Collecting filelock>=3.10.0 (from huggingface-hub<2.0,>=0.16.4->tokenizers>=0.13.2->chromadb==0.6.3->HubLink-Backend==0.1.0)
+#12 21.24   Downloading filelock-3.32.5-py3-none-any.whl.metadata (2.0 kB)
+#12 21.28 Collecting fsspec>=2023.5.0 (from huggingface-hub<2.0,>=0.16.4->tokenizers>=0.13.2->chromadb==0.6.3->HubLink-Backend==0.1.0)
+#12 21.29   Downloading fsspec-2026.7.0-py3-none-any.whl.metadata (10 kB)
+#12 21.42 Collecting hf-xet<2.0.0,>=1.4.3 (from huggingface-hub<2.0,>=0.16.4->tokenizers>=0.13.2->chromadb==0.6.3->HubLink-Backend==0.1.0)
+#12 21.42   Downloading hf_xet-1.6.0-cp38-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (4.9 kB)
+#12 21.43 Collecting huggingface-hub<2.0,>=0.16.4 (from tokenizers>=0.13.2->chromadb==0.6.3->HubLink-Backend==0.1.0)
+#12 21.45   Downloading huggingface_hub-1.16.0-py3-none-any.whl.metadata (14 kB)
+#12 21.49   Downloading huggingface_hub-1.15.0-py3-none-any.whl.metadata (14 kB)
+#12 21.52   Downloading huggingface_hub-1.14.0-py3-none-any.whl.metadata (14 kB)
+#12 21.55   Downloading huggingface_hub-1.13.0-py3-none-any.whl.metadata (14 kB)
+#12 21.62 Collecting httptools>=0.8.0 (from uvicorn[standard]>=0.18.3->chromadb==0.6.3->HubLink-Backend==0.1.0)
+#12 21.63   Downloading httptools-0.8.0-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (3.5 kB)
+#12 21.68 Collecting uvloop>=0.15.1 (from uvicorn[standard]>=0.18.3->chromadb==0.6.3->HubLink-Backend==0.1.0)
+#12 21.69   Downloading uvloop-0.22.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (4.9 kB)
+#12 21.77 Collecting watchfiles>=0.20 (from uvicorn[standard]>=0.18.3->chromadb==0.6.3->HubLink-Backend==0.1.0)
+#12 21.77   Downloading watchfiles-1.2.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.9 kB)
+#12 21.87 Collecting websockets>=13.0 (from uvicorn[standard]>=0.18.3->chromadb==0.6.3->HubLink-Backend==0.1.0)
+#12 21.88   Downloading websockets-17.1-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (6.3 kB)
+#12 21.89 INFO: pip is looking at multiple versions of wandb to determine which version is compatible with other requirements. This could take a while.
+#12 21.89 Collecting wandb>=0.17.1 (from weave==0.51.37->HubLink-Backend==0.1.0)
+#12 21.90   Downloading wandb-0.28.2-py3-none-manylinux_2_28_x86_64.whl.metadata (11 kB)
+#12 21.92   Downloading wandb-0.28.1-py3-none-manylinux_2_28_x86_64.whl.metadata (11 kB)
+#12 21.95   Downloading wandb-0.28.0-py3-none-manylinux_2_28_x86_64.whl.metadata (11 kB)
+#12 21.97   Downloading wandb-0.27.2-py3-none-manylinux_2_28_x86_64.whl.metadata (11 kB)
+#12 22.00   Downloading wandb-0.27.1-py3-none-manylinux_2_28_x86_64.whl.metadata (11 kB)
+#12 22.03   Downloading wandb-0.27.0-py3-none-manylinux_2_28_x86_64.whl.metadata (11 kB)
+#12 22.06   Downloading wandb-0.26.1-py3-none-manylinux_2_28_x86_64.whl.metadata (11 kB)
+#12 22.11 Collecting gitpython!=3.1.29,>=1.0.0 (from wandb>=0.17.1->weave==0.51.37->HubLink-Backend==0.1.0)
+#12 22.12   Downloading gitpython-3.1.61-py3-none-any.whl.metadata (13 kB)
+#12 22.15 Collecting platformdirs (from wandb>=0.17.1->weave==0.51.37->HubLink-Backend==0.1.0)
+#12 22.16   Downloading platformdirs-4.11.7-py3-none-any.whl.metadata (5.5 kB)
+#12 22.22 Collecting sentry-sdk>=2.0.0 (from wandb>=0.17.1->weave==0.51.37->HubLink-Backend==0.1.0)
+#12 22.23   Downloading sentry_sdk-2.68.1-py3-none-any.whl.metadata (11 kB)
+#12 22.26 Collecting gitdb<5,>=4.0.1 (from gitpython!=3.1.29,>=1.0.0->wandb>=0.17.1->weave==0.51.37->HubLink-Backend==0.1.0)
+#12 22.27   Downloading gitdb-4.0.12-py3-none-any.whl.metadata (1.2 kB)
+#12 22.29 Collecting smmap<6,>=3.0.1 (from gitdb<5,>=4.0.1->gitpython!=3.1.29,>=1.0.0->wandb>=0.17.1->weave==0.51.37->HubLink-Backend==0.1.0)
+#12 22.30   Downloading smmap-5.0.3-py3-none-any.whl.metadata (4.6 kB)
+#12 22.35 Collecting graphql-core<3.3,>=3.2 (from gql[aiohttp,requests]->weave==0.51.37->HubLink-Backend==0.1.0)
+#12 22.36   Downloading graphql_core-3.2.12-py3-none-any.whl.metadata (11 kB)
+#12 22.40 Collecting oauthlib>=3.0.0 (from requests-oauthlib->kubernetes>=28.1.0->chromadb==0.6.3->HubLink-Backend==0.1.0)
+#12 22.41   Downloading oauthlib-3.3.1-py3-none-any.whl.metadata (7.9 kB)
+#12 22.43 Downloading chroma_hnswlib-0.7.6-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.4 MB)
+#12 22.63    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.4/2.4 MB 12.8 MB/s  0:00:00
+#12 22.64 Downloading chromadb-0.6.3-py3-none-any.whl (611 kB)
+#12 22.70    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 611.1/611.1 kB 8.4 MB/s  0:00:00
+#12 22.72 Downloading chromadb_ops-0.1.3-py3-none-any.whl (34 kB)
+#12 22.75 Downloading typer-0.9.4-py3-none-any.whl (45 kB)
+#12 22.76 Downloading click-8.1.8-py3-none-any.whl (98 kB)
+#12 22.79 Downloading cryptography-43.0.3-cp39-abi3-manylinux_2_28_x86_64.whl (4.0 MB)
+#12 23.11    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.0/4.0 MB 12.5 MB/s  0:00:00
+#12 23.12 Downloading httpcore-1.0.7-py3-none-any.whl (78 kB)
+#12 23.15 Downloading httplib2-0.22.0-py3-none-any.whl (96 kB)
+#12 23.18 Downloading importlib_metadata-8.5.0-py3-none-any.whl (26 kB)
+#12 23.20 Downloading importlib_resources-6.5.2-py3-none-any.whl (37 kB)
+#12 23.22 Downloading InquirerPy-0.3.4-py3-none-any.whl (67 kB)
+#12 23.24 Downloading jiter-0.8.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (345 kB)
+#12 23.28 Downloading joblib-1.4.2-py3-none-any.whl (301 kB)
+#12 23.32 Downloading langchain-0.3.19-py3-none-any.whl (1.0 MB)
+#12 23.39    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.0/1.0 MB 13.4 MB/s  0:00:00
+#12 23.40 Downloading langchain_core-0.3.37-py3-none-any.whl (413 kB)
+#12 23.45 Downloading langchain_text_splitters-0.3.6-py3-none-any.whl (31 kB)
+#12 23.47 Downloading langsmith-0.3.8-py3-none-any.whl (332 kB)
+#12 23.52 Downloading numpy-1.26.4-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (18.0 MB)
+#12 24.95    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 18.0/18.0 MB 12.6 MB/s  0:00:01
+#12 24.96 Downloading packaging-24.2-py3-none-any.whl (65 kB)
+#12 24.97 Downloading pydantic-2.10.6-py3-none-any.whl (431 kB)
+#12 25.02 Downloading langchain_chroma-0.2.2-py3-none-any.whl (11 kB)
+#12 25.04 Downloading langchain_community-0.3.18-py3-none-any.whl (2.5 MB)
+#12 25.24    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.5/2.5 MB 13.6 MB/s  0:00:00
+#12 25.26 Downloading langchain_ollama-0.2.3-py3-none-any.whl (19 kB)
+#12 25.27 Downloading langchain_openai-0.3.6-py3-none-any.whl (54 kB)
+#12 25.30 Downloading language_tool_python-2.8.2-py3-none-any.whl (36 kB)
+#12 25.32 Downloading multidict-6.1.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (131 kB)
+#12 25.34 Downloading multiprocess-0.70.16-py312-none-any.whl (146 kB)
+#12 25.37 Downloading nest_asyncio-1.6.0-py3-none-any.whl (5.2 kB)
+#12 25.39 Downloading orkg-0.21.3-py3-none-any.whl (58 kB)
+#12 25.41 Downloading pandas-2.2.3-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (12.7 MB)
+#12 26.33    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.7/12.7 MB 13.8 MB/s  0:00:00
+#12 26.34 Downloading tqdm-4.67.1-py3-none-any.whl (78 kB)
+#12 26.36 Downloading posthog-5.3.0-py3-none-any.whl (103 kB)
+#12 26.39 Downloading pydantic_core-2.27.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.0 MB)
+#12 26.55    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.0/2.0 MB 13.2 MB/s  0:00:00
+#12 26.56 Downloading pytest-8.3.4-py3-none-any.whl (343 kB)
+#12 26.63 Downloading rdflib-7.1.3-py3-none-any.whl (564 kB)
+#12 26.69    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 564.9/564.9 kB 10.6 MB/s  0:00:00
+#12 26.71 Downloading regex-2024.11.6-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (796 kB)
+#12 26.78    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 796.9/796.9 kB 12.3 MB/s  0:00:00
+#12 26.79 Downloading scikit_learn-1.6.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (13.1 MB)
+#12 27.73    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 13.1/13.1 MB 14.1 MB/s  0:00:00
+#12 27.74 Downloading urllib3-2.3.0-py3-none-any.whl (128 kB)
+#12 27.77 Downloading weave-0.51.37-py3-none-any.whl (403 kB)
+#12 27.82 Downloading diskcache-5.6.3-py3-none-any.whl (45 kB)
+#12 27.84 Downloading aiohttp-3.14.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (1.8 MB)
+#12 28.02    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.8/1.8 MB 11.2 MB/s  0:00:00
+#12 28.03 Downloading dataclasses_json-0.6.7-py3-none-any.whl (28 kB)
+#12 28.05 Downloading deprecated-1.3.1-py2.py3-none-any.whl (11 kB)
+#12 28.06 Downloading Faker-19.13.0-py3-none-any.whl (1.7 MB)
+#12 28.20    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.7/1.7 MB 13.0 MB/s  0:00:00
+#12 28.21 Downloading h11-0.14.0-py3-none-any.whl (58 kB)
+#12 28.23 Downloading httpx-0.28.1-py3-none-any.whl (73 kB)
+#12 28.25 Downloading httpx_sse-0.4.3-py3-none-any.whl (9.0 kB)
+#12 28.27 Downloading Inflector-3.1.1-py3-none-any.whl (12 kB)
+#12 28.28 Downloading jsonpatch-1.33-py2.py3-none-any.whl (12 kB)
+#12 28.30 Downloading loguru-0.7.3-py3-none-any.whl (61 kB)
+#12 28.32 Downloading marshmallow-3.26.2-py3-none-any.whl (50 kB)
+#12 28.34 Downloading networkx-3.6.1-py3-none-any.whl (2.1 MB)
+#12 28.53    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.1/2.1 MB 11.3 MB/s  0:00:00
+#12 28.54 Downloading ollama-0.6.2-py3-none-any.whl (15 kB)
+#12 28.56 Downloading openai-1.109.1-py3-none-any.whl (948 kB)
+#12 28.63    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 948.6/948.6 kB 13.2 MB/s  0:00:00
+#12 28.64 Downloading anyio-4.14.2-py3-none-any.whl (125 kB)
+#12 28.66 Downloading distro-1.9.0-py3-none-any.whl (20 kB)
+#12 28.68 Downloading orjson-3.12.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (131 kB)
+#12 28.70 Downloading pfzy-0.3.4-py3-none-any.whl (8.5 kB)
+#12 28.72 Downloading pluggy-1.6.0-py3-none-any.whl (20 kB)
+#12 28.74 Downloading prompt_toolkit-3.0.53-py3-none-any.whl (392 kB)
+#12 28.79 Downloading pydantic_settings-2.15.0-py3-none-any.whl (69 kB)
+#12 28.81 Downloading pyparsing-3.3.2-py3-none-any.whl (122 kB)
+#12 28.84 Downloading requests-2.34.2-py3-none-any.whl (73 kB)
+#12 28.87 Downloading charset_normalizer-3.5.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (248 kB)
+#12 28.90 Downloading idna-3.19-py3-none-any.whl (68 kB)
+#12 28.93 Downloading requests_toolbelt-1.0.0-py2.py3-none-any.whl (54 kB)
+#12 28.95 Downloading sqlalchemy-2.0.52-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (3.4 MB)
+#12 29.20    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.4/3.4 MB 13.5 MB/s  0:00:00
+#12 29.21 Downloading tenacity-9.1.4-py3-none-any.whl (28 kB)
+#12 29.24 Downloading tiktoken-0.14.0-cp312-cp312-manylinux_2_28_x86_64.whl (1.2 MB)
+#12 29.33    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.2/1.2 MB 12.8 MB/s  0:00:00
+#12 29.34 Downloading colorama-0.4.6-py2.py3-none-any.whl (25 kB)
+#12 29.36 Downloading rich-13.9.4-py3-none-any.whl (242 kB)
+#12 29.40 Downloading pygments-2.21.0-py3-none-any.whl (1.3 MB)
+#12 29.51    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.3/1.3 MB 11.3 MB/s  0:00:00
+#12 29.51 Downloading shellingham-1.5.4-py2.py3-none-any.whl (9.8 kB)
+#12 29.54 Downloading typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+#12 29.56 Downloading typing_inspect-0.9.0-py3-none-any.whl (8.8 kB)
+#12 29.58 Downloading undecorated-0.3.0-py3-none-any.whl (4.8 kB)
+#12 29.60 Downloading wrapt-2.4.0-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (227 kB)
+#12 29.65 Downloading yarl-1.24.5-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (109 kB)
+#12 29.67 Downloading zstandard-0.23.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (5.4 MB)
+#12 30.06    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.4/5.4 MB 13.8 MB/s  0:00:00
+#12 30.07 Downloading aiohappyeyeballs-2.7.1-py3-none-any.whl (15 kB)
+#12 30.09 Downloading aiosignal-1.4.0-py3-none-any.whl (7.5 kB)
+#12 30.10 Downloading annotated_types-0.8.0-py3-none-any.whl (13 kB)
+#12 30.12 Downloading attrs-26.1.0-py3-none-any.whl (67 kB)
+#12 30.13 Downloading backoff-2.2.1-py3-none-any.whl (15 kB)
+#12 30.16 Downloading bcrypt-5.0.0-cp39-abi3-manylinux_2_34_x86_64.whl (278 kB)
+#12 30.20 Downloading build-1.6.0-py3-none-any.whl (31 kB)
+#12 30.22 Downloading certifi-2026.7.22-py3-none-any.whl (136 kB)
+#12 30.25 Downloading cffi-2.1.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (221 kB)
+#12 30.28 Downloading dill-0.4.1-py3-none-any.whl (120 kB)
+#12 30.31 Downloading emoji-2.15.0-py3-none-any.whl (608 kB)
+#12 30.37    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 608.4/608.4 kB 10.1 MB/s  0:00:00
+#12 30.38 Downloading fastapi-0.141.1-py3-none-any.whl (131 kB)
+#12 30.41 Downloading annotated_doc-0.0.5-py3-none-any.whl (5.3 kB)
+#12 30.43 Downloading frozenlist-1.8.0-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (242 kB)
+#12 30.46 Downloading greenlet-3.5.5-cp312-cp312-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl (621 kB)
+#12 30.51    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 621.4/621.4 kB 12.7 MB/s  0:00:00
+#12 30.53 Downloading grpcio-1.83.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (7.0 MB)
+#12 31.11    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.0/7.0 MB 12.0 MB/s  0:00:00
+#12 31.12 Downloading jsonpointer-3.1.1-py3-none-any.whl (7.7 kB)
+#12 31.14 Downloading jsonschema-4.26.0-py3-none-any.whl (90 kB)
+#12 31.16 Downloading jsonschema_specifications-2025.9.1-py3-none-any.whl (18 kB)
+#12 31.18 Downloading kubernetes-36.0.3-py2.py3-none-any.whl (4.6 MB)
+#12 31.54    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.6/4.6 MB 12.6 MB/s  0:00:00
+#12 31.56 Downloading durationpy-0.11-py3-none-any.whl (4.1 kB)
+#12 31.58 Downloading markdown_it_py-4.2.0-py3-none-any.whl (91 kB)
+#12 31.60 Downloading mdurl-0.1.2-py3-none-any.whl (10.0 kB)
+#12 31.62 Downloading mmh3-5.3.0-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (103 kB)
+#12 31.65 Downloading mypy_extensions-1.1.0-py3-none-any.whl (5.0 kB)
+#12 31.67 Downloading onnxruntime-1.29.0-cp312-cp312-manylinux_2_28_x86_64.whl (23.1 MB)
+#12 33.51    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 23.1/23.1 MB 12.7 MB/s  0:00:01
+#12 33.52 Downloading opentelemetry_api-1.44.0-py3-none-any.whl (60 kB)
+#12 33.54 Downloading opentelemetry_exporter_otlp_proto_grpc-1.44.0-py3-none-any.whl (19 kB)
+#12 33.55 Downloading opentelemetry_exporter_otlp_proto_common-1.44.0-py3-none-any.whl (17 kB)
+#12 33.57 Downloading opentelemetry_proto-1.44.0-py3-none-any.whl (72 kB)
+#12 33.59 Downloading googleapis_common_protos-1.75.2-py3-none-any.whl (307 kB)
+#12 33.63 Downloading opentelemetry_sdk-1.44.0-py3-none-any.whl (137 kB)
+#12 33.65 Downloading opentelemetry_semantic_conventions-0.65b0-py3-none-any.whl (204 kB)
+#12 33.69 Downloading protobuf-7.36.1-cp310-abi3-manylinux2014_x86_64.whl (343 kB)
+#12 33.72 Downloading opentelemetry_instrumentation_fastapi-0.65b0-py3-none-any.whl (13 kB)
+#12 33.73 Downloading opentelemetry_instrumentation-0.65b0-py3-none-any.whl (36 kB)
+#12 33.75 Downloading opentelemetry_instrumentation_asgi-0.65b0-py3-none-any.whl (15 kB)
+#12 33.76 Downloading opentelemetry_util_http-0.65b0-py3-none-any.whl (8.2 kB)
+#12 33.78 Downloading asgiref-3.12.1-py3-none-any.whl (25 kB)
+#12 33.79 Downloading overrides-7.7.0-py3-none-any.whl (17 kB)
+#12 33.81 Downloading propcache-0.5.2-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (61 kB)
+#12 33.83 Downloading pypika-0.51.1-py2.py3-none-any.whl (60 kB)
+#12 33.85 Downloading python_dateutil-2.9.0.post0-py2.py3-none-any.whl (229 kB)
+#12 33.88 Downloading python_dotenv-1.2.3-py3-none-any.whl (22 kB)
+#12 33.90 Downloading pytz-2026.3.post1-py2.py3-none-any.whl (508 kB)
+#12 33.95 Downloading pyyaml-6.0.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (807 kB)
+#12 34.02    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 807.9/807.9 kB 12.2 MB/s  0:00:00
+#12 34.05 Downloading referencing-0.37.0-py3-none-any.whl (26 kB)
+#12 34.06 Downloading rpds_py-2026.6.3-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (366 kB)
+#12 34.11 Downloading scipy-1.17.1-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (35.2 MB)
+#12 36.70    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 35.2/35.2 MB 13.6 MB/s  0:00:02
+#12 36.71 Downloading six-1.17.0-py2.py3-none-any.whl (11 kB)
+#12 36.72 Downloading starlette-1.6.0-py3-none-any.whl (75 kB)
+#12 36.74 Downloading threadpoolctl-3.6.0-py3-none-any.whl (18 kB)
+#12 36.76 Downloading tokenizers-0.23.1-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (3.3 MB)
+#12 37.02    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.3/3.3 MB 13.6 MB/s  0:00:00
+#12 37.03 Downloading huggingface_hub-1.13.0-py3-none-any.whl (660 kB)
+#12 37.09    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 660.6/660.6 kB 12.3 MB/s  0:00:00
+#12 37.10 Downloading hf_xet-1.6.0-cp38-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (4.5 MB)
+#12 37.44    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.5/4.5 MB 13.4 MB/s  0:00:00
+#12 37.45 Downloading filelock-3.32.5-py3-none-any.whl (100 kB)
+#12 37.47 Downloading fsspec-2026.7.0-py3-none-any.whl (206 kB)
+#12 37.50 Downloading typing_inspection-0.4.4-py3-none-any.whl (14 kB)
+#12 37.52 Downloading tzdata-2026.3-py2.py3-none-any.whl (348 kB)
+#12 37.55 Downloading uuid_utils-0.17.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (320 kB)
+#12 37.59 Downloading uvicorn-0.52.4-py3-none-any.whl (79 kB)
+#12 37.61 Downloading httptools-0.8.0-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (523 kB)
+#12 37.66 Downloading uvloop-0.22.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (4.4 MB)
+#12 37.98    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.4/4.4 MB 13.9 MB/s  0:00:00
+#12 38.00 Downloading wandb-0.26.1-py3-none-manylinux_2_28_x86_64.whl (27.2 MB)
+#12 39.95    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 27.2/27.2 MB 14.0 MB/s  0:00:01
+#12 39.95 Downloading gitpython-3.1.61-py3-none-any.whl (222 kB)
+#12 40.17 Downloading gitdb-4.0.12-py3-none-any.whl (62 kB)
+#12 40.19 Downloading smmap-5.0.3-py3-none-any.whl (24 kB)
+#12 40.20 Downloading sentry_sdk-2.68.1-py3-none-any.whl (520 kB)
+#12 40.25 Downloading watchfiles-1.2.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (456 kB)
+#12 40.30 Downloading wcwidth-0.8.3-py3-none-any.whl (331 kB)
+#12 40.34 Downloading websocket_client-1.9.2-py3-none-any.whl (95 kB)
+#12 40.36 Downloading websockets-17.1-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (224 kB)
+#12 40.40 Downloading zipp-4.1.0-py3-none-any.whl (10 kB)
+#12 40.42 Downloading flatbuffers-25.12.19-py2.py3-none-any.whl (26 kB)
+#12 40.44 Downloading gql-4.0.0-py3-none-any.whl (89 kB)
+#12 40.46 Downloading graphql_core-3.2.12-py3-none-any.whl (216 kB)
+#12 40.49 Downloading iniconfig-2.3.0-py3-none-any.whl (7.5 kB)
+#12 40.51 Downloading platformdirs-4.11.7-py3-none-any.whl (23 kB)
+#12 40.53 Downloading pycparser-3.0-py3-none-any.whl (48 kB)
+#12 40.55 Downloading pyproject_hooks-1.2.0-py3-none-any.whl (10 kB)
+#12 40.57 Downloading requests_oauthlib-2.0.0-py2.py3-none-any.whl (24 kB)
+#12 40.58 Downloading oauthlib-3.3.1-py3-none-any.whl (160 kB)
+#12 40.61 Downloading sniffio-1.3.1-py3-none-any.whl (10 kB)
+#12 40.62 Using cached wheel-0.48.0-py3-none-any.whl (33 kB)
+#12 41.10 Building wheels for collected packages: HubLink-Backend, pylatexenc, cardinality, hammock
+#12 41.10   Building editable for HubLink-Backend (pyproject.toml): started
+#12 41.69   Building editable for HubLink-Backend (pyproject.toml): finished with status 'done'
+#12 41.69   Created wheel for HubLink-Backend: filename=hublink_backend-0.1.0-0.editable-py3-none-any.whl size=3273 sha256=05a675985820850ad5ae072f297ca3e87afc5f77fa335458d233da26d16c7dab
+#12 41.69   Stored in directory: /tmp/pip-ephem-wheel-cache-yiyixne9/wheels/ed/e7/5d/a4310756e0c8d9b7209ccec347c708e4ff2ed8a4163e6c30f2
+#12 41.69   Building wheel for pylatexenc (pyproject.toml): started
+#12 42.22   Building wheel for pylatexenc (pyproject.toml): finished with status 'done'
+#12 42.22   Created wheel for pylatexenc: filename=pylatexenc-2.10-py3-none-any.whl size=136897 sha256=72e38be90486d3e01348067e97dbca9e3517c6c65bf9d9fc47a67664bf159a8e
+#12 42.22   Stored in directory: /root/.cache/pip/wheels/06/3e/78/fa1588c1ae991bbfd814af2bcac6cef7a178beee1939180d46
+#12 42.22   Building wheel for cardinality (pyproject.toml): started
+#12 42.72   Building wheel for cardinality (pyproject.toml): finished with status 'done'
+#12 42.73   Created wheel for cardinality: filename=cardinality-0.1.1-py3-none-any.whl size=2631 sha256=eb010f7c93c35279b91ad930009a2c8e6d891b8fdc85e8bf6738b58ff6fbe87c
+#12 42.73   Stored in directory: /root/.cache/pip/wheels/db/3b/50/aa00c9f1ae45fe9ddfd77774c684821e347e34de1ce3a389b7
+#12 42.73   Building wheel for hammock (pyproject.toml): started
+#12 43.24   Building wheel for hammock (pyproject.toml): finished with status 'done'
+#12 43.24   Created wheel for hammock: filename=hammock-0.2.4-py3-none-any.whl size=2435 sha256=6163094f2c565f2b6808520d309e612490c2b85c9eb86aa73faa56abc7ff4492
+#12 43.24   Stored in directory: /root/.cache/pip/wheels/e4/24/e4/dc851402c15c763c927e9022a9db72183711eed5d01300eba7
+#12 43.25 Successfully built HubLink-Backend pylatexenc cardinality hammock
+#12 43.57 Installing collected packages: undecorated, pytz, pypika, pylatexenc, Inflector, flatbuffers, durationpy, cardinality, zstandard, zipp, wrapt, websockets, websocket-client, wcwidth, uvloop, uuid-utils, urllib3, tzdata, typing_extensions, tqdm, threadpoolctl, tenacity, sniffio, smmap, six, shellingham, rpds-py, regex, PyYAML, python-dotenv, pyproject_hooks, pyparsing, pygments, pycparser, protobuf, propcache, pluggy, platformdirs, pfzy, packaging, overrides, orjson, opentelemetry-util-http, oauthlib, numpy, networkx, nest-asyncio, mypy-extensions, multidict, mmh3, mdurl, loguru, jsonpointer, joblib, jiter, iniconfig, importlib_resources, idna, httpx-sse, httptools, hf-xet, h11, greenlet, graphql-core, fsspec, frozenlist, filelock, emoji, distro, diskcache, dill, colorama, click, charset_normalizer, certifi, bcrypt, backoff, attrs, asgiref, annotated-types, annotated-doc, aiohappyeyeballs, yarl, wheel, uvicorn, typing-inspection, typing-inspect, typer, SQLAlchemy, sentry-sdk, scipy, requests, referencing, rdflib, python-dateutil, pytest, pydantic_core, prompt-toolkit, opentelemetry-proto, opentelemetry-api, onnxruntime, multiprocess, marshmallow, markdown-it-py, jsonpatch, importlib_metadata, httplib2, httpcore, grpcio, googleapis-common-protos, gitdb, Deprecated, chroma-hnswlib, cffi, build, anyio, aiosignal, watchfiles, tiktoken, starlette, scikit-learn, rich, requests-toolbelt, requests-oauthlib, pydantic, posthog, pandas, opentelemetry-semantic-conventions, opentelemetry-exporter-otlp-proto-common, language_tool_python, jsonschema-specifications, inquirerpy, httpx, hammock, gql, gitpython, Faker, dataclasses-json, cryptography, aiohttp, wandb, pydantic-settings, orkg, opentelemetry-sdk, opentelemetry-instrumentation, openai, ollama, langsmith, kubernetes, jsonschema, huggingface-hub, fastapi, weave, tokenizers, opentelemetry-instrumentation-asgi, opentelemetry-exporter-otlp-proto-grpc, langchain-core, chromadb-ops, opentelemetry-instrumentation-fastapi, langchain-text-splitters, langchain-openai, langchain-ollama, langchain, chromadb, langchain-community, langchain-chroma, HubLink-Backend
+#12 70.41 
+#12 70.42 Successfully installed Deprecated-1.3.1 Faker-19.13.0 HubLink-Backend-0.1.0 Inflector-3.1.1 PyYAML-6.0.3 SQLAlchemy-2.0.52 aiohappyeyeballs-2.7.1 aiohttp-3.14.3 aiosignal-1.4.0 annotated-doc-0.0.5 annotated-types-0.8.0 anyio-4.14.2 asgiref-3.12.1 attrs-26.1.0 backoff-2.2.1 bcrypt-5.0.0 build-1.6.0 cardinality-0.1.1 certifi-2026.7.22 cffi-2.1.1 charset_normalizer-3.5.1 chroma-hnswlib-0.7.6 chromadb-0.6.3 chromadb-ops-0.1.3 click-8.1.8 colorama-0.4.6 cryptography-43.0.3 dataclasses-json-0.6.7 dill-0.4.1 diskcache-5.6.3 distro-1.9.0 durationpy-0.11 emoji-2.15.0 fastapi-0.141.1 filelock-3.32.5 flatbuffers-25.12.19 frozenlist-1.8.0 fsspec-2026.7.0 gitdb-4.0.12 gitpython-3.1.61 googleapis-common-protos-1.75.2 gql-4.0.0 graphql-core-3.2.12 greenlet-3.5.5 grpcio-1.83.1 h11-0.14.0 hammock-0.2.4 hf-xet-1.6.0 httpcore-1.0.7 httplib2-0.22.0 httptools-0.8.0 httpx-0.28.1 httpx-sse-0.4.3 huggingface-hub-1.13.0 idna-3.19 importlib_metadata-8.5.0 importlib_resources-6.5.2 iniconfig-2.3.0 inquirerpy-0.3.4 jiter-0.8.2 joblib-1.4.2 jsonpatch-1.33 jsonpointer-3.1.1 jsonschema-4.26.0 jsonschema-specifications-2025.9.1 kubernetes-36.0.3 langchain-0.3.19 langchain-chroma-0.2.2 langchain-community-0.3.18 langchain-core-0.3.37 langchain-ollama-0.2.3 langchain-openai-0.3.6 langchain-text-splitters-0.3.6 langsmith-0.3.8 language_tool_python-2.8.2 loguru-0.7.3 markdown-it-py-4.2.0 marshmallow-3.26.2 mdurl-0.1.2 mmh3-5.3.0 multidict-6.1.0 multiprocess-0.70.16 mypy-extensions-1.1.0 nest-asyncio-1.6.0 networkx-3.6.1 numpy-1.26.4 oauthlib-3.3.1 ollama-0.6.2 onnxruntime-1.29.0 openai-1.109.1 opentelemetry-api-1.44.0 opentelemetry-exporter-otlp-proto-common-1.44.0 opentelemetry-exporter-otlp-proto-grpc-1.44.0 opentelemetry-instrumentation-0.65b0 opentelemetry-instrumentation-asgi-0.65b0 opentelemetry-instrumentation-fastapi-0.65b0 opentelemetry-proto-1.44.0 opentelemetry-sdk-1.44.0 opentelemetry-semantic-conventions-0.65b0 opentelemetry-util-http-0.65b0 orjson-3.12.0 orkg-0.21.3 overrides-7.7.0 packaging-24.2 pandas-2.2.3 pfzy-0.3.4 platformdirs-4.11.7 pluggy-1.6.0 posthog-5.3.0 prompt-toolkit-3.0.53 propcache-0.5.2 protobuf-7.36.1 pycparser-3.0 pydantic-2.10.6 pydantic-settings-2.15.0 pydantic_core-2.27.2 pygments-2.21.0 pylatexenc-2.10 pyparsing-3.3.2 pypika-0.51.1 pyproject_hooks-1.2.0 pytest-8.3.4 python-dateutil-2.9.0.post0 python-dotenv-1.2.3 pytz-2026.3.post1 rdflib-7.1.3 referencing-0.37.0 regex-2024.11.6 requests-2.34.2 requests-oauthlib-2.0.0 requests-toolbelt-1.0.0 rich-13.9.4 rpds-py-2026.6.3 scikit-learn-1.6.1 scipy-1.17.1 sentry-sdk-2.68.1 shellingham-1.5.4 six-1.17.0 smmap-5.0.3 sniffio-1.3.1 starlette-1.6.0 tenacity-9.1.4 threadpoolctl-3.6.0 tiktoken-0.14.0 tokenizers-0.23.1 tqdm-4.67.1 typer-0.9.4 typing-inspect-0.9.0 typing-inspection-0.4.4 typing_extensions-4.16.0 tzdata-2026.3 undecorated-0.3.0 urllib3-2.3.0 uuid-utils-0.17.0 uvicorn-0.52.4 uvloop-0.22.1 wandb-0.26.1 watchfiles-1.2.0 wcwidth-0.8.3 weave-0.51.37 websocket-client-1.9.2 websockets-17.1 wheel-0.48.0 wrapt-2.4.0 yarl-1.24.5 zipp-4.1.0 zstandard-0.23.0
+#12 70.42 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+#12 DONE 71.5s
+
+#13 [stage-0  8/10] RUN --mount=type=cache,target=/root/.cache/pip pip install -e backend/
+#13 0.932 Obtaining file:///app/backend
+#13 0.934   Installing build dependencies: started
+#13 1.892   Installing build dependencies: finished with status 'done'
+#13 1.892   Checking if build backend supports build_editable: started
+#13 2.542   Checking if build backend supports build_editable: finished with status 'done'
+#13 2.542   Getting requirements to build editable: started
+#13 3.257   Getting requirements to build editable: finished with status 'done'
+#13 3.258   Preparing editable metadata (pyproject.toml): started
+#13 4.281   Preparing editable metadata (pyproject.toml): finished with status 'done'
+#13 4.346 Collecting fastapi==0.115.0 (from sgc-app-backend==0.1.0)
+#13 4.407   Downloading fastapi-0.115.0-py3-none-any.whl.metadata (27 kB)
+#13 4.456 Collecting uvicorn==0.32.0 (from uvicorn[standard]==0.32.0->sgc-app-backend==0.1.0)
+#13 4.469   Downloading uvicorn-0.32.0-py3-none-any.whl.metadata (6.6 kB)
+#13 4.478 Requirement already satisfied: pydantic==2.10.6 in /usr/local/lib/python3.12/site-packages (from sgc-app-backend==0.1.0) (2.10.6)
+#13 4.486 Collecting pydantic-settings==2.6.0 (from sgc-app-backend==0.1.0)
+#13 4.500   Downloading pydantic_settings-2.6.0-py3-none-any.whl.metadata (3.5 kB)
+#13 4.511 Requirement already satisfied: python-dotenv>=1.0.0 in /usr/local/lib/python3.12/site-packages (from sgc-app-backend==0.1.0) (1.2.3)
+#13 4.586 Collecting guardrails-ai==0.9.2 (from sgc-app-backend==0.1.0)
+#13 4.596   Downloading guardrails_ai-0.9.2-py3-none-any.whl.metadata (13 kB)
+#13 4.935 Collecting sqlalchemy==2.0.48 (from sgc-app-backend==0.1.0)
+#13 4.946   Downloading sqlalchemy-2.0.48-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (9.5 kB)
+#13 4.982 Collecting aiosqlite==0.22.1 (from sgc-app-backend==0.1.0)
+#13 4.992   Downloading aiosqlite-0.22.1-py3-none-any.whl.metadata (4.3 kB)
+#13 5.020 Collecting starlette<0.39.0,>=0.37.2 (from fastapi==0.115.0->sgc-app-backend==0.1.0)
+#13 5.030   Downloading starlette-0.38.6-py3-none-any.whl.metadata (6.0 kB)
+#13 5.039 Requirement already satisfied: typing-extensions>=4.8.0 in /usr/local/lib/python3.12/site-packages (from fastapi==0.115.0->sgc-app-backend==0.1.0) (4.16.0)
+#13 5.040 Requirement already satisfied: annotated-types>=0.6.0 in /usr/local/lib/python3.12/site-packages (from pydantic==2.10.6->sgc-app-backend==0.1.0) (0.8.0)
+#13 5.040 Requirement already satisfied: pydantic-core==2.27.2 in /usr/local/lib/python3.12/site-packages (from pydantic==2.10.6->sgc-app-backend==0.1.0) (2.27.2)
+#13 5.042 Requirement already satisfied: click<=8.2.0 in /usr/local/lib/python3.12/site-packages (from guardrails-ai==0.9.2->sgc-app-backend==0.1.0) (8.1.8)
+#13 5.058 Collecting diff-match-patch<20241101,>=20230430 (from guardrails-ai==0.9.2->sgc-app-backend==0.1.0)
+#13 5.067   Downloading diff_match_patch-20241021-py3-none-any.whl.metadata (5.5 kB)
+#13 5.118 Collecting faker<38.0.0,>=25.2.0 (from guardrails-ai==0.9.2->sgc-app-backend==0.1.0)
+#13 5.127   Downloading faker-37.12.0-py3-none-any.whl.metadata (15 kB)
+#13 5.153 Collecting guardrails-api-client<0.5.0,>=0.4.0 (from guardrails-ai==0.9.2->sgc-app-backend==0.1.0)
+#13 5.163   Downloading guardrails_api_client-0.4.0-py3-none-any.whl.metadata (19 kB)
+#13 5.202 Collecting guardrails-hub-types<0.1.0,>=0.0.4 (from guardrails-ai==0.9.2->sgc-app-backend==0.1.0)
+#13 5.214   Downloading guardrails_hub_types-0.0.4-py3-none-any.whl.metadata (15 kB)
+#13 5.250 Collecting jsonref<2.0.0,>=1.1.0 (from guardrails-ai==0.9.2->sgc-app-backend==0.1.0)
+#13 5.261   Downloading jsonref-1.1.0-py3-none-any.whl.metadata (2.7 kB)
+#13 5.272 Requirement already satisfied: jsonschema<5.0.0,>=4.22.0 in /usr/local/lib/python3.12/site-packages (from jsonschema[format-nongpl]<5.0.0,>=4.22.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0) (4.26.0)
+#13 5.299 Collecting langchain-core<2.0,>=1.0.0 (from guardrails-ai==0.9.2->sgc-app-backend==0.1.0)
+#13 5.306   Downloading langchain_core-1.6.1-py3-none-any.whl.metadata (4.8 kB)
+#13 5.455 Collecting litellm<2.0.0,>=1.37.14 (from guardrails-ai==0.9.2->sgc-app-backend==0.1.0)
+#13 5.464   Downloading litellm-1.99.0-cp310-abi3-manylinux_2_28_x86_64.whl.metadata (41 kB)
+#13 5.721 Collecting lxml<7.0.0,>=4.9.3 (from guardrails-ai==0.9.2->sgc-app-backend==0.1.0)
+#13 5.736   Downloading lxml-6.1.2-cp312-cp312-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl.metadata (3.3 kB)
+#13 5.744 Requirement already satisfied: openai<3.0.0,>=1.30.1 in /usr/local/lib/python3.12/site-packages (from guardrails-ai==0.9.2->sgc-app-backend==0.1.0) (1.109.1)
+#13 5.744 Requirement already satisfied: opentelemetry-exporter-otlp-proto-grpc<2.0.0,>=1.24.0 in /usr/local/lib/python3.12/site-packages (from guardrails-ai==0.9.2->sgc-app-backend==0.1.0) (1.44.0)
+#13 5.766 Collecting opentelemetry-exporter-otlp-proto-http<2.0.0,>=1.24.0 (from guardrails-ai==0.9.2->sgc-app-backend==0.1.0)
+#13 5.776   Downloading opentelemetry_exporter_otlp_proto_http-1.44.0-py3-none-any.whl.metadata (2.4 kB)
+#13 5.785 Requirement already satisfied: opentelemetry-sdk<2.0.0,>=1.24.0 in /usr/local/lib/python3.12/site-packages (from guardrails-ai==0.9.2->sgc-app-backend==0.1.0) (1.44.0)
+#13 5.785 Requirement already satisfied: pip>=22 in /usr/local/lib/python3.12/site-packages (from guardrails-ai==0.9.2->sgc-app-backend==0.1.0) (26.2.1)
+#13 5.822 Collecting pydash<9.0.0,>=7.0.6 (from guardrails-ai==0.9.2->sgc-app-backend==0.1.0)
+#13 5.834   Downloading pydash-8.1.0-py3-none-any.whl.metadata (3.3 kB)
+#13 5.874 Collecting pyjwt<3.0.0,>=2.8.0 (from guardrails-ai==0.9.2->sgc-app-backend==0.1.0)
+#13 5.884   Downloading pyjwt-2.13.0-py3-none-any.whl.metadata (3.4 kB)
+#13 5.891 Requirement already satisfied: python-dateutil<3.0.0,>=2.8.2 in /usr/local/lib/python3.12/site-packages (from guardrails-ai==0.9.2->sgc-app-backend==0.1.0) (2.9.0.post0)
+#13 5.892 Requirement already satisfied: requests<3.0.0,>=2.31.0 in /usr/local/lib/python3.12/site-packages (from guardrails-ai==0.9.2->sgc-app-backend==0.1.0) (2.34.2)
+#13 5.892 Requirement already satisfied: rich<15.0.0,>=13.6.0 in /usr/local/lib/python3.12/site-packages (from guardrails-ai==0.9.2->sgc-app-backend==0.1.0) (13.9.4)
+#13 5.908 Collecting rstr<4.0.0,>=3.2.2 (from guardrails-ai==0.9.2->sgc-app-backend==0.1.0)
+#13 5.918   Downloading rstr-3.2.2-py3-none-any.whl.metadata (7.1 kB)
+#13 5.955 Collecting semver<4.0.0,>=3.0.2 (from guardrails-ai==0.9.2->sgc-app-backend==0.1.0)
+#13 5.964   Downloading semver-3.0.4-py3-none-any.whl.metadata (6.8 kB)
+#13 5.971 Requirement already satisfied: tenacity<10.0.0,>=8.1.0 in /usr/local/lib/python3.12/site-packages (from guardrails-ai==0.9.2->sgc-app-backend==0.1.0) (9.1.4)
+#13 5.971 Requirement already satisfied: tiktoken<1.0.0,>=0.5.1 in /usr/local/lib/python3.12/site-packages (from guardrails-ai==0.9.2->sgc-app-backend==0.1.0) (0.14.0)
+#13 5.972 Requirement already satisfied: typer<0.20,>=0.9.0 in /usr/local/lib/python3.12/site-packages (from guardrails-ai==0.9.2->sgc-app-backend==0.1.0) (0.9.4)
+#13 5.974 Requirement already satisfied: greenlet>=1 in /usr/local/lib/python3.12/site-packages (from sqlalchemy==2.0.48->sgc-app-backend==0.1.0) (3.5.5)
+#13 5.975 Requirement already satisfied: h11>=0.8 in /usr/local/lib/python3.12/site-packages (from uvicorn==0.32.0->uvicorn[standard]==0.32.0->sgc-app-backend==0.1.0) (0.14.0)
+#13 5.976 Requirement already satisfied: httptools>=0.5.0 in /usr/local/lib/python3.12/site-packages (from uvicorn[standard]==0.32.0->sgc-app-backend==0.1.0) (0.8.0)
+#13 5.977 Requirement already satisfied: pyyaml>=5.1 in /usr/local/lib/python3.12/site-packages (from uvicorn[standard]==0.32.0->sgc-app-backend==0.1.0) (6.0.3)
+#13 5.977 Requirement already satisfied: uvloop!=0.15.0,!=0.15.1,>=0.14.0 in /usr/local/lib/python3.12/site-packages (from uvicorn[standard]==0.32.0->sgc-app-backend==0.1.0) (0.22.1)
+#13 5.977 Requirement already satisfied: watchfiles>=0.13 in /usr/local/lib/python3.12/site-packages (from uvicorn[standard]==0.32.0->sgc-app-backend==0.1.0) (1.2.0)
+#13 5.978 Requirement already satisfied: websockets>=10.4 in /usr/local/lib/python3.12/site-packages (from uvicorn[standard]==0.32.0->sgc-app-backend==0.1.0) (17.1)
+#13 5.980 Requirement already satisfied: tzdata in /usr/local/lib/python3.12/site-packages (from faker<38.0.0,>=25.2.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0) (2026.3)
+#13 5.981 Requirement already satisfied: urllib3<3.0.0,>=2.1.0 in /usr/local/lib/python3.12/site-packages (from guardrails-api-client<0.5.0,>=0.4.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0) (2.3.0)
+#13 6.003 Collecting lazy-imports<2,>=1 (from guardrails-api-client<0.5.0,>=0.4.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0)
+#13 6.021   Downloading lazy_imports-1.2.0-py3-none-any.whl.metadata (11 kB)
+#13 6.035 Requirement already satisfied: attrs>=22.2.0 in /usr/local/lib/python3.12/site-packages (from jsonschema<5.0.0,>=4.22.0->jsonschema[format-nongpl]<5.0.0,>=4.22.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0) (26.1.0)
+#13 6.036 Requirement already satisfied: jsonschema-specifications>=2023.03.6 in /usr/local/lib/python3.12/site-packages (from jsonschema<5.0.0,>=4.22.0->jsonschema[format-nongpl]<5.0.0,>=4.22.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0) (2025.9.1)
+#13 6.036 Requirement already satisfied: referencing>=0.28.4 in /usr/local/lib/python3.12/site-packages (from jsonschema<5.0.0,>=4.22.0->jsonschema[format-nongpl]<5.0.0,>=4.22.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0) (0.37.0)
+#13 6.036 Requirement already satisfied: rpds-py>=0.25.0 in /usr/local/lib/python3.12/site-packages (from jsonschema<5.0.0,>=4.22.0->jsonschema[format-nongpl]<5.0.0,>=4.22.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0) (2026.6.3)
+#13 6.061 Collecting fqdn (from jsonschema[format-nongpl]<5.0.0,>=4.22.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0)
+#13 6.072   Downloading fqdn-1.5.1-py3-none-any.whl.metadata (1.4 kB)
+#13 6.080 Requirement already satisfied: idna in /usr/local/lib/python3.12/site-packages (from jsonschema[format-nongpl]<5.0.0,>=4.22.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0) (3.19)
+#13 6.096 Collecting isoduration (from jsonschema[format-nongpl]<5.0.0,>=4.22.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0)
+#13 6.106   Downloading isoduration-20.11.0-py3-none-any.whl.metadata (5.7 kB)
+#13 6.117 Requirement already satisfied: jsonpointer>1.13 in /usr/local/lib/python3.12/site-packages (from jsonschema[format-nongpl]<5.0.0,>=4.22.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0) (3.1.1)
+#13 6.140 Collecting rfc3339-validator (from jsonschema[format-nongpl]<5.0.0,>=4.22.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0)
+#13 6.150   Downloading rfc3339_validator-0.1.4-py2.py3-none-any.whl.metadata (1.5 kB)
+#13 6.178 Collecting rfc3986-validator>0.1.0 (from jsonschema[format-nongpl]<5.0.0,>=4.22.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0)
+#13 6.188   Downloading rfc3986_validator-0.1.1-py2.py3-none-any.whl.metadata (1.7 kB)
+#13 6.219 Collecting rfc3987-syntax>=1.1.0 (from jsonschema[format-nongpl]<5.0.0,>=4.22.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0)
+#13 6.233   Downloading rfc3987_syntax-1.1.0-py3-none-any.whl.metadata (7.7 kB)
+#13 6.261 Collecting uri-template (from jsonschema[format-nongpl]<5.0.0,>=4.22.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0)
+#13 6.270   Downloading uri_template-1.3.0-py3-none-any.whl.metadata (8.8 kB)
+#13 6.328 Collecting webcolors>=24.6.0 (from jsonschema[format-nongpl]<5.0.0,>=4.22.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0)
+#13 6.337   Downloading webcolors-25.10.0-py3-none-any.whl.metadata (2.2 kB)
+#13 6.347 Requirement already satisfied: httpx<1.0.0,>=0.23.0 in /usr/local/lib/python3.12/site-packages (from langchain-core<2.0,>=1.0.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0) (0.28.1)
+#13 6.348 Requirement already satisfied: jsonpatch<2.0.0,>=1.33.0 in /usr/local/lib/python3.12/site-packages (from langchain-core<2.0,>=1.0.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0) (1.33)
+#13 6.366 Collecting langchain-protocol>=0.0.17 (from langchain-core<2.0,>=1.0.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0)
+#13 6.376   Downloading langchain_protocol-0.0.19-py3-none-any.whl.metadata (2.4 kB)
+#13 6.422 Collecting langsmith<1.0.0,>=0.3.45 (from langchain-core<2.0,>=1.0.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0)
+#13 6.430   Downloading langsmith-0.12.1-py3-none-any.whl.metadata (22 kB)
+#13 6.442 Requirement already satisfied: packaging>=23.2.0 in /usr/local/lib/python3.12/site-packages (from langchain-core<2.0,>=1.0.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0) (24.2)
+#13 6.443 Requirement already satisfied: uuid-utils<1.0,>=0.12.0 in /usr/local/lib/python3.12/site-packages (from langchain-core<2.0,>=1.0.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0) (0.17.0)
+#13 6.444 Requirement already satisfied: anyio in /usr/local/lib/python3.12/site-packages (from httpx<1.0.0,>=0.23.0->langchain-core<2.0,>=1.0.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0) (4.14.2)
+#13 6.444 Requirement already satisfied: certifi in /usr/local/lib/python3.12/site-packages (from httpx<1.0.0,>=0.23.0->langchain-core<2.0,>=1.0.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0) (2026.7.22)
+#13 6.445 Requirement already satisfied: httpcore==1.* in /usr/local/lib/python3.12/site-packages (from httpx<1.0.0,>=0.23.0->langchain-core<2.0,>=1.0.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0) (1.0.7)
+#13 6.450 Requirement already satisfied: distro>=1.7.0 in /usr/local/lib/python3.12/site-packages (from langsmith<1.0.0,>=0.3.45->langchain-core<2.0,>=1.0.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0) (1.9.0)
+#13 6.472 Collecting httpx2<3,>=2 (from langsmith<1.0.0,>=0.3.45->langchain-core<2.0,>=1.0.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0)
+#13 6.482   Downloading httpx2-2.12.0-py3-none-any.whl.metadata (9.5 kB)
+#13 6.491 Requirement already satisfied: orjson>=3.9.14 in /usr/local/lib/python3.12/site-packages (from langsmith<1.0.0,>=0.3.45->langchain-core<2.0,>=1.0.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0) (3.12.0)
+#13 6.492 Requirement already satisfied: requests-toolbelt>=1.0.0 in /usr/local/lib/python3.12/site-packages (from langsmith<1.0.0,>=0.3.45->langchain-core<2.0,>=1.0.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0) (1.0.0)
+#13 6.492 Requirement already satisfied: sniffio>=1.1 in /usr/local/lib/python3.12/site-packages (from langsmith<1.0.0,>=0.3.45->langchain-core<2.0,>=1.0.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0) (1.3.1)
+#13 6.613 Collecting xxhash>=3.0.0 (from langsmith<1.0.0,>=0.3.45->langchain-core<2.0,>=1.0.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0)
+#13 6.624   Downloading xxhash-4.0.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (17 kB)
+#13 6.638 Requirement already satisfied: zstandard>=0.23.0 in /usr/local/lib/python3.12/site-packages (from langsmith<1.0.0,>=0.3.45->langchain-core<2.0,>=1.0.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0) (0.23.0)
+#13 6.658 Collecting httpcore2==2.12.0 (from httpx2<3,>=2->langsmith<1.0.0,>=0.3.45->langchain-core<2.0,>=1.0.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0)
+#13 6.667   Downloading httpcore2-2.12.0-py3-none-any.whl.metadata (25 kB)
+#13 6.692 Collecting truststore>=0.10 (from httpx2<3,>=2->langsmith<1.0.0,>=0.3.45->langchain-core<2.0,>=1.0.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0)
+#13 6.702   Downloading truststore-0.10.4-py3-none-any.whl.metadata (4.4 kB)
+#13 6.716 INFO: pip is looking at multiple versions of httpcore2 to determine which version is compatible with other requirements. This could take a while.
+#13 6.717 Collecting httpx2<3,>=2 (from langsmith<1.0.0,>=0.3.45->langchain-core<2.0,>=1.0.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0)
+#13 6.734   Downloading httpx2-2.11.0-py3-none-any.whl.metadata (10 kB)
+#13 6.751 Collecting httpcore2==2.11.0 (from httpx2<3,>=2->langsmith<1.0.0,>=0.3.45->langchain-core<2.0,>=1.0.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0)
+#13 6.763   Downloading httpcore2-2.11.0-py3-none-any.whl.metadata (25 kB)
+#13 6.778 Collecting httpx2<3,>=2 (from langsmith<1.0.0,>=0.3.45->langchain-core<2.0,>=1.0.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0)
+#13 6.789   Downloading httpx2-2.10.0-py3-none-any.whl.metadata (10 kB)
+#13 6.803 Collecting httpcore2==2.10.0 (from httpx2<3,>=2->langsmith<1.0.0,>=0.3.45->langchain-core<2.0,>=1.0.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0)
+#13 6.812   Downloading httpcore2-2.10.0-py3-none-any.whl.metadata (25 kB)
+#13 6.828 Collecting httpx2<3,>=2 (from langsmith<1.0.0,>=0.3.45->langchain-core<2.0,>=1.0.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0)
+#13 6.839   Downloading httpx2-2.9.1-py3-none-any.whl.metadata (8.2 kB)
+#13 6.851 Collecting httpcore2==2.9.1 (from httpx2<3,>=2->langsmith<1.0.0,>=0.3.45->langchain-core<2.0,>=1.0.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0)
+#13 6.864   Downloading httpcore2-2.9.1-py3-none-any.whl.metadata (24 kB)
+#13 6.879 Collecting httpx2<3,>=2 (from langsmith<1.0.0,>=0.3.45->langchain-core<2.0,>=1.0.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0)
+#13 6.889   Downloading httpx2-2.9.0-py3-none-any.whl.metadata (8.2 kB)
+#13 6.902 Collecting httpcore2==2.9.0 (from httpx2<3,>=2->langsmith<1.0.0,>=0.3.45->langchain-core<2.0,>=1.0.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0)
+#13 6.912   Downloading httpcore2-2.9.0-py3-none-any.whl.metadata (24 kB)
+#13 6.924 Collecting httpx2<3,>=2 (from langsmith<1.0.0,>=0.3.45->langchain-core<2.0,>=1.0.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0)
+#13 6.934   Downloading httpx2-2.8.0-py3-none-any.whl.metadata (8.4 kB)
+#13 6.949 Collecting httpcore2==2.8.0 (from httpx2<3,>=2->langsmith<1.0.0,>=0.3.45->langchain-core<2.0,>=1.0.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0)
+#13 6.969   Downloading httpcore2-2.8.0-py3-none-any.whl.metadata (24 kB)
+#13 6.986 Collecting httpx2<3,>=2 (from langsmith<1.0.0,>=0.3.45->langchain-core<2.0,>=1.0.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0)
+#13 6.996   Downloading httpx2-2.7.0-py3-none-any.whl.metadata (8.4 kB)
+#13 7.006 Collecting httpcore2==2.7.0 (from httpx2<3,>=2->langsmith<1.0.0,>=0.3.45->langchain-core<2.0,>=1.0.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0)
+#13 7.017   Downloading httpcore2-2.7.0-py3-none-any.whl.metadata (24 kB)
+#13 7.032 Collecting httpx2<3,>=2 (from langsmith<1.0.0,>=0.3.45->langchain-core<2.0,>=1.0.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0)
+#13 7.042   Downloading httpx2-2.6.0-py3-none-any.whl.metadata (8.4 kB)
+#13 7.053 Collecting httpcore2==2.6.0 (from httpx2<3,>=2->langsmith<1.0.0,>=0.3.45->langchain-core<2.0,>=1.0.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0)
+#13 7.064   Downloading httpcore2-2.6.0-py3-none-any.whl.metadata (24 kB)
+#13 7.075 INFO: pip is still looking at multiple versions of httpcore2 to determine which version is compatible with other requirements. This could take a while.
+#13 7.076 Collecting httpx2<3,>=2 (from langsmith<1.0.0,>=0.3.45->langchain-core<2.0,>=1.0.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0)
+#13 7.085   Downloading httpx2-2.5.0-py3-none-any.whl.metadata (8.3 kB)
+#13 7.097 Collecting httpcore2==2.5.0 (from httpx2<3,>=2->langsmith<1.0.0,>=0.3.45->langchain-core<2.0,>=1.0.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0)
+#13 7.108   Downloading httpcore2-2.5.0-py3-none-any.whl.metadata (24 kB)
+#13 7.123 Collecting httpx2<3,>=2 (from langsmith<1.0.0,>=0.3.45->langchain-core<2.0,>=1.0.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0)
+#13 7.133   Downloading httpx2-2.4.0-py3-none-any.whl.metadata (8.6 kB)
+#13 7.145 Collecting httpcore2==2.4.0 (from httpx2<3,>=2->langsmith<1.0.0,>=0.3.45->langchain-core<2.0,>=1.0.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0)
+#13 7.158   Downloading httpcore2-2.4.0-py3-none-any.whl.metadata (23 kB)
+#13 7.175 Collecting httpx2<3,>=2 (from langsmith<1.0.0,>=0.3.45->langchain-core<2.0,>=1.0.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0)
+#13 7.186   Downloading httpx2-2.3.0-py3-none-any.whl.metadata (8.5 kB)
+#13 7.199 Collecting httpcore2==2.3.0 (from httpx2<3,>=2->langsmith<1.0.0,>=0.3.45->langchain-core<2.0,>=1.0.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0)
+#13 7.210   Downloading httpcore2-2.3.0-py3-none-any.whl.metadata (23 kB)
+#13 7.228 Collecting httpx2<3,>=2 (from langsmith<1.0.0,>=0.3.45->langchain-core<2.0,>=1.0.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0)
+#13 7.238   Downloading httpx2-2.2.0-py3-none-any.whl.metadata (8.0 kB)
+#13 7.258 Collecting httpcore2==2.2.0 (from httpx2<3,>=2->langsmith<1.0.0,>=0.3.45->langchain-core<2.0,>=1.0.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0)
+#13 7.271   Downloading httpcore2-2.2.0-py3-none-any.whl.metadata (22 kB)
+#13 7.289 Collecting httpx2<3,>=2 (from langsmith<1.0.0,>=0.3.45->langchain-core<2.0,>=1.0.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0)
+#13 7.299   Downloading httpx2-2.1.0-py3-none-any.whl.metadata (8.2 kB)
+#13 7.314 Collecting httpcore2==2.1.0 (from httpx2<3,>=2->langsmith<1.0.0,>=0.3.45->langchain-core<2.0,>=1.0.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0)
+#13 7.325   Downloading httpcore2-2.1.0-py3-none-any.whl.metadata (22 kB)
+#13 7.341 INFO: This is taking longer than usual. You might need to provide the dependency resolver with stricter constraints to reduce runtime. See https://pip.pypa.io/warnings/backtracking for guidance. If you want to abort this run, press Ctrl + C.
+#13 7.343 Collecting httpx2<3,>=2 (from langsmith<1.0.0,>=0.3.45->langchain-core<2.0,>=1.0.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0)
+#13 7.354   Downloading httpx2-2.0.0-py3-none-any.whl.metadata (8.8 kB)
+#13 7.365 Collecting httpcore2==2.0.0 (from httpx2<3,>=2->langsmith<1.0.0,>=0.3.45->langchain-core<2.0,>=1.0.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0)
+#13 7.376   Downloading httpcore2-2.0.0-py3-none-any.whl.metadata (21 kB)
+#13 7.391 Collecting httpcore==1.* (from httpx<1.0.0,>=0.23.0->langchain-core<2.0,>=1.0.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0)
+#13 7.399   Downloading httpcore-1.0.9-py3-none-any.whl.metadata (21 kB)
+#13 7.413 Collecting h11>=0.8 (from uvicorn==0.32.0->uvicorn[standard]==0.32.0->sgc-app-backend==0.1.0)
+#13 7.421   Downloading h11-0.16.0-py3-none-any.whl.metadata (8.3 kB)
+#13 7.479 Collecting fastuuid<1.0,>=0.14.0 (from litellm<2.0.0,>=1.37.14->guardrails-ai==0.9.2->sgc-app-backend==0.1.0)
+#13 7.489   Downloading fastuuid-0.14.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (1.1 kB)
+#13 7.517 Collecting openai<3.0.0,>=1.30.1 (from guardrails-ai==0.9.2->sgc-app-backend==0.1.0)
+#13 7.525   Downloading openai-2.54.0-py3-none-any.whl.metadata (40 kB)
+#13 7.536 Requirement already satisfied: importlib-metadata<9.0,>=8.0.0 in /usr/local/lib/python3.12/site-packages (from litellm<2.0.0,>=1.37.14->guardrails-ai==0.9.2->sgc-app-backend==0.1.0) (8.5.0)
+#13 7.536 Requirement already satisfied: tokenizers<1.0,>=0.21.0 in /usr/local/lib/python3.12/site-packages (from litellm<2.0.0,>=1.37.14->guardrails-ai==0.9.2->sgc-app-backend==0.1.0) (0.23.1)
+#13 7.555 Collecting jinja2<4.0,>=3.1.6 (from litellm<2.0.0,>=1.37.14->guardrails-ai==0.9.2->sgc-app-backend==0.1.0)
+#13 7.562   Downloading jinja2-3.1.6-py3-none-any.whl.metadata (2.9 kB)
+#13 7.571 Requirement already satisfied: aiohttp<4.0,>=3.14.2 in /usr/local/lib/python3.12/site-packages (from litellm<2.0.0,>=1.37.14->guardrails-ai==0.9.2->sgc-app-backend==0.1.0) (3.14.3)
+#13 7.572 INFO: pip is looking at multiple versions of litellm to determine which version is compatible with other requirements. This could take a while.
+#13 7.573 Collecting litellm<2.0.0,>=1.37.14 (from guardrails-ai==0.9.2->sgc-app-backend==0.1.0)
+#13 7.582   Downloading litellm-1.98.0-cp310-abi3-manylinux_2_28_x86_64.whl.metadata (41 kB)
+#13 7.611   Downloading litellm-1.97.0-cp310-abi3-manylinux_2_28_x86_64.whl.metadata (41 kB)
+#13 7.638   Downloading litellm-1.96.2-cp310-abi3-manylinux_2_28_x86_64.whl.metadata (41 kB)
+#13 7.664   Downloading litellm-1.96.0-cp312-cp312-manylinux_2_28_x86_64.whl.metadata (41 kB)
+#13 7.687   Downloading litellm-1.95.1-cp312-cp312-manylinux_2_28_x86_64.whl.metadata (41 kB)
+#13 7.704 Requirement already satisfied: aiohappyeyeballs>=2.5.0 in /usr/local/lib/python3.12/site-packages (from aiohttp<4.0,>=3.14.2->litellm<2.0.0,>=1.37.14->guardrails-ai==0.9.2->sgc-app-backend==0.1.0) (2.7.1)
+#13 7.704 Requirement already satisfied: aiosignal>=1.4.0 in /usr/local/lib/python3.12/site-packages (from aiohttp<4.0,>=3.14.2->litellm<2.0.0,>=1.37.14->guardrails-ai==0.9.2->sgc-app-backend==0.1.0) (1.4.0)
+#13 7.705 Requirement already satisfied: frozenlist>=1.1.1 in /usr/local/lib/python3.12/site-packages (from aiohttp<4.0,>=3.14.2->litellm<2.0.0,>=1.37.14->guardrails-ai==0.9.2->sgc-app-backend==0.1.0) (1.8.0)
+#13 7.705 Requirement already satisfied: multidict<7.0,>=4.5 in /usr/local/lib/python3.12/site-packages (from aiohttp<4.0,>=3.14.2->litellm<2.0.0,>=1.37.14->guardrails-ai==0.9.2->sgc-app-backend==0.1.0) (6.1.0)
+#13 7.705 Requirement already satisfied: propcache>=0.2.0 in /usr/local/lib/python3.12/site-packages (from aiohttp<4.0,>=3.14.2->litellm<2.0.0,>=1.37.14->guardrails-ai==0.9.2->sgc-app-backend==0.1.0) (0.5.2)
+#13 7.706 Requirement already satisfied: yarl<2.0,>=1.17.0 in /usr/local/lib/python3.12/site-packages (from aiohttp<4.0,>=3.14.2->litellm<2.0.0,>=1.37.14->guardrails-ai==0.9.2->sgc-app-backend==0.1.0) (1.24.5)
+#13 7.708 Requirement already satisfied: zipp>=3.20 in /usr/local/lib/python3.12/site-packages (from importlib-metadata<9.0,>=8.0.0->litellm<2.0.0,>=1.37.14->guardrails-ai==0.9.2->sgc-app-backend==0.1.0) (4.1.0)
+#13 7.757 Collecting MarkupSafe>=2.0 (from jinja2<4.0,>=3.1.6->litellm<2.0.0,>=1.37.14->guardrails-ai==0.9.2->sgc-app-backend==0.1.0)
+#13 7.765   Downloading markupsafe-3.0.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.7 kB)
+#13 7.844 Collecting jiter<1,>=0.10.0 (from openai<3.0.0,>=1.30.1->guardrails-ai==0.9.2->sgc-app-backend==0.1.0)
+#13 7.852   Downloading jiter-0.16.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (5.2 kB)
+#13 7.859 Requirement already satisfied: tqdm>4 in /usr/local/lib/python3.12/site-packages (from openai<3.0.0,>=1.30.1->guardrails-ai==0.9.2->sgc-app-backend==0.1.0) (4.67.1)
+#13 7.863 Requirement already satisfied: googleapis-common-protos~=1.57 in /usr/local/lib/python3.12/site-packages (from opentelemetry-exporter-otlp-proto-grpc<2.0.0,>=1.24.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0) (1.75.2)
+#13 7.864 Requirement already satisfied: grpcio<2.0.0,>=1.63.2 in /usr/local/lib/python3.12/site-packages (from opentelemetry-exporter-otlp-proto-grpc<2.0.0,>=1.24.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0) (1.83.1)
+#13 7.864 Requirement already satisfied: opentelemetry-api~=1.15 in /usr/local/lib/python3.12/site-packages (from opentelemetry-exporter-otlp-proto-grpc<2.0.0,>=1.24.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0) (1.44.0)
+#13 7.864 Requirement already satisfied: opentelemetry-exporter-otlp-proto-common==1.44.0 in /usr/local/lib/python3.12/site-packages (from opentelemetry-exporter-otlp-proto-grpc<2.0.0,>=1.24.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0) (1.44.0)
+#13 7.865 Requirement already satisfied: opentelemetry-proto==1.44.0 in /usr/local/lib/python3.12/site-packages (from opentelemetry-exporter-otlp-proto-grpc<2.0.0,>=1.24.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0) (1.44.0)
+#13 7.867 Requirement already satisfied: protobuf<8.0,>=5.0 in /usr/local/lib/python3.12/site-packages (from opentelemetry-proto==1.44.0->opentelemetry-exporter-otlp-proto-grpc<2.0.0,>=1.24.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0) (7.36.1)
+#13 7.872 Requirement already satisfied: opentelemetry-semantic-conventions==0.65b0 in /usr/local/lib/python3.12/site-packages (from opentelemetry-sdk<2.0.0,>=1.24.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0) (0.65b0)
+#13 7.877 Requirement already satisfied: six>=1.5 in /usr/local/lib/python3.12/site-packages (from python-dateutil<3.0.0,>=2.8.2->guardrails-ai==0.9.2->sgc-app-backend==0.1.0) (1.17.0)
+#13 7.881 Requirement already satisfied: charset_normalizer<4,>=2 in /usr/local/lib/python3.12/site-packages (from requests<3.0.0,>=2.31.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0) (3.5.1)
+#13 7.885 Requirement already satisfied: markdown-it-py>=2.2.0 in /usr/local/lib/python3.12/site-packages (from rich<15.0.0,>=13.6.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0) (4.2.0)
+#13 7.886 Requirement already satisfied: pygments<3.0.0,>=2.13.0 in /usr/local/lib/python3.12/site-packages (from rich<15.0.0,>=13.6.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0) (2.21.0)
+#13 7.891 Requirement already satisfied: regex in /usr/local/lib/python3.12/site-packages (from tiktoken<1.0.0,>=0.5.1->guardrails-ai==0.9.2->sgc-app-backend==0.1.0) (2024.11.6)
+#13 7.893 Requirement already satisfied: huggingface-hub<2.0,>=0.16.4 in /usr/local/lib/python3.12/site-packages (from tokenizers<1.0,>=0.21.0->litellm<2.0.0,>=1.37.14->guardrails-ai==0.9.2->sgc-app-backend==0.1.0) (1.13.0)
+#13 7.895 Requirement already satisfied: filelock>=3.10.0 in /usr/local/lib/python3.12/site-packages (from huggingface-hub<2.0,>=0.16.4->tokenizers<1.0,>=0.21.0->litellm<2.0.0,>=1.37.14->guardrails-ai==0.9.2->sgc-app-backend==0.1.0) (3.32.5)
+#13 7.895 Requirement already satisfied: fsspec>=2023.5.0 in /usr/local/lib/python3.12/site-packages (from huggingface-hub<2.0,>=0.16.4->tokenizers<1.0,>=0.21.0->litellm<2.0.0,>=1.37.14->guardrails-ai==0.9.2->sgc-app-backend==0.1.0) (2026.7.0)
+#13 7.896 Requirement already satisfied: hf-xet<2.0.0,>=1.4.3 in /usr/local/lib/python3.12/site-packages (from huggingface-hub<2.0,>=0.16.4->tokenizers<1.0,>=0.21.0->litellm<2.0.0,>=1.37.14->guardrails-ai==0.9.2->sgc-app-backend==0.1.0) (1.6.0)
+#13 7.927 Requirement already satisfied: mdurl~=0.1 in /usr/local/lib/python3.12/site-packages (from markdown-it-py>=2.2.0->rich<15.0.0,>=13.6.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0) (0.1.2)
+#13 7.956 Collecting lark>=1.2.2 (from rfc3987-syntax>=1.1.0->jsonschema[format-nongpl]<5.0.0,>=4.22.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0)
+#13 7.964   Downloading lark-1.3.1-py3-none-any.whl.metadata (1.8 kB)
+#13 8.012 Collecting arrow>=0.15.0 (from isoduration->jsonschema[format-nongpl]<5.0.0,>=4.22.0->guardrails-ai==0.9.2->sgc-app-backend==0.1.0)
+#13 8.021   Downloading arrow-1.4.0-py3-none-any.whl.metadata (7.7 kB)
+#13 8.045 Downloading aiosqlite-0.22.1-py3-none-any.whl (17 kB)
+#13 8.068 Downloading fastapi-0.115.0-py3-none-any.whl (94 kB)
+#13 8.087 Downloading guardrails_ai-0.9.2-py3-none-any.whl (237 kB)
+#13 8.124 Downloading pydantic_settings-2.6.0-py3-none-any.whl (28 kB)
+#13 8.143 Downloading sqlalchemy-2.0.48-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (3.3 MB)
+#13 8.419    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.3/3.3 MB 12.3 MB/s  0:00:00
+#13 8.428 Downloading uvicorn-0.32.0-py3-none-any.whl (63 kB)
+#13 8.445 Downloading diff_match_patch-20241021-py3-none-any.whl (43 kB)
+#13 8.465 Downloading faker-37.12.0-py3-none-any.whl (2.0 MB)
+#13 8.626    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.0/2.0 MB 12.6 MB/s  0:00:00
+#13 8.636 Downloading guardrails_api_client-0.4.0-py3-none-any.whl (110 kB)
+#13 8.662 Downloading guardrails_hub_types-0.0.4-py3-none-any.whl (36 kB)
+#13 8.679 Downloading jsonref-1.1.0-py3-none-any.whl (9.4 kB)
+#13 8.706 Downloading langchain_core-1.6.1-py3-none-any.whl (571 kB)
+#13 8.746    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 571.5/571.5 kB 13.7 MB/s  0:00:00
+#13 8.755 Downloading httpcore-1.0.9-py3-none-any.whl (78 kB)
+#13 8.780 Downloading h11-0.16.0-py3-none-any.whl (37 kB)
+#13 8.801 Downloading langsmith-0.12.1-py3-none-any.whl (758 kB)
+#13 8.857    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 758.3/758.3 kB 14.2 MB/s  0:00:00
+#13 8.867 Downloading httpx2-2.12.0-py3-none-any.whl (95 kB)
+#13 8.890 Downloading httpcore2-2.12.0-py3-none-any.whl (83 kB)
+#13 8.915 Downloading lazy_imports-1.2.0-py3-none-any.whl (18 kB)
+#13 8.932 Downloading litellm-1.95.1-cp312-cp312-manylinux_2_28_x86_64.whl (26.3 MB)
+#13 10.97    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 26.3/26.3 MB 12.9 MB/s  0:00:02
+#13 10.98 Downloading fastuuid-0.14.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (278 kB)
+#13 11.02 Downloading jinja2-3.1.6-py3-none-any.whl (134 kB)
+#13 11.05 Downloading lxml-6.1.2-cp312-cp312-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl (5.2 MB)
+#13 11.48    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.2/5.2 MB 12.1 MB/s  0:00:00
+#13 11.49 Downloading openai-2.54.0-py3-none-any.whl (1.7 MB)
+#13 11.64    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.7/1.7 MB 11.1 MB/s  0:00:00
+#13 11.65 Downloading jiter-0.16.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (343 kB)
+#13 11.69 Downloading opentelemetry_exporter_otlp_proto_http-1.44.0-py3-none-any.whl (21 kB)
+#13 11.71 Downloading pydash-8.1.0-py3-none-any.whl (102 kB)
+#13 11.73 Downloading pyjwt-2.13.0-py3-none-any.whl (31 kB)
+#13 11.75 Downloading rstr-3.2.2-py3-none-any.whl (10 kB)
+#13 11.77 Downloading semver-3.0.4-py3-none-any.whl (17 kB)
+#13 11.79 Downloading starlette-0.38.6-py3-none-any.whl (71 kB)
+#13 11.81 Downloading langchain_protocol-0.0.19-py3-none-any.whl (7.3 kB)
+#13 11.83 Downloading markupsafe-3.0.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (22 kB)
+#13 11.84 Downloading rfc3986_validator-0.1.1-py2.py3-none-any.whl (4.2 kB)
+#13 11.86 Downloading rfc3987_syntax-1.1.0-py3-none-any.whl (8.0 kB)
+#13 11.88 Downloading lark-1.3.1-py3-none-any.whl (113 kB)
+#13 11.90 Downloading truststore-0.10.4-py3-none-any.whl (18 kB)
+#13 11.91 Downloading webcolors-25.10.0-py3-none-any.whl (14 kB)
+#13 11.93 Downloading xxhash-4.0.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (261 kB)
+#13 11.97 Downloading fqdn-1.5.1-py3-none-any.whl (9.1 kB)
+#13 11.98 Downloading isoduration-20.11.0-py3-none-any.whl (11 kB)
+#13 12.00 Downloading arrow-1.4.0-py3-none-any.whl (68 kB)
+#13 12.02 Downloading rfc3339_validator-0.1.4-py2.py3-none-any.whl (3.5 kB)
+#13 12.04 Downloading uri_template-1.3.0-py3-none-any.whl (11 kB)
+#13 12.17 Building wheels for collected packages: sgc-app-backend
+#13 12.17   Building editable for sgc-app-backend (pyproject.toml): started
+#13 12.76   Building editable for sgc-app-backend (pyproject.toml): finished with status 'done'
+#13 12.76   Created wheel for sgc-app-backend: filename=sgc_app_backend-0.1.0-0.editable-py3-none-any.whl size=1704 sha256=b60641c6d0ef24a9e853d653389b81914a7034ec3e38853c38e8b446953bb6c6
+#13 12.76   Stored in directory: /tmp/pip-ephem-wheel-cache-m1a962rv/wheels/91/0a/7b/e1306506b94d5eedf38bd9e74910a6a2271d810c5fb6bdbeda
+#13 12.76 Successfully built sgc-app-backend
+#13 12.93 Installing collected packages: xxhash, webcolors, uri-template, truststore, sqlalchemy, semver, rstr, rfc3986-validator, rfc3339-validator, pyjwt, pydash, MarkupSafe, lxml, lazy-imports, lark, langchain-protocol, jsonref, jiter, h11, guardrails-hub-types, fqdn, fastuuid, faker, diff-match-patch, aiosqlite, uvicorn, starlette, rfc3987-syntax, jinja2, httpcore2, httpcore, arrow, pydantic-settings, isoduration, httpx2, guardrails-api-client, fastapi, opentelemetry-exporter-otlp-proto-http, openai, langsmith, langchain-core, litellm, guardrails-ai, sgc-app-backend
+#13 12.99   Attempting uninstall: sqlalchemy
+#13 12.99     Found existing installation: SQLAlchemy 2.0.52
+#13 13.01     Uninstalling SQLAlchemy-2.0.52:
+#13 13.19       Successfully uninstalled SQLAlchemy-2.0.52
+#13 14.27   Attempting uninstall: jiter
+#13 14.27     Found existing installation: jiter 0.8.2
+#13 14.27     Uninstalling jiter-0.8.2:
+#13 14.28       Successfully uninstalled jiter-0.8.2
+#13 14.29   Attempting uninstall: h11
+#13 14.30     Found existing installation: h11 0.14.0
+#13 14.30     Uninstalling h11-0.14.0:
+#13 14.31       Successfully uninstalled h11-0.14.0
+#13 14.37   Attempting uninstall: faker
+#13 14.37     Found existing installation: Faker 19.13.0
+#13 14.44     Uninstalling Faker-19.13.0:
+#13 17.51       Successfully uninstalled Faker-19.13.0
+#13 18.54   Attempting uninstall: uvicorn
+#13 18.54     Found existing installation: uvicorn 0.52.4
+#13 18.55     Uninstalling uvicorn-0.52.4:
+#13 18.61       Successfully uninstalled uvicorn-0.52.4
+#13 18.66   Attempting uninstall: starlette
+#13 18.66     Found existing installation: starlette 1.6.0
+#13 18.67     Uninstalling starlette-1.6.0:
+#13 18.69       Successfully uninstalled starlette-1.6.0
+#13 18.86   Attempting uninstall: httpcore
+#13 18.87     Found existing installation: httpcore 1.0.7
+#13 18.87     Uninstalling httpcore-1.0.7:
+#13 18.89       Successfully uninstalled httpcore-1.0.7
+#13 18.97   Attempting uninstall: pydantic-settings
+#13 18.98     Found existing installation: pydantic-settings 2.15.0
+#13 18.98     Uninstalling pydantic-settings-2.15.0:
+#13 19.01       Successfully uninstalled pydantic-settings-2.15.0
+#13 19.15   Attempting uninstall: fastapi
+#13 19.15     Found existing installation: fastapi 0.141.1
+#13 19.15     Uninstalling fastapi-0.141.1:
+#13 19.24       Successfully uninstalled fastapi-0.141.1
+#13 19.31   Attempting uninstall: openai
+#13 19.32     Found existing installation: openai 1.109.1
+#13 19.37     Uninstalling openai-1.109.1:
+#13 19.88       Successfully uninstalled openai-1.109.1
+#13 20.74   Attempting uninstall: langsmith
+#13 20.74     Found existing installation: langsmith 0.3.8
+#13 20.75     Uninstalling langsmith-0.3.8:
+#13 20.80       Successfully uninstalled langsmith-0.3.8
+#13 21.22   Attempting uninstall: langchain-core
+#13 21.22     Found existing installation: langchain-core 0.3.37
+#13 21.23     Uninstalling langchain-core-0.3.37:
+#13 21.38       Successfully uninstalled langchain-core-0.3.37
+#13 26.40 
+#13 26.40 ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.
+#13 26.40 langchain-chroma 0.2.2 requires langchain-core!=0.3.0,!=0.3.1,!=0.3.10,!=0.3.11,!=0.3.12,!=0.3.13,!=0.3.14,!=0.3.2,!=0.3.3,!=0.3.4,!=0.3.5,!=0.3.6,!=0.3.7,!=0.3.8,!=0.3.9,<0.4.0,>=0.2.43, but you have langchain-core 1.6.1 which is incompatible.
+#13 26.40 langchain-community 0.3.18 requires langchain-core<1.0.0,>=0.3.37, but you have langchain-core 1.6.1 which is incompatible.
+#13 26.40 langchain-community 0.3.18 requires langsmith<0.4,>=0.1.125, but you have langsmith 0.12.1 which is incompatible.
+#13 26.40 orkg 0.21.3 requires Faker<20.0.0,>=19.1.0, but you have faker 37.12.0 which is incompatible.
+#13 26.40 langchain 0.3.19 requires langchain-core<1.0.0,>=0.3.35, but you have langchain-core 1.6.1 which is incompatible.
+#13 26.40 langchain 0.3.19 requires langsmith<0.4,>=0.1.17, but you have langsmith 0.12.1 which is incompatible.
+#13 26.40 hublink-backend 0.1.0 requires httpcore==1.0.7, but you have httpcore 1.0.9 which is incompatible.
+#13 26.40 hublink-backend 0.1.0 requires jiter==0.8.2, but you have jiter 0.16.0 which is incompatible.
+#13 26.40 hublink-backend 0.1.0 requires langchain-core==0.3.37, but you have langchain-core 1.6.1 which is incompatible.
+#13 26.40 hublink-backend 0.1.0 requires langsmith==0.3.8, but you have langsmith 0.12.1 which is incompatible.
+#13 26.40 langchain-ollama 0.2.3 requires langchain-core<0.4.0,>=0.3.33, but you have langchain-core 1.6.1 which is incompatible.
+#13 26.40 langchain-openai 0.3.6 requires langchain-core<1.0.0,>=0.3.35, but you have langchain-core 1.6.1 which is incompatible.
+#13 26.40 langchain-openai 0.3.6 requires openai<2.0.0,>=1.58.1, but you have openai 2.54.0 which is incompatible.
+#13 26.40 langchain-text-splitters 0.3.6 requires langchain-core<1.0.0,>=0.3.34, but you have langchain-core 1.6.1 which is incompatible.
+#13 26.41 Successfully installed MarkupSafe-3.0.3 aiosqlite-0.22.1 arrow-1.4.0 diff-match-patch-20241021 faker-37.12.0 fastapi-0.115.0 fastuuid-0.14.0 fqdn-1.5.1 guardrails-ai-0.9.2 guardrails-api-client-0.4.0 guardrails-hub-types-0.0.4 h11-0.16.0 httpcore-1.0.9 httpcore2-2.12.0 httpx2-2.12.0 isoduration-20.11.0 jinja2-3.1.6 jiter-0.16.0 jsonref-1.1.0 langchain-core-1.6.1 langchain-protocol-0.0.19 langsmith-0.12.1 lark-1.3.1 lazy-imports-1.2.0 litellm-1.95.1 lxml-6.1.2 openai-2.54.0 opentelemetry-exporter-otlp-proto-http-1.44.0 pydantic-settings-2.6.0 pydash-8.1.0 pyjwt-2.13.0 rfc3339-validator-0.1.4 rfc3986-validator-0.1.1 rfc3987-syntax-1.1.0 rstr-3.2.2 semver-3.0.4 sgc-app-backend-0.1.0 sqlalchemy-2.0.48 starlette-0.38.6 truststore-0.10.4 uri-template-1.3.0 uvicorn-0.32.0 webcolors-25.10.0 xxhash-4.0.1
+#13 26.41 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+#13 DONE 26.8s
+
+#14 [stage-0  9/10] RUN --mount=type=cache,target=/root/.cache/pip     --mount=type=secret,id=guardrails_token     GUARDRAILS_TOKEN="$(cat /run/secrets/guardrails_token)" &&     guardrails configure --token "$GUARDRAILS_TOKEN" --disable-metrics --enable-remote-inferencing &&     guardrails hub install hub://guardrails/toxic_language --no-install-local-models --quiet &&     guardrails hub install hub://guardrails/detect_jailbreak --no-install-local-models --quiet &&     guardrails hub install hub://guardrails/gibberish_text --no-install-local-models --quiet &&     rm -f /root/.guardrailsrc
+#14 2.560 There is a newer version of Guardrails available 0.11.0. Your current version is
+#14 2.560 0.9.2!
+#14 5.271 There is a newer version of Guardrails available 0.11.0. Your current version is
+#14 5.271 0.9.2!
+#14 5.274 Installing hub://guardrails/toxic_language...
+#14 5.301 --- Logging error ---
+#14 5.303 Traceback (most recent call last):
+#14 5.303   File "/usr/local/lib/python3.12/site-packages/urllib3/connection.py", line 198, in _new_conn
+#14 5.303     sock = connection.create_connection(
+#14 5.303            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+#14 5.303   File "/usr/local/lib/python3.12/site-packages/urllib3/util/connection.py", line 60, in create_connection
+#14 5.303     for res in socket.getaddrinfo(host, port, family, socket.SOCK_STREAM):
+#14 5.303                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+#14 5.303   File "/usr/local/lib/python3.12/socket.py", line 978, in getaddrinfo
+#14 5.303     for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+#14 5.303                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+#14 5.303 socket.gaierror: [Errno -2] Name or service not known
+#14 5.303 
+#14 5.303 The above exception was the direct cause of the following exception:
+#14 5.303 
+#14 5.303 Traceback (most recent call last):
+#14 5.303   File "/usr/local/lib/python3.12/site-packages/urllib3/connectionpool.py", line 787, in urlopen
+#14 5.303     response = self._make_request(
+#14 5.303                ^^^^^^^^^^^^^^^^^^^
+#14 5.303   File "/usr/local/lib/python3.12/site-packages/urllib3/connectionpool.py", line 488, in _make_request
+#14 5.303     raise new_e
+#14 5.303   File "/usr/local/lib/python3.12/site-packages/urllib3/connectionpool.py", line 464, in _make_request
+#14 5.303     self._validate_conn(conn)
+#14 5.303   File "/usr/local/lib/python3.12/site-packages/urllib3/connectionpool.py", line 1093, in _validate_conn
+#14 5.303     conn.connect()
+#14 5.303   File "/usr/local/lib/python3.12/site-packages/urllib3/connection.py", line 704, in connect
+#14 5.303     self.sock = sock = self._new_conn()
+#14 5.303                        ^^^^^^^^^^^^^^^^
+#14 5.303   File "/usr/local/lib/python3.12/site-packages/urllib3/connection.py", line 205, in _new_conn
+#14 5.303     raise NameResolutionError(self.host, self, e) from e
+#14 5.303 urllib3.exceptions.NameResolutionError: <urllib3.connection.HTTPSConnection object at 0x7eaebcdf7fe0>: Failed to resolve 'hub.api.guardrailsai.com' ([Errno -2] Name or service not known)
+#14 5.303 
+#14 5.303 The above exception was the direct cause of the following exception:
+#14 5.303 
+#14 5.303 Traceback (most recent call last):
+#14 5.303   File "/usr/local/lib/python3.12/site-packages/requests/adapters.py", line 696, in send
+#14 5.303     resp = conn.urlopen(
+#14 5.303            ^^^^^^^^^^^^^
+#14 5.303   File "/usr/local/lib/python3.12/site-packages/urllib3/connectionpool.py", line 841, in urlopen
+#14 5.303     retries = retries.increment(
+#14 5.303               ^^^^^^^^^^^^^^^^^^
+#14 5.303   File "/usr/local/lib/python3.12/site-packages/urllib3/util/retry.py", line 519, in increment
+#14 5.303     raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+#14 5.303     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+#14 5.303 urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='hub.api.guardrailsai.com', port=443): Max retries exceeded with url: /validator/guardrails/toxic_language/manifest (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x7eaebcdf7fe0>: Failed to resolve 'hub.api.guardrailsai.com' ([Errno -2] Name or service not known)"))
+#14 5.303 
+#14 5.303 During handling of the above exception, another exception occurred:
+#14 5.303 
+#14 5.303 Traceback (most recent call last):
+#14 5.304   File "/usr/local/lib/python3.12/site-packages/guardrails/cli/server/hub_client.py", line 61, in fetch
+#14 5.304     req = requests.get(url, headers=headers)
+#14 5.304           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+#14 5.304   File "/usr/local/lib/python3.12/site-packages/requests/api.py", line 87, in get
+#14 5.304     return request("get", url, params=params, **kwargs)
+#14 5.304            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+#14 5.304   File "/usr/local/lib/python3.12/site-packages/requests/api.py", line 71, in request
+#14 5.304     return session.request(method=method, url=url, **kwargs)
+#14 5.304            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+#14 5.304   File "/usr/local/lib/python3.12/site-packages/requests/sessions.py", line 651, in request
+#14 5.304     resp = self.send(prep, **send_kwargs)
+#14 5.304            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+#14 5.304   File "/usr/local/lib/python3.12/site-packages/requests/sessions.py", line 784, in send
+#14 5.304     r = adapter.send(request, **kwargs)
+#14 5.304         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+#14 5.304   File "/usr/local/lib/python3.12/site-packages/requests/adapters.py", line 729, in send
+#14 5.304     raise ConnectionError(e, request=request)
+#14 5.304 requests.exceptions.ConnectionError: HTTPSConnectionPool(host='hub.api.guardrailsai.com', port=443): Max retries exceeded with url: /validator/guardrails/toxic_language/manifest (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x7eaebcdf7fe0>: Failed to resolve 'hub.api.guardrailsai.com' ([Errno -2] Name or service not known)"))
+#14 5.304 
+#14 5.304 During handling of the above exception, another exception occurred:
+#14 5.304 
+#14 5.304 Traceback (most recent call last):
+#14 5.304   File "/usr/local/lib/python3.12/logging/__init__.py", line 1160, in emit
+#14 5.304     msg = self.format(record)
+#14 5.304           ^^^^^^^^^^^^^^^^^^^
+#14 5.304   File "/usr/local/lib/python3.12/logging/__init__.py", line 999, in format
+#14 5.304     return fmt.format(record)
+#14 5.304            ^^^^^^^^^^^^^^^^^^
+#14 5.304   File "/usr/local/lib/python3.12/logging/__init__.py", line 703, in format
+#14 5.304     record.message = record.getMessage()
+#14 5.304                      ^^^^^^^^^^^^^^^^^^^
+#14 5.304   File "/usr/local/lib/python3.12/logging/__init__.py", line 392, in getMessage
+#14 5.304     msg = msg % self.args
+#14 5.304           ~~~~^~~~~~~~~~~
+#14 5.304 TypeError: not all arguments converted during string formatting
+#14 5.304 Call stack:
+#14 5.305   File "/usr/local/bin/guardrails", line 6, in <module>
+#14 5.305     sys.exit(cli())
+#14 5.305   File "/usr/local/lib/python3.12/site-packages/typer/main.py", line 311, in __call__
+#14 5.305     return get_command(self)(*args, **kwargs)
+#14 5.305   File "/usr/local/lib/python3.12/site-packages/click/core.py", line 1161, in __call__
+#14 5.305     return self.main(*args, **kwargs)
+#14 5.305   File "/usr/local/lib/python3.12/site-packages/typer/core.py", line 783, in main
+#14 5.305     return _main(
+#14 5.305   File "/usr/local/lib/python3.12/site-packages/typer/core.py", line 225, in _main
+#14 5.305     rv = self.invoke(ctx)
+#14 5.305   File "/usr/local/lib/python3.12/site-packages/click/core.py", line 1697, in invoke
+#14 5.305     return _process_result(sub_ctx.command.invoke(sub_ctx))
+#14 5.305   File "/usr/local/lib/python3.12/site-packages/click/core.py", line 1697, in invoke
+#14 5.305     return _process_result(sub_ctx.command.invoke(sub_ctx))
+#14 5.305   File "/usr/local/lib/python3.12/site-packages/click/core.py", line 1443, in invoke
+#14 5.305     return ctx.invoke(self.callback, **ctx.params)
+#14 5.305   File "/usr/local/lib/python3.12/site-packages/click/core.py", line 788, in invoke
+#14 5.305     return __callback(*args, **kwargs)
+#14 5.305   File "/usr/local/lib/python3.12/site-packages/typer/main.py", line 683, in wrapper
+#14 5.305     return callback(**use_params)  # type: ignore
+#14 5.305   File "/usr/local/lib/python3.12/site-packages/guardrails/hub_telemetry/hub_tracing.py", line 150, in wrapper
+#14 5.305     return fn(*args, **kwargs)
+#14 5.305   File "/usr/local/lib/python3.12/site-packages/guardrails/cli/hub/install.py", line 63, in install_cli
+#14 5.305     install_multiple(
+#14 5.305   File "/usr/local/lib/python3.12/site-packages/guardrails/hub/install.py", line 212, in install_multiple
+#14 5.305     installed_module = install(
+#14 5.305   File "/usr/local/lib/python3.12/site-packages/guardrails/hub/install.py", line 88, in install
+#14 5.305     ValidatorPackageService.get_manifest_and_site_packages(validator_id)
+#14 5.305   File "/usr/local/lib/python3.12/site-packages/guardrails/hub/validator_package_service.py", line 80, in get_manifest_and_site_packages
+#14 5.305     module_manifest = get_validator_manifest(module_name)
+#14 5.305   File "/usr/local/lib/python3.12/site-packages/guardrails/cli/server/hub_client.py", line 145, in get_validator_manifest
+#14 5.305     module_manifest = fetch_module(module_name)
+#14 5.305   File "/usr/local/lib/python3.12/site-packages/guardrails/cli/server/hub_client.py", line 108, in fetch_module
+#14 5.305     module_manifest_json = fetch_module_manifest(module_name, token, settings.rc.id)
+#14 5.305   File "/usr/local/lib/python3.12/site-packages/guardrails/cli/server/hub_client.py", line 88, in fetch_module_manifest
+#14 5.305     return fetch(manifest_url, token, anonymousUserId)
+#14 5.305   File "/usr/local/lib/python3.12/site-packages/guardrails/cli/server/hub_client.py", line 76, in fetch
+#14 5.305     logger.error("An unexpected error occurred!", e)
+#14 5.305 Message: 'An unexpected error occurred!'
+#14 5.305 Arguments: (ConnectionError(MaxRetryError('HTTPSConnectionPool(host=\'hub.api.guardrailsai.com\', port=443): Max retries exceeded with url: /validator/guardrails/toxic_language/manifest (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x7eaebcdf7fe0>: Failed to resolve \'hub.api.guardrailsai.com\' ([Errno -2] Name or service not known)"))')),)
+#14 ERROR: process "/bin/sh -c GUARDRAILS_TOKEN=\"$(cat /run/secrets/guardrails_token)\" &&     guardrails configure --token \"$GUARDRAILS_TOKEN\" --disable-metrics --enable-remote-inferencing &&     guardrails hub install hub://guardrails/toxic_language --no-install-local-models --quiet &&     guardrails hub install hub://guardrails/detect_jailbreak --no-install-local-models --quiet &&     guardrails hub install hub://guardrails/gibberish_text --no-install-local-models --quiet &&     rm -f /root/.guardrailsrc" did not complete successfully: exit code: 1
+------
+ > [stage-0  9/10] RUN --mount=type=cache,target=/root/.cache/pip     --mount=type=secret,id=guardrails_token     GUARDRAILS_TOKEN="$(cat /run/secrets/guardrails_token)" &&     guardrails configure --token "$GUARDRAILS_TOKEN" --disable-metrics --enable-remote-inferencing &&     guardrails hub install hub://guardrails/toxic_language --no-install-local-models --quiet &&     guardrails hub install hub://guardrails/detect_jailbreak --no-install-local-models --quiet &&     guardrails hub install hub://guardrails/gibberish_text --no-install-local-models --quiet &&     rm -f /root/.guardrailsrc:
+5.305   File "/usr/local/lib/python3.12/site-packages/guardrails/cli/server/hub_client.py", line 145, in get_validator_manifest
+5.305     module_manifest = fetch_module(module_name)
+5.305   File "/usr/local/lib/python3.12/site-packages/guardrails/cli/server/hub_client.py", line 108, in fetch_module
+5.305     module_manifest_json = fetch_module_manifest(module_name, token, settings.rc.id)
+5.305   File "/usr/local/lib/python3.12/site-packages/guardrails/cli/server/hub_client.py", line 88, in fetch_module_manifest
+5.305     return fetch(manifest_url, token, anonymousUserId)
+5.305   File "/usr/local/lib/python3.12/site-packages/guardrails/cli/server/hub_client.py", line 76, in fetch
+5.305     logger.error("An unexpected error occurred!", e)
+5.305 Message: 'An unexpected error occurred!'
+5.305 Arguments: (ConnectionError(MaxRetryError('HTTPSConnectionPool(host=\'hub.api.guardrailsai.com\', port=443): Max retries exceeded with url: /validator/guardrails/toxic_language/manifest (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x7eaebcdf7fe0>: Failed to resolve \'hub.api.guardrailsai.com\' ([Errno -2] Name or service not known)"))')),)
+------
+Dockerfile:30
+
+--------------------
+
+  29 |     # The pip cache mount avoids re-downloading packages when this layer is invalidated.
+
+  30 | >>> RUN --mount=type=cache,target=/root/.cache/pip \
+
+  31 | >>>     --mount=type=secret,id=guardrails_token \
+
+  32 | >>>     GUARDRAILS_TOKEN="$(cat /run/secrets/guardrails_token)" && \
+
+  33 | >>>     guardrails configure --token "$GUARDRAILS_TOKEN" --disable-metrics --enable-remote-inferencing && \
+
+  34 | >>>     guardrails hub install hub://guardrails/toxic_language --no-install-local-models --quiet && \
+
+  35 | >>>     guardrails hub install hub://guardrails/detect_jailbreak --no-install-local-models --quiet && \
+
+  36 | >>>     guardrails hub install hub://guardrails/gibberish_text --no-install-local-models --quiet && \
+
+  37 | >>>     rm -f /root/.guardrailsrc
+
+  38 |     
+
+--------------------
+
+failed to solve: process "/bin/sh -c GUARDRAILS_TOKEN=\"$(cat /run/secrets/guardrails_token)\" &&     guardrails configure --token \"$GUARDRAILS_TOKEN\" --disable-metrics --enable-remote-inferencing &&     guardrails hub install hub://guardrails/toxic_language --no-install-local-models --quiet &&     guardrails hub install hub://guardrails/detect_jailbreak --no-install-local-models --quiet &&     guardrails hub install hub://guardrails/gibberish_text --no-install-local-models --quiet &&     rm -f /root/.guardrailsrc" did not complete successfully: exit code: 1
+

@@ -1,0 +1,126 @@
+{
+    "knowledge_graphs": [
+        {
+            "name": "GV2",
+            "additional_params": {
+                "contribution_building_blocks": {
+                    "Classifications_2": [
+                        "paper_class",
+                        "research_level",
+                        "all_research_objects",
+                        "validity",
+                        "evidence"
+                    ]
+                },
+                "force_cache_update": false,
+                "force_publication_update": false,
+                "subgraph_root_entity_id": "R659055",
+                "orkg_base_url": "https://sandbox.orkg.org"
+            },
+            "graph_type": "orkg",
+            "dataset_config": {
+                "additional_params": {},
+                "file_name": "merged_ecsa_icsa.json",
+                "loader": "JsonPublicationLoader",
+                "loader_limit": -1
+            }
+        },
+        {
+            "name": "GV1",
+            "additional_params": {
+                "contribution_building_blocks": {
+                    "Paper Class 2": [
+                        "paper_class"
+                    ],
+                    "Research Level 2": [
+                        "research_level"
+                    ],
+                    "First Research Object 2": [
+                        "first_research_object"
+                    ],
+                    "Second Research Object 2": [
+                        "second_research_object"
+                    ],
+                    "Validity 2": [
+                        "validity"
+                    ],
+                    "Evidence 2": [
+                        "evidence"
+                    ]
+                },
+                "force_cache_update": false,
+                "force_publication_update": false,
+                "subgraph_root_entity_id": "R659055",
+                "orkg_base_url": "https://sandbox.orkg.org"
+            },
+            "graph_type": "orkg",
+            "dataset_config": {
+                "additional_params": {},
+                "file_name": "merged_ecsa_icsa.json",
+                "loader": "JsonPublicationLoader",
+                "loader_limit": -1
+            }
+        },
+        {
+            "name": "GV4",
+            "additional_params": {
+                "contribution_building_blocks": {
+                    "Classifications_1": [
+                        "paper_class_flattened",
+                        "research_level_flattened",
+                        "all_research_objects_flattened",
+                        "validity_flattened",
+                        "evidence_flattened"
+                    ]
+                },
+                "force_cache_update": false,
+                "force_publication_update": false,
+                "subgraph_root_entity_id": "R659055",
+                "orkg_base_url": "https://sandbox.orkg.org"
+            },
+            "graph_type": "orkg",
+            "dataset_config": {
+                "additional_params": {},
+                "file_name": "merged_ecsa_icsa.json",
+                "loader": "JsonPublicationLoader",
+                "loader_limit": -1
+            }
+        },
+        {
+            "name": "GV3",
+            "additional_params": {
+                "contribution_building_blocks": {
+                    "Paper Class 1": [
+                        "paper_class_flattened"
+                    ],
+                    "Research Level 1": [
+                        "research_level_flattened"
+                    ],
+                    "First Research Object 1": [
+                        "first_research_object_flattened"
+                    ],
+                    "Second Research Object 1": [
+                        "second_research_object_flattened"
+                    ],
+                    "Validity 1": [
+                        "validity_flattened"
+                    ],
+                    "Evidence 1": [
+                        "evidence_flattened"
+                    ]
+                },
+                "force_cache_update": false,
+                "force_publication_update": false,
+                "subgraph_root_entity_id": "R659055",
+                "orkg_base_url": "https://sandbox.orkg.org"
+            },
+            "graph_type": "orkg",
+            "dataset_config": {
+                "additional_params": {},
+                "file_name": "merged_ecsa_icsa.json",
+                "loader": "JsonPublicationLoader",
+                "loader_limit": -1
+            }
+        }
+    ]
+}

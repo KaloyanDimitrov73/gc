@@ -1,0 +1,139 @@
+{
+    "name": "pipeline_8e6f3ff0a5eac369cfacbcc564f40bfb",
+    "additional_params": {},
+    "pipes": [
+        {
+            "name": "pre_retrieval_augmentation",
+            "additional_params": {},
+            "type": "pre_retrieval_processing",
+            "pre_technique": "augmentation",
+            "llm_config": {
+                "name": "openai_gpt-4o-mini_tmp0.0_maxt-1",
+                "additional_params": {},
+                "endpoint": "OpenAI",
+                "name_model": "gpt-4o-mini",
+                "temperature": 0.0,
+                "max_tokens": -1,
+                "reasoning_effort": null
+            },
+            "enabled": false
+        },
+        {
+            "name": "retrieval_config",
+            "additional_params": {
+                "use_topic_if_given": false,
+                "embedding_config": {
+                    "additional_params": {},
+                    "endpoint": "Ollama",
+                    "name_model": "mxbai-embed-large"
+                },
+                "diversity_ranking_penalty": 0.01,
+                "path_weight_alpha": 5,
+                "top_paths_to_keep": 10,
+                "number_of_hubs": 10,
+                "extract_question_components": true,
+                "distance_metric": "cosine",
+                "filter_output_context": true,
+                "use_source_documents": false,
+                "number_of_source_chunks": 10,
+                "hub_edges": -1,
+                "max_workers": 8,
+                "compare_hubs_with_same_hop_amount": false,
+                "check_updates_during_retrieval": false,
+                "max_level": 1,
+                "force_index_update": false,
+                "max_indexing_depth": -1,
+                "max_hub_path_length": -1,
+                "return_source_data_as_context": false,
+                "indexing_root_entity_types": null,
+                "indexing_root_entity_ids": [
+                    "R659055"
+                ],
+                "hub_types": [
+                    "Paper"
+                ]
+            },
+            "type": "kg_retrieval",
+            "retriever_type": "hublink",
+            "llm_config": {
+                "name": "openai_gpt-4o-mini_tmp0.0_maxt-1_reasoningNone",
+                "additional_params": {},
+                "endpoint": "OpenAI",
+                "name_model": "gpt-4o-mini",
+                "temperature": 0.0,
+                "max_tokens": -1,
+                "reasoning_effort": null
+            },
+            "knowledge_graph_config": {
+                "name": "orkg_merged_ecsa_icsa.json_jsonpublicationloader_limit-1",
+                "additional_params": {
+                    "contribution_building_blocks": {
+                        "Paper Class 2": [
+                            "paper_class"
+                        ],
+                        "Research Level 2": [
+                            "research_level"
+                        ],
+                        "First Research Object 2": [
+                            "first_research_object"
+                        ],
+                        "Second Research Object 2": [
+                            "second_research_object"
+                        ],
+                        "Validity 2": [
+                            "validity"
+                        ],
+                        "Evidence 2": [
+                            "evidence"
+                        ]
+                    },
+                    "force_cache_update": false,
+                    "force_publication_update": false,
+                    "subgraph_root_entity_id": "R659055",
+                    "orkg_base_url": "https://sandbox.orkg.org"
+                },
+                "graph_type": "orkg",
+                "dataset_config": {
+                    "name": "merged_ecsa_icsa.json_jsonpublicationloader_limit-1",
+                    "additional_params": {},
+                    "file_name": "merged_ecsa_icsa.json",
+                    "loader": "JsonPublicationLoader",
+                    "loader_limit": -1
+                },
+                "extraction_llm": null,
+                "extraction_context_size": 4000,
+                "extraction_chunk_repetitions": 2
+            }
+        },
+        {
+            "name": "post_retrieval_processing",
+            "additional_params": {},
+            "type": "post_retrieval_processing",
+            "post_technique": "reranking",
+            "llm_config": {
+                "name": "openai_gpt-4o-mini_tmp0.0_maxt-1_reasoningNone",
+                "additional_params": {},
+                "endpoint": "OpenAI",
+                "name_model": "gpt-4o-mini",
+                "temperature": 0.0,
+                "max_tokens": -1,
+                "reasoning_effort": null
+            },
+            "enabled": false
+        },
+        {
+            "name": "generation_openai_gpt-4o-mini_tmp0.0_maxt-1_reasoningNone",
+            "additional_params": {},
+            "type": "generation",
+            "llm_config": {
+                "name": "openai_gpt-4o-mini_tmp0.0_maxt-1_reasoningNone",
+                "additional_params": {},
+                "endpoint": "OpenAI",
+                "name_model": "gpt-4o-mini",
+                "temperature": 0.0,
+                "max_tokens": -1,
+                "reasoning_effort": null
+            }
+        }
+    ]
+}

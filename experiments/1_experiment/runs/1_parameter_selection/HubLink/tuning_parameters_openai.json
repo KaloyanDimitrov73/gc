@@ -1,0 +1,70 @@
+[
+    {
+        "config_name": "retrieval_config",
+        "parameter_name": "llm_config",
+        "values": [
+            {
+                "additional_params": {},
+                "endpoint": "OpenAI",
+                "name_model": "gpt-4o-mini",
+                "temperature": 0.0,
+                "max_tokens": -1
+            },
+            {
+                "additional_params": {},
+                "endpoint": "OpenAI",
+                "name_model": "gpt-4o",
+                "temperature": 0.0,
+                "max_tokens": -1
+            },
+            {
+                "additional_params": {},
+                "endpoint": "OpenAI",
+                "name_model": "o3-mini",
+                "temperature": null,
+                "max_tokens": -1,
+                "reasoning_effort": "low"
+            }
+        ]
+    },
+    {
+        "config_name": "pre_retrieval_augmentation",
+        "parameter_name": "enabled",
+        "values": [false, true]
+    },
+    {
+        "config_name": "post_retrieval_processing",
+        "parameter_name": "enabled",
+        "values": [true, false]
+    },
+    {
+        "config_name": "retrieval_config",
+        "parameter_name": "additional_params",
+        "dict_key": "use_topic_if_given",
+        "values": [true, false]
+    },
+    {
+        "config_name": "retrieval_config",
+        "parameter_name": "additional_params",
+        "dict_key": "extract_question_components",
+        "values": [true, false]
+    },
+    {
+        "config_name": "retrieval_config",
+        "parameter_name": "additional_params",
+        "dict_key": "filter_output_context",
+        "values": [true, false]
+    },
+    {
+        "config_name": "retrieval_config",
+        "parameter_name": "additional_params",
+        "dict_key": "diversity_ranking_penalty",
+        "values": [0, 0.01, 0.05, 0.1]
+    },
+    {
+        "config_name": "retrieval_config",
+        "parameter_name": "additional_params",
+        "dict_key": "path_weight_alpha",
+        "values": [0, 3, 6, 9]
+    }
+]

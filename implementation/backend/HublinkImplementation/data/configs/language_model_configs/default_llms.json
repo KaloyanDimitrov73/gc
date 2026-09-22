@@ -1,0 +1,68 @@
+{
+    "llms": [
+        {
+            "name": "openai_gpt-4o-mini_tmp0.0_maxt-1",
+            "additional_params": {},
+            "endpoint": "OpenAI",
+            "name_model": "gpt-4o-mini",
+            "temperature": 0.0,
+            "max_tokens": -1
+        },
+        {
+            "name": "openai_gpt-4o_tmp0.0_maxt-1",
+            "additional_params": {},
+            "endpoint": "OpenAI",
+            "name_model": "gpt-4o",
+            "temperature": 0.0,
+            "max_tokens": -1
+        },
+        {
+            "name": "HuggingFacePipeline (local)_meta-llama/meta-llama-3-8b-instruct_tmp0.0_maxt-1",
+            "additional_params": {},
+            "endpoint": "HuggingFace",
+            "name_model": "meta-llama/Meta-Llama-3-8B-Instruct",
+            "temperature": 0.0,
+            "max_tokens": 1024
+        },
+        {
+            "name": "huggingfacepipeline (local)_meta-llama/meta-llama-3-8b-instruct_tmp0.0_maxt-1",
+            "additional_params": {},
+            "endpoint": "HuggingFace",
+            "name_model": "meta-llama/Meta-Llama-3-8B-Instruct",
+            "temperature": 0.0,
+            "max_tokens": -1
+        },
+        {
+            "name": "ollama_mistral_tmp0.0_maxt-1",
+            "additional_params": {},
+            "endpoint": "Ollama",
+            "name_model": "mistral",
+            "temperature": 0.0,
+            "max_tokens": -1
+        },
+        {
+            "name": "huggingfacepipeline (local)_mistralai/mistral-7b-instruct-v0.3_tmp0.1_maxt-1",
+            "additional_params": {},
+            "endpoint": "HuggingFace",
+            "name_model": "mistralai/Mistral-7B-Instruct-v0.3",
+            "temperature": 0.0,
+            "max_tokens": 4096
+        },
+        {
+            "name": "googleai_gemini-2.0-flash-exp_tmp0.0_maxt-1",
+            "additional_params": {},
+            "endpoint": "GoogleAI",
+            "name_model": "gemini-2.0-flash-exp",
+            "temperature": 0.0,
+            "max_tokens": -1
+        },
+        {
+            "name": "googleai_gemini-1.5-flash_tmp0.0_maxt-1",
+            "additional_params": {},
+            "endpoint": "GoogleAI",
+            "name_model": "gemini-1.5-flash",
+            "temperature": 0.0,
+            "max_tokens": -1
+        }
+    ]
+}

@@ -1,0 +1,11 @@
+template: >
+  You are an instruction following evaluator. Your task is to evaluate, whether the generated answer follows the instructions given in the question. You are also given a example answer that correctly followed the instructions. You task is just to check whether the instructions are followed or not. Whether the content is correct is completly irrelevant. Do not provide any additional information or commentary.
+
+  The question is: {question}
+  An example answer where the instruction were correctly followed is: {golden_answer}
+  The answer that you should evaluate is: {generated_answer}  
+
+input_variables:
+  - question
+  - golden_answer
+  - generated_answer

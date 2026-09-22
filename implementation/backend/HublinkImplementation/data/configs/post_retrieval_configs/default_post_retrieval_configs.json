@@ -1,0 +1,49 @@
+{
+    "post_retrieval_pipes": [
+        {
+            "name": "post_retrieval_processing_reranking_openai_gpt-4o-mini_tmp0.0_maxt-1",
+            "additional_params": {},
+            "type": "post_retrieval_processing",
+            "post_technique": "reranking",
+            "llm_config": {
+                "name": "openai_gpt-4o-mini_tmp0.0_maxt-1",
+                "additional_params": {},
+                "endpoint": "OpenAI",
+                "name_model": "gpt-4o-mini",
+                "temperature": 0.1,
+                "max_tokens": -1
+            },
+            "enabled": true
+        },
+        {
+            "name": "post_retrieval_processing_reranking_huggingfacepipeline (local)_mistralai/mistral-7b-instruct-v0.3_tmp0.1_maxt-1",
+            "additional_params": {},
+            "type": "post_retrieval_processing",
+            "post_technique": "reranking",
+            "llm_config": {
+                "name": "huggingfacepipeline (local)_mistralai/mistral-7b-instruct-v0.3_tmp0.1_maxt-1",
+                "additional_params": {},
+                "endpoint": "HuggingFace",
+                "name_model": "mistralai/Mistral-7B-Instruct-v0.3",
+                "temperature": 0.1,
+                "max_tokens": 1024
+            },
+            "enabled": true
+        },
+        {
+            "name": "post_retrieval_processing_reranking_openai_gpt-4o-mini_tmp0.0_maxt-1",
+            "additional_params": {},
+            "type": "post_retrieval_processing",
+            "post_technique": "reranking",
+            "llm_config": {
+                "name": "openai_gpt-4o-mini_tmp0.0_maxt-1",
+                "additional_params": {},
+                "endpoint": "OpenAI",
+                "name_model": "gpt-4o-mini",
+                "temperature": 0.1,
+                "max_tokens": -1
+            },
+            "enabled": true
+        }
+    ]
+}
